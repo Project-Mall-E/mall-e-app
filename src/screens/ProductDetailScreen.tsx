@@ -1,3 +1,4 @@
+// src/screens/ProductDetailScreen.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -11,7 +12,7 @@ import {
   Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useUser } from '../context/UserContext';
@@ -21,7 +22,6 @@ type ProductDetailRouteProp = RouteProp<RootStackParamList, 'ProductDetail'>;
 
 const ProductDetailScreen = () => {
   const route = useRoute<ProductDetailRouteProp>();
-  const navigation = useNavigation();
   const { product } = route.params;
   const {
     isFavorite,
@@ -41,8 +41,6 @@ const ProductDetailScreen = () => {
       const canOpen = await Linking.canOpenURL(product.item_link);
       if (canOpen) {
         await Linking.openURL(product.item_link);
-      } else {
-        Alert.alert('Error', 'Cannot open this link');
       }
     } catch (error) {
       Alert.alert('Error', 'Failed to open link');
@@ -52,7 +50,6 @@ const ProductDetailScreen = () => {
   const handleAddToList = (listId: string) => {
     addToList(listId, product);
     setShowListModal(false);
-    Alert.alert('Success', 'Added to list!');
   };
 
   return (
@@ -86,14 +83,6 @@ const ProductDetailScreen = () => {
                   size={16}
                   color={isSubscribed ? '#FFF' : '#007AFF'}
                 />
-                <Text
-                  style={[
-                    styles.subscribeText,
-                    isSubscribed && styles.subscribedText,
-                  ]}
-                >
-                  {isSubscribed ? 'Subscribed' : 'Subscribe'}
-                </Text>
               </TouchableOpacity>
             </View>
             <Text style={styles.itemName}>{product.item_name}</Text>
@@ -101,7 +90,6 @@ const ProductDetailScreen = () => {
           </View>
 
           <View style={styles.tagsSection}>
-            <Text style={styles.sectionTitle}>Categories</Text>
             <View style={styles.tagsContainer}>
               {product.tags.map((tag, index) => (
                 <View key={index} style={styles.tag}>
@@ -121,9 +109,6 @@ const ProductDetailScreen = () => {
                 size={24}
                 color={favorite ? '#FF3B30' : '#000'}
               />
-              <Text style={styles.actionText}>
-                {favorite ? 'Favorited' : 'Favorite'}
-              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -131,7 +116,6 @@ const ProductDetailScreen = () => {
               onPress={() => setShowListModal(true)}
             >
               <Ionicons name="list-outline" size={24} color="#000" />
-              <Text style={styles.actionText}>Add to List</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -139,7 +123,6 @@ const ProductDetailScreen = () => {
               onPress={handleOpenLink}
             >
               <Ionicons name="open-outline" size={24} color="#000" />
-              <Text style={styles.actionText}>Open Link</Text>
             </TouchableOpacity>
           </View>
 
@@ -147,13 +130,12 @@ const ProductDetailScreen = () => {
             style={styles.shopButton}
             onPress={handleOpenLink}
           >
-            <Text style={styles.shopButtonText}>View on {product.store}</Text>
+            <Text style={styles.shopButtonText}>Shop Now</Text>
             <Ionicons name="arrow-forward" size={20} color="#FFF" />
           </TouchableOpacity>
         </View>
       </ScrollView>
 
-      {/* Add to List Modal */}
       <Modal
         visible={showListModal}
         transparent
@@ -169,34 +151,21 @@ const ProductDetailScreen = () => {
               </TouchableOpacity>
             </View>
 
-            {lists.length === 0 ? (
-              <View style={styles.modalEmpty}>
-                <Text style={styles.modalEmptyText}>
-                  No lists yet. Create one in the Favorites tab.
-                </Text>
-              </View>
-            ) : (
-              <ScrollView style={styles.listsList}>
-                {lists.map(list => (
-                  <TouchableOpacity
-                    key={list.id}
-                    style={styles.listItem}
-                    onPress={() => handleAddToList(list.id)}
-                  >
-                    <View style={styles.listItemContent}>
-                      <Ionicons name="list" size={24} color="#007AFF" />
-                      <View style={styles.listItemText}>
-                        <Text style={styles.listItemName}>{list.name}</Text>
-                        <Text style={styles.listItemCount}>
-                          {list.products.length} items
-                        </Text>
-                      </View>
-                    </View>
-                    <Ionicons name="add-circle-outline" size={24} color="#007AFF" />
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            )}
+            <ScrollView style={styles.listsList}>
+              {lists.map(list => (
+                <TouchableOpacity
+                  key={list.id}
+                  style={styles.listItem}
+                  onPress={() => handleAddToList(list.id)}
+                >
+                  <View style={styles.listItemContent}>
+                    <Ionicons name="list" size={24} color="#007AFF" />
+                    <Text style={styles.listItemName}>{list.name}</Text>
+                  </View>
+                  <Ionicons name="add-circle-outline" size={24} color="#007AFF" />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </View>
         </View>
       </Modal>
@@ -245,33 +214,18 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   subscribeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#007AFF',
-    gap: 4,
+    padding: 8,
+    borderRadius: 20,
   },
   subscribedButton: {
     backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
-  },
-  subscribeText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#007AFF',
-  },
-  subscribedText: {
-    color: '#FFF',
   },
   itemName: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '700',
     color: '#000',
     marginBottom: 12,
-    lineHeight: 36,
+    lineHeight: 32,
   },
   price: {
     fontSize: 32,
@@ -281,12 +235,6 @@ const styles = StyleSheet.create({
   tagsSection: {
     marginBottom: 24,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#000',
-    marginBottom: 12,
-  },
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -294,12 +242,12 @@ const styles = StyleSheet.create({
   },
   tag: {
     backgroundColor: '#F0F0F0',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   tagText: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#666',
     fontWeight: '500',
   },
@@ -314,12 +262,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     alignItems: 'center',
-    gap: 8,
-  },
-  actionText: {
-    fontSize: 12,
-    color: '#666',
-    fontWeight: '500',
+    padding: 8,
   },
   shopButton: {
     backgroundColor: '#007AFF',
@@ -361,15 +304,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#000',
   },
-  modalEmpty: {
-    padding: 40,
-    alignItems: 'center',
-  },
-  modalEmptyText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-  },
   listsList: {
     padding: 20,
   },
@@ -386,17 +320,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  listItemText: {
-    gap: 4,
-  },
   listItemName: {
     fontSize: 16,
     fontWeight: '600',
     color: '#000',
-  },
-  listItemCount: {
-    fontSize: 14,
-    color: '#666',
   },
 });
 
