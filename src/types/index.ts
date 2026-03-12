@@ -1,3 +1,4 @@
+// src/types/index.ts
 export interface Product {
   store: string;
   item_name: string;
@@ -27,6 +28,6 @@ export type RootStackParamList = {
 
 export type BottomTabParamList = {
   Home: undefined;
-  Explore: undefined;
+  Explore: { refresh?: number } | undefined;
   Favorites: undefined;
 };

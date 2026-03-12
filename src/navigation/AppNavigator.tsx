@@ -1,3 +1,4 @@
+// src/navigation/AppNavigator.tsx
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -36,7 +37,23 @@ const TabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Explore" component={ExploreScreen} />
+      <Tab.Screen
+        name="Explore"
+        component={ExploreScreen}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            // Check if already on Explore screen
+            const state = navigation.getState();
+            const currentRoute = state.routes[state.index];
+
+            if (currentRoute.name === 'Explore') {
+              // Already on Explore, refresh the screen
+              e.preventDefault();
+              navigation.navigate('Explore', { refresh: Date.now() });
+            }
+          },
+        })}
+      />
       <Tab.Screen name="Favorites" component={FavoritesScreen} />
     </Tab.Navigator>
   );
