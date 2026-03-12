@@ -170,23 +170,23 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   storesScroll: {
-    maxHeight: 50,
-    marginBottom: 8,
+    flexGrow: 0,
+    flexShrink: 0,
+    marginBottom: 10,
   },
   storesContainer: {
     paddingHorizontal: 16,
-    gap: 8,
   },
   storeChip: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingVertical: 12,
     backgroundColor: '#FFF',
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#E0E0E0',
-    gap: 6,
+    marginRight: 10,
   },
   storeChipSelected: {
     backgroundColor: '#007AFF',
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   checkmark: {
-    marginLeft: 4,
+    marginLeft: 6,
   },
 });
 
