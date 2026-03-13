@@ -4,7 +4,7 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
+  Pressable,
   TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -73,13 +73,13 @@ const HomeScreen = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Home</Text>
         <View style={styles.headerButtons}>
-          <TouchableOpacity
+          <Pressable
             style={styles.iconButton}
             onPress={() => setShowSubscriptions(true)}
           >
             <Ionicons name="settings-outline" size={24} color="#000" />
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             style={[styles.iconButton, selectedStores.length > 0 && styles.iconButtonActive]}
             onPress={() => setShowFilter(true)}
           >
@@ -89,8 +89,8 @@ const HomeScreen = () => {
                 <Text style={styles.filterBadgeText}>{selectedStores.length}</Text>
               </View>
             )}
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             style={[styles.iconButton, showSearch && styles.iconButtonActive]}
             onPress={toggleSearch}
           >
@@ -99,11 +99,11 @@ const HomeScreen = () => {
               size={24}
               color="#000"
             />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
 
-      {showSearch && (
+      {showSearch ? (
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
           <TextInput
@@ -115,13 +115,13 @@ const HomeScreen = () => {
             autoFocus
             returnKeyType="search"
           />
-          {searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => setSearchQuery('')}>
+          {searchQuery.length > 0 ? (
+            <Pressable onPress={() => setSearchQuery('')}>
               <Ionicons name="close-circle" size={20} color="#666" />
-            </TouchableOpacity>
-          )}
+            </Pressable>
+          ) : null}
         </View>
-      )}
+      ) : null}
 
       <ProductGrid
         products={displayProducts}

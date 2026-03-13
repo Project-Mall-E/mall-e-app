@@ -4,7 +4,7 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   Modal,
   Alert,
@@ -83,9 +83,9 @@ const SubscriptionsModal: React.FC<SubscriptionsModalProps> = ({
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.title}>Subscriptions</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Pressable onPress={onClose} style={styles.closeButton}>
               <Ionicons name="close" size={28} color="#000" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           <View style={styles.stats}>
@@ -108,9 +108,9 @@ const SubscriptionsModal: React.FC<SubscriptionsModalProps> = ({
                     Subscribed ({subscribedList.length})
                   </Text>
                   {subscribedList.length > 1 && (
-                    <TouchableOpacity onPress={handleUnsubscribeAll}>
+                    <Pressable onPress={handleUnsubscribeAll}>
                       <Text style={styles.sectionAction}>Remove All</Text>
-                    </TouchableOpacity>
+                    </Pressable>
                   )}
                 </View>
                 {subscribedList.map(store => (
@@ -119,12 +119,12 @@ const SubscriptionsModal: React.FC<SubscriptionsModalProps> = ({
                       <Ionicons name="storefront" size={24} color="#007AFF" />
                       <Text style={styles.storeName}>{store}</Text>
                     </View>
-                    <TouchableOpacity
+                    <Pressable
                       style={styles.actionButton}
                       onPress={() => handleToggle(store)}
                     >
                       <Ionicons name="checkmark-circle" size={28} color="#007AFF" />
-                    </TouchableOpacity>
+                    </Pressable>
                   </View>
                 ))}
               </View>
@@ -137,11 +137,11 @@ const SubscriptionsModal: React.FC<SubscriptionsModalProps> = ({
                     Available ({availableList.length})
                   </Text>
                   {availableList.length > 1 && (
-                    <TouchableOpacity onPress={handleSubscribeAll}>
+                    <Pressable onPress={handleSubscribeAll}>
                       <Text style={[styles.sectionAction, styles.addAction]}>
                         Add All
                       </Text>
-                    </TouchableOpacity>
+                    </Pressable>
                   )}
                 </View>
                 {availableList.map(store => (
@@ -152,12 +152,12 @@ const SubscriptionsModal: React.FC<SubscriptionsModalProps> = ({
                         {store}
                       </Text>
                     </View>
-                    <TouchableOpacity
+                    <Pressable
                       style={styles.actionButton}
                       onPress={() => handleToggle(store)}
                     >
                       <Ionicons name="add-circle-outline" size={28} color="#007AFF" />
-                    </TouchableOpacity>
+                    </Pressable>
                   </View>
                 ))}
               </View>

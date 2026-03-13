@@ -1,4 +1,8 @@
 {
   "version": "0.2",
-  "words": ["Subviews", "doomscrolling"]
+  "words": [
+    "Subviews", 
+    "doomscrolling",
+    "Pressable"
+  ]
 }

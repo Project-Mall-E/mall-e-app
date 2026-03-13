@@ -5,12 +5,12 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Image,
-  TouchableOpacity,
+  Pressable,
   Linking,
   Alert,
   Modal,
 } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -59,7 +59,7 @@ const ProductDetailScreen = () => {
           <Image
             source={{ uri: product.item_image_link }}
             style={styles.image}
-            resizeMode="cover"
+            contentFit="cover"
           />
           <LinearGradient
             colors={['transparent', 'rgba(0,0,0,0.7)']}
@@ -71,7 +71,7 @@ const ProductDetailScreen = () => {
           <View style={styles.headerSection}>
             <View style={styles.storeContainer}>
               <Text style={styles.storeName}>{product.store}</Text>
-              <TouchableOpacity
+              <Pressable
                 style={[
                   styles.subscribeButton,
                   isSubscribed && styles.subscribedButton,
@@ -83,7 +83,7 @@ const ProductDetailScreen = () => {
                   size={16}
                   color={isSubscribed ? '#FFF' : '#007AFF'}
                 />
-              </TouchableOpacity>
+              </Pressable>
             </View>
             <Text style={styles.itemName}>{product.item_name}</Text>
             <Text style={styles.price}>{product.price}</Text>
@@ -100,7 +100,7 @@ const ProductDetailScreen = () => {
           </View>
 
           <View style={styles.actionsSection}>
-            <TouchableOpacity
+            <Pressable
               style={styles.actionButton}
               onPress={() => toggleFavorite(product)}
             >
@@ -109,30 +109,30 @@ const ProductDetailScreen = () => {
                 size={24}
                 color={favorite ? '#FF3B30' : '#000'}
               />
-            </TouchableOpacity>
+            </Pressable>
 
-            <TouchableOpacity
+            <Pressable
               style={styles.actionButton}
               onPress={() => setShowListModal(true)}
             >
               <Ionicons name="list-outline" size={24} color="#000" />
-            </TouchableOpacity>
+            </Pressable>
 
-            <TouchableOpacity
+            <Pressable
               style={styles.actionButton}
               onPress={handleOpenLink}
             >
               <Ionicons name="open-outline" size={24} color="#000" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
-          <TouchableOpacity
+          <Pressable
             style={styles.shopButton}
             onPress={handleOpenLink}
           >
             <Text style={styles.shopButtonText}>Shop Now</Text>
             <Ionicons name="arrow-forward" size={20} color="#FFF" />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </ScrollView>
 
@@ -146,14 +146,14 @@ const ProductDetailScreen = () => {
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Add to List</Text>
-              <TouchableOpacity onPress={() => setShowListModal(false)}>
+              <Pressable onPress={() => setShowListModal(false)}>
                 <Ionicons name="close" size={28} color="#000" />
-              </TouchableOpacity>
+              </Pressable>
             </View>
 
             <ScrollView style={styles.listsList}>
               {lists.map(list => (
-                <TouchableOpacity
+                <Pressable
                   key={list.id}
                   style={styles.listItem}
                   onPress={() => handleAddToList(list.id)}
@@ -163,7 +163,7 @@ const ProductDetailScreen = () => {
                     <Text style={styles.listItemName}>{list.name}</Text>
                   </View>
                   <Ionicons name="add-circle-outline" size={24} color="#007AFF" />
-                </TouchableOpacity>
+                </Pressable>
               ))}
             </ScrollView>
           </View>

@@ -1,13 +1,7 @@
 // src/components/ProductFeedCard.tsx
 import React from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
+import { View, Text, StyleSheet, Pressable, Dimensions } from 'react-native';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Product } from '../types';
@@ -54,15 +48,14 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
     const CARD_HEIGHT = height * 0.75;
 
     return (
-      <TouchableOpacity
+      <Pressable
         style={[styles.card, { height: CARD_HEIGHT }]}
         onPress={() => onPress(product)}
-        activeOpacity={0.95}
       >
         <Image
           source={{ uri: product.item_image_link }}
           style={styles.image}
-          resizeMode="cover"
+          contentFit="cover"
         />
 
         <LinearGradient
@@ -71,7 +64,7 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
         />
 
         <View style={styles.topActions}>
-          <TouchableOpacity
+          <Pressable
             style={[styles.storeTag, isSubscribed && styles.storeTagSubscribed]}
             onPress={handleSubscribeToggle}
           >
@@ -81,7 +74,7 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
               size={14}
               color="#FFF"
             />
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         <View style={styles.bottomInfo}>
@@ -92,19 +85,19 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
             </Text>
             <View style={styles.tags}>
               {product.tags.slice(0, 3).map((tag, index) => (
-                <TouchableOpacity
+                <Pressable
                   key={index}
                   style={styles.tag}
                   onPress={(e) => handleTagPress(tag, e)}
                 >
                   <Text style={styles.tagText}>{tag}</Text>
-                </TouchableOpacity>
+                </Pressable>
               ))}
             </View>
           </View>
 
           <View style={styles.actions}>
-            <TouchableOpacity
+            <Pressable
               style={styles.actionButton}
               onPress={handleFavoriteToggle}
             >
@@ -113,10 +106,10 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
                 size={32}
                 color={favorite ? '#FF3B30' : '#FFF'}
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     );
   }
 
@@ -125,15 +118,14 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
     const CARD_HEIGHT = height * 0.85;
 
     return (
-      <TouchableOpacity
+      <Pressable
         style={[styles.card, { height: CARD_HEIGHT }]}
         onPress={() => onPress(product)}
-        activeOpacity={0.95}
       >
         <Image
           source={{ uri: product.item_image_link }}
           style={styles.image}
-          resizeMode="cover"
+          contentFit="cover"
         />
 
         <LinearGradient
@@ -142,7 +134,7 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
         />
 
         <View style={styles.topActions}>
-          <TouchableOpacity
+          <Pressable
             style={[styles.storeTag, styles.featuredTag, isSubscribed && styles.storeTagSubscribed]}
             onPress={handleSubscribeToggle}
           >
@@ -153,7 +145,7 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
               size={16}
               color="#FFF"
             />
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         <View style={[styles.bottomInfo, styles.featuredInfo]}>
@@ -164,19 +156,19 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
             </Text>
             <View style={styles.tags}>
               {product.tags.slice(0, 4).map((tag, index) => (
-                <TouchableOpacity
+                <Pressable
                   key={index}
                   style={[styles.tag, styles.featuredTagItem]}
                   onPress={(e) => handleTagPress(tag, e)}
                 >
                   <Text style={styles.tagText}>{tag}</Text>
-                </TouchableOpacity>
+                </Pressable>
               ))}
             </View>
           </View>
 
           <View style={styles.actions}>
-            <TouchableOpacity
+            <Pressable
               style={[styles.actionButton, styles.featuredButton]}
               onPress={handleFavoriteToggle}
             >
@@ -185,10 +177,10 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
                 size={36}
                 color={favorite ? '#FF3B30' : '#FFF'}
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     );
   }
 
@@ -197,15 +189,14 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
     const CARD_HEIGHT = height * 0.55;
 
     return (
-      <TouchableOpacity
+      <Pressable
         style={[styles.card, { height: CARD_HEIGHT }]}
         onPress={() => onPress(product)}
-        activeOpacity={0.95}
       >
         <Image
           source={{ uri: product.item_image_link }}
           style={styles.image}
-          resizeMode="cover"
+          contentFit="cover"
         />
 
         <LinearGradient
@@ -215,7 +206,7 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
 
         <View style={styles.compactContent}>
           <View style={styles.compactTop}>
-            <TouchableOpacity
+            <Pressable
               style={[styles.storeTag, styles.compactTag, isSubscribed && styles.storeTagSubscribed]}
               onPress={handleSubscribeToggle}
             >
@@ -227,8 +218,8 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
                 size={12}
                 color="#FFF"
               />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={[styles.actionButton, styles.compactAction]}
               onPress={handleFavoriteToggle}
             >
@@ -237,7 +228,7 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
                 size={24}
                 color={favorite ? '#FF3B30' : '#FFF'}
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           <View style={styles.compactBottom}>
@@ -247,7 +238,7 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
             </Text>
           </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     );
   }
 
@@ -256,17 +247,16 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
     const CARD_HEIGHT = height * 0.65;
 
     return (
-      <TouchableOpacity
+      <Pressable
         style={[styles.card, { height: CARD_HEIGHT }]}
         onPress={() => onPress(product)}
-        activeOpacity={0.95}
       >
         <View style={styles.wideLayout}>
           <View style={styles.wideImageContainer}>
             <Image
               source={{ uri: product.item_image_link }}
               style={styles.wideImage}
-              resizeMode="cover"
+              contentFit="cover"
             />
           </View>
 
@@ -277,7 +267,7 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
 
           <View style={styles.wideContent}>
             <View style={styles.wideTop}>
-              <TouchableOpacity
+              <Pressable
                 style={[styles.storeTag, isSubscribed && styles.storeTagSubscribed]}
                 onPress={handleSubscribeToggle}
               >
@@ -287,8 +277,8 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
                   size={14}
                   color="#FFF"
                 />
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 style={styles.actionButton}
                 onPress={handleFavoriteToggle}
               >
@@ -297,7 +287,7 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
                   size={28}
                   color={favorite ? '#FF3B30' : '#FFF'}
                 />
-              </TouchableOpacity>
+              </Pressable>
             </View>
 
             <View style={styles.wideInfo}>
@@ -307,19 +297,19 @@ const ProductFeedCard: React.FC<ProductFeedCardProps> = ({
               </Text>
               <View style={styles.tags}>
                 {product.tags.slice(0, 3).map((tag, index) => (
-                  <TouchableOpacity
+                  <Pressable
                     key={index}
                     style={styles.tag}
                     onPress={(e) => handleTagPress(tag, e)}
                   >
                     <Text style={styles.tagText}>{tag}</Text>
-                  </TouchableOpacity>
+                  </Pressable>
                 ))}
               </View>
             </View>
           </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     );
   }
 

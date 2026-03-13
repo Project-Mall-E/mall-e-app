@@ -4,7 +4,7 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
+  Pressable,
   TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -114,13 +114,13 @@ const ExploreScreen = () => {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <TouchableOpacity
+        <Pressable
           style={styles.iconButton}
           onPress={() => setShowSubscriptions(true)}
         >
           <Ionicons name="settings-outline" size={24} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity
+        </Pressable>
+        <Pressable
           style={[styles.iconButton, selectedStores.length > 0 && styles.iconButtonActive]}
           onPress={() => setShowFilter(true)}
         >
@@ -130,16 +130,16 @@ const ExploreScreen = () => {
               <Text style={styles.filterBadgeText}>{selectedStores.length}</Text>
             </View>
           )}
-        </TouchableOpacity>
-        <TouchableOpacity
+        </Pressable>
+        <Pressable
           style={[styles.iconButton, showSearch && styles.iconButtonActive]}
           onPress={toggleSearch}
         >
           <Ionicons name={showSearch ? "close" : "search"} size={24} color="#000" />
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
-      {showSearch && (
+      {showSearch ? (
         <View style={styles.searchContainer}>
           <View style={styles.searchInputContainer}>
             <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
@@ -152,14 +152,14 @@ const ExploreScreen = () => {
               autoFocus
               returnKeyType="search"
             />
-            {searchQuery.length > 0 && (
-              <TouchableOpacity onPress={() => setSearchQuery('')}>
+            {searchQuery.length > 0 ? (
+              <Pressable onPress={() => setSearchQuery('')}>
                 <Ionicons name="close-circle" size={20} color="#666" />
-              </TouchableOpacity>
-            )}
+              </Pressable>
+            ) : null}
           </View>
         </View>
-      )}
+      ) : null}
 
       <ProductFeed
         products={displayProducts}

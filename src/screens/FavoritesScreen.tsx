@@ -3,7 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   TextInput,
   Alert,
@@ -92,24 +92,24 @@ const FavoritesScreen = () => {
       return (
         <View style={styles.listView}>
           <View style={styles.listHeader}>
-            <TouchableOpacity
+            <Pressable
               onPress={() => setSelectedList(null)}
               style={styles.backButton}
             >
               <Ionicons name="arrow-back" size={24} color="#007AFF" />
-            </TouchableOpacity>
+            </Pressable>
             <View style={styles.listHeaderText}>
               <Text style={styles.listTitle}>{list.name}</Text>
               <Text style={styles.listCount}>
                 {list.products.length} item{list.products.length !== 1 ? 's' : ''}
               </Text>
             </View>
-            <TouchableOpacity
+            <Pressable
               onPress={() => handleDeleteList(list.id, list.name)}
               style={styles.deleteButton}
             >
               <Ionicons name="trash-outline" size={24} color="#FF3B30" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
           <ProductGrid
             products={list.products}
@@ -122,13 +122,13 @@ const FavoritesScreen = () => {
 
     return (
       <ScrollView style={styles.listsContainer}>
-        <TouchableOpacity
+        <Pressable
           style={styles.createListButton}
           onPress={() => setShowNewListModal(true)}
         >
           <Ionicons name="add-circle-outline" size={32} color="#007AFF" />
           <Text style={styles.createListText}>Create New List</Text>
-        </TouchableOpacity>
+        </Pressable>
 
         {lists.length === 0 ? (
           <View style={styles.emptyState}>
@@ -141,7 +141,7 @@ const FavoritesScreen = () => {
         ) : (
           <View style={styles.listsGrid}>
             {lists.map(list => (
-              <TouchableOpacity
+              <Pressable
                 key={list.id}
                 style={styles.listCard}
                 onPress={() => setSelectedList(list.id)}
@@ -158,7 +158,7 @@ const FavoritesScreen = () => {
                 <Text style={styles.listCardDate}>
                   {new Date(list.createdAt).toLocaleDateString()}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             ))}
           </View>
         )}
@@ -173,7 +173,7 @@ const FavoritesScreen = () => {
       </View>
 
       <View style={styles.tabContainer}>
-        <TouchableOpacity
+        <Pressable
           style={[
             styles.tab,
             selectedTab === 'favorites' && styles.tabActive,
@@ -188,8 +188,8 @@ const FavoritesScreen = () => {
           >
             Favorites ({favorites.length})
           </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+        </Pressable>
+        <Pressable
           style={[
             styles.tab,
             selectedTab === 'lists' && styles.tabActive,
@@ -204,7 +204,7 @@ const FavoritesScreen = () => {
           >
             Lists ({lists.length})
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       {selectedTab === 'favorites' ? renderFavorites() : renderLists()}
@@ -227,7 +227,7 @@ const FavoritesScreen = () => {
               autoFocus
             />
             <View style={styles.modalButtons}>
-              <TouchableOpacity
+              <Pressable
                 style={[styles.modalButton, styles.modalButtonCancel]}
                 onPress={() => {
                   setShowNewListModal(false);
@@ -235,13 +235,13 @@ const FavoritesScreen = () => {
                 }}
               >
                 <Text style={styles.modalButtonTextCancel}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 style={[styles.modalButton, styles.modalButtonCreate]}
                 onPress={handleCreateList}
               >
                 <Text style={styles.modalButtonTextCreate}>Create</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         </View>

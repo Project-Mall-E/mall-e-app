@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
+import { View, Text, StyleSheet, Pressable, Dimensions } from 'react-native';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { Product } from '../types';
 import { useUser } from '../context/UserContext';
@@ -24,19 +18,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onPress, onTagPress 
   const { isFavorite, toggleFavorite } = useUser();
   const favorite = isFavorite(product);
 
+  const cardStyle = ({ pressed }: { pressed: boolean }) =>
+    [styles.card, pressed ? { opacity: 0.7 } : null];
+
   return (
-    <TouchableOpacity
-      style={styles.card}
+    <Pressable
+      style={cardStyle}
       onPress={() => onPress(product)}
-      activeOpacity={0.7}
     >
       <View style={styles.imageContainer}>
         <Image
           source={{ uri: product.item_image_link }}
           style={styles.image}
-          resizeMode="cover"
+          contentFit="cover"
         />
-        <TouchableOpacity
+        <Pressable
           style={styles.favoriteButton}
           onPress={() => toggleFavorite(product)}
         >
@@ -45,7 +41,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onPress, onTagPress 
             size={24}
             color={favorite ? '#FF3B30' : '#FFF'}
           />
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View style={styles.info}>
         <Text style={styles.storeName} numberOfLines={1}>
@@ -69,7 +65,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onPress, onTagPress 
           ))}
         </View>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -78,12 +74,9 @@ const styles = StyleSheet.create({
     width: CARD_WIDTH,
     backgroundColor: '#FFF',
     borderRadius: 12,
+    borderCurve: 'continuous',
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   },
   imageContainer: {
     position: 'relative',
@@ -95,6 +88,7 @@ const styles = StyleSheet.create({
     height: '100%',
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
+    borderCurve: 'continuous',
   },
   favoriteButton: {
     position: 'absolute',
@@ -103,6 +97,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
+    borderCurve: 'continuous',
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -140,6 +135,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
+    borderCurve: 'continuous',
     maxWidth: CARD_WIDTH - 24,
   },
   tagText: {

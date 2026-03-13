@@ -4,7 +4,7 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   Modal,
   Switch,
@@ -74,9 +74,9 @@ const FilterModal: React.FC<FilterModalProps> = ({
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.title}>Filter Stores</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Pressable onPress={onClose} style={styles.closeButton}>
               <Ionicons name="close" size={28} color="#000" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           {!showSubscribedOnly && (
@@ -94,22 +94,22 @@ const FilterModal: React.FC<FilterModalProps> = ({
           )}
 
           <View style={styles.actionsRow}>
-            <TouchableOpacity
+            <Pressable
               style={styles.actionButton}
               onPress={handleSelectAll}
             >
               <Text style={styles.actionButtonText}>
                 Show All
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={styles.actionButton}
               onPress={handleClearAll}
             >
               <Text style={styles.actionButtonText}>
                 Clear Filters
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           <ScrollView style={styles.storesList}>
@@ -118,7 +118,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
               const isSubscribed = subscribedStores.includes(store);
 
               return (
-                <TouchableOpacity
+                <Pressable
                   key={store}
                   style={styles.storeItem}
                   onPress={() => handleStoreToggle(store)}
@@ -126,34 +126,34 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   <View style={styles.storeInfo}>
                     <View style={styles.storeNameRow}>
                       <Text style={styles.storeName}>{store}</Text>
-                      {isSubscribed && (
+                      {isSubscribed ? (
                         <View style={styles.subscribedBadge}>
                           <Ionicons name="checkmark-circle" size={12} color="#007AFF" />
                         </View>
-                      )}
+                      ) : null}
                     </View>
                   </View>
                   <View style={[
                     styles.checkbox,
                     isSelected && styles.checkboxSelected
                   ]}>
-                    {isSelected && (
+                    {isSelected ? (
                       <Ionicons name="checkmark" size={18} color="#FFF" />
-                    )}
+                    ) : null}
                   </View>
-                </TouchableOpacity>
+                </Pressable>
               );
             })}
           </ScrollView>
 
-          <TouchableOpacity
+          <Pressable
             style={styles.applyButton}
             onPress={onClose}
           >
             <Text style={styles.applyButtonText}>
               Apply {selectedStores.length > 0 ? `(${selectedStores.length})` : ''}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     </Modal>
