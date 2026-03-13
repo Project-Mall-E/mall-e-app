@@ -38,6 +38,7 @@ mall-e/
    │       │   ├── navigation/      # Navigation configuration
    │       │   ├── screens/         # App screens
    │       │   └── types/           # TypeScript type definitions
+   │       ├── .agents/             # Agent skills (React Native best practices)
    │       ├── App.tsx              # Root component
    │       └── package.json
    └── scripts/
@@ -49,6 +50,24 @@ mall-e/
           ├── generate_mock_data.ps1    # Windows script
           └── generate_mock_data.sh     # Mac/Linux script
 ```
+
+## Agent skills (AI-assisted development)
+
+The repo includes React Native best-practice guidelines in `.agents/react-native-skills/` so that AI coding agents (e.g. Cursor, OpenCode) follow shared rules when building or refactoring code. The content is synced from [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills).
+
+**To update the agent skills** when the upstream repo adds or changes rules, run from the project root:
+
+```bash
+npm run update:agent-skills
+```
+
+Or run the script directly:
+
+```bash
+./scripts/sync-react-native-skills.sh
+```
+
+You can pass a branch or tag to sync from a specific ref, e.g. `./scripts/sync-react-native-skills.sh main`. After syncing, review the changes and commit. See [.agents/README.md](.agents/README.md) for more detail.
 
 ## Setup Instructions
 

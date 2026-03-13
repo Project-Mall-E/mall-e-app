@@ -1,0 +1,24 @@
+---
+description: React Native and Expo best practices (lists, animations, UI, state). Follow .agents/react-native-skills/AGENTS.md for full rules and examples.
+globs: ["**/*.tsx", "**/*.jsx", "**/app.json", "**/app.config.*"]
+alwaysApply: false
+---
+
+# React Native Best Practices
+
+When writing or refactoring React Native/Expo code in this project, follow the guidelines in **.agents/react-native-skills/AGENTS.md**. Use **.agents/react-native-skills/SKILL.md** as a quick reference. For detailed incorrect/correct examples and explanations, read the full AGENTS.md.
+
+## Priority summary
+
+| Priority | Category         | Impact   |
+| -------- | ---------------- | -------- |
+| 1        | List Performance | CRITICAL |
+| 2        | Animation        | HIGH     |
+| 3        | Navigation       | HIGH     |
+| 4        | UI Patterns      | HIGH     |
+| 5        | State Management | MEDIUM   |
+| 6        | Rendering        | MEDIUM   |
+| 7        | Monorepo         | MEDIUM   |
+| 8        | Configuration    | LOW      |
+
+Key rules: virtualize lists (FlashList), memoize list items, avoid inline objects in renderItem, animate only transform/opacity, use native navigators, use Pressable over TouchableOpacity, wrap strings in Text, avoid `{value &&}` when value can be 0 or "".
