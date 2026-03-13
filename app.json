@@ -1,5 +1,9 @@
 {
   "expo": {
+    "plugins": [
+      ["expo-build-properties", { "ios": { "deploymentTarget": "15.1" } }],
+      "react-native-bottom-tabs"
+    ],
     "name": "Mall-E",
     "slug": "mall-e-app",
     "version": "1.0.0",

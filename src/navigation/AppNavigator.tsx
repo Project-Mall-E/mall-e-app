@@ -1,8 +1,9 @@
 // src/navigation/AppNavigator.tsx
 import React from 'react';
+import { Platform } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
+import { createNativeBottomTabNavigator } from '@bottom-tabs/react-navigation';
+import type { AppleIcon } from 'react-native-bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
@@ -10,27 +11,43 @@ import ProductDetailScreen from '../screens/ProductDetailScreen';
 import { RootStackParamList, BottomTabParamList } from '../types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const Tab = createBottomTabNavigator<BottomTabParamList>();
+const Tab = createNativeBottomTabNavigator<BottomTabParamList>();
+
+// Placeholder 1x1 transparent PNG for Android tab icons (SF Symbols are iOS-only).
+// Replace with require('./assets/icons/...') for proper Android icons.
+const ANDROID_TAB_ICON_PLACEHOLDER = {
+  uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+};
+
+function getTabBarIcon(
+  routeName: string,
+  focused: boolean
+): AppleIcon | { uri: string } {
+  if (Platform.OS === 'ios') {
+    const sfSymbol =
+      routeName === 'Home'
+        ? focused
+          ? 'house.fill'
+          : 'house'
+        : routeName === 'Explore'
+          ? focused
+            ? 'compass.fill'
+            : 'compass'
+          : routeName === 'Favorites'
+            ? focused
+              ? 'heart.fill'
+              : 'heart'
+            : 'questionmark.circle';
+    return { sfSymbol: sfSymbol as AppleIcon['sfSymbol'] };
+  }
+  return ANDROID_TAB_ICON_PLACEHOLDER;
+}
 
 const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName: keyof typeof Ionicons.glyphMap;
-
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Explore') {
-            iconName = focused ? 'compass' : 'compass-outline';
-          } else if (route.name === 'Favorites') {
-            iconName = focused ? 'heart' : 'heart-outline';
-          } else {
-            iconName = 'help-outline';
-          }
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
+        tabBarIcon: ({ focused }) => getTabBarIcon(route.name, focused),
         tabBarActiveTintColor: '#007AFF',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
@@ -42,12 +59,10 @@ const TabNavigator = () => {
         component={ExploreScreen}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
-            // Check if already on Explore screen
             const state = navigation.getState();
             const currentRoute = state.routes[state.index];
 
             if (currentRoute.name === 'Explore') {
-              // Already on Explore, refresh the screen
               e.preventDefault();
               navigation.navigate('Explore', { refresh: Date.now() });
             }
