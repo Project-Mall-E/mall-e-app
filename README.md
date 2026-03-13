@@ -140,17 +140,10 @@ python -m get_store_url_and_tags --stores "AmericanEagle,Abercrombie" --max-urls
 
 ```bash
 cd mall-e-app
-npm install --legacy-peer-deps
+npm install
 ```
 
-**Note:** We use `--legacy-peer-deps` because React Native has some peer dependency conflicts. This is normal.
-
-**If you see errors:**
-```bash
-# Try clearing cache
-rm -rf node_modules package-lock.json
-npm install --legacy-peer-deps
-```
+See [Dependencies](#dependencies) for full instructions on installing, upgrading, adding, and troubleshooting dependencies.
 
 ### Step 4: Run the App
 
@@ -187,6 +180,109 @@ Opens in Android Emulator (requires Android Studio setup).
     - **Android**: Expo Go app → Scan QR code button
 
 **Important:** Your phone and computer must be on the same WiFi network.
+
+---
+
+## Dependencies
+
+### 1. Installing dependencies
+
+**First time (after clone) or when someone else has updated `package.json`:**
+
+```bash
+cd mall-e-app
+npm install
+```
+
+- Commit and use `package-lock.json` so everyone gets the same dependency versions.
+- If you see peer dependency or version errors, see [Troubleshooting dependencies](#4-troubleshooting-dependencies) below.
+
+### 2. Upgrading dependencies
+
+**Expo and React Native–related packages (recommended):**
+
+```bash
+cd mall-e-app
+npx expo install --fix
+```
+
+This aligns Expo SDK packages and React/React Native to versions compatible with your current SDK. Run it after upgrading the Expo SDK or when you see version mismatch errors.
+
+**Other packages:**
+
+- Update version ranges in `package.json`, then run `npm install`.
+- Or use `npm update` to bump within existing semver ranges (e.g. `^1.0.0`).
+
+**Major upgrades (e.g. new Expo SDK):**
+
+- Follow the [Expo upgrade guide](https://docs.expo.dev/workflow/upgrading-expo/) for your target SDK.
+- Then run `npx expo install --fix` and fix any breaking changes.
+
+### 3. Adding dependencies
+
+**Expo / React Native / React ecosystem packages:**
+
+Use Expo’s installer so versions stay compatible with the current SDK:
+
+```bash
+cd mall-e-app
+npx expo install <package-name>
+```
+
+Examples: `npx expo install expo-camera`, `npx expo install @react-navigation/native`.
+
+**Plain JavaScript/TypeScript packages (no Expo/RN coupling):**
+
+```bash
+npm install <package-name>
+```
+
+For dev-only tools (e.g. linters, types):
+
+```bash
+npm install --save-dev <package-name>
+```
+
+- Do **not** manually add or upgrade `react` or `react-native` unless you are following an Expo upgrade; use `npx expo install` for those.
+
+### 4. Troubleshooting dependencies
+
+**React version mismatch (“react” and “react-native-renderer” must match):**
+
+- This happens when `react` and the React version used by React Native get out of sync.
+- Fix: run `npx expo install --fix` to align versions.
+- If the error persists, ensure `package.json` does not use a newer React than Expo supports (e.g. for SDK 54, React is pinned to 19.1.4). Do not use a loose range like `^19.1.0` for `react`/`react-dom` if it pulls in a different minor version.
+
+**Peer dependency conflicts or “npm install” fails:**
+
+```bash
+cd mall-e-app
+rm -rf node_modules package-lock.json
+npm cache clean --force
+npm install
+```
+
+If conflicts remain, try:
+
+```bash
+npm install --legacy-peer-deps
+```
+
+**“Cannot read property 'default' of undefined” or odd runtime errors after install:**
+
+- Often caused by mixed React versions or stale Metro cache.
+- Fix: align versions with `npx expo install --fix`, then clear and restart:
+
+```bash
+rm -rf node_modules
+npm install
+npx expo start --clear
+```
+
+**Expo/React Native version incompatibility:**
+
+- Check [Expo SDK versions](https://docs.expo.dev/versions/latest/) for the React and React Native versions that match your SDK.
+- Prefer `npx expo install <pkg>` when adding or upgrading Expo/RN-related packages.
 
 ---
 
@@ -236,12 +332,7 @@ bash scripts/generate_mock_data.sh  # Mac/Linux
 
 **Error: "Cannot find module" or dependency conflicts**
 
-```bash
-# Clear everything and reinstall
-rm -rf node_modules package-lock.json
-npm cache clean --force
-npm install --legacy-peer-deps
-```
+See [Troubleshooting dependencies](#4-troubleshooting-dependencies) for full steps (clean reinstall, cache clear, and when to use `--legacy-peer-deps`).
 
 ### Expo start fails
 
