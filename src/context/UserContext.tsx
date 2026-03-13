@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Product, List, UserData } from '../types';
 
@@ -28,10 +28,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     loadUserData();
   }, []);
 
-  useEffect(() => {
-    saveUserData();
-  }, [subscribedStores, favorites, lists]);
-
   const loadUserData = async () => {
     try {
       const data = await AsyncStorage.getItem(STORAGE_KEY);
@@ -46,14 +42,18 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const saveUserData = async () => {
+  const saveUserData = useCallback(async () => {
     try {
       const userData: UserData = { subscribedStores, favorites, lists };
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
     } catch (error) {
       console.error('Error saving user data:', error);
     }
-  };
+  }, [subscribedStores, favorites, lists]);
+
+  useEffect(() => {
+    saveUserData();
+  }, [saveUserData]);
 
   const toggleStoreSubscription = (storeName: string) => {
     setSubscribedStores(prev =>

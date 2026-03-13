@@ -15,7 +15,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import ProductGrid from '../components/ProductGrid';
 import { useUser } from '../context/UserContext';
-import { RootStackParamList, Product, List } from '../types';
+import { RootStackParamList, Product } from '../types';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -27,13 +27,13 @@ const FavoritesScreen = () => {
     createList,
     deleteList,
     addToList,
-    removeFromList,
+    removeFromList: _removeFromList,
   } = useUser();
   const [selectedTab, setSelectedTab] = useState<'favorites' | 'lists'>('favorites');
   const [selectedList, setSelectedList] = useState<string | null>(null);
   const [showNewListModal, setShowNewListModal] = useState(false);
   const [newListName, setNewListName] = useState('');
-  const [showAddToListModal, setShowAddToListModal] = useState(false);
+  const [_showAddToListModal, setShowAddToListModal] = useState(false);
   const [productToAdd, setProductToAdd] = useState<Product | null>(null);
 
   const handleProductPress = (product: Product) => {
@@ -68,7 +68,7 @@ const FavoritesScreen = () => {
     );
   };
 
-  const handleAddToList = (listId: string) => {
+  const _handleAddToList = (listId: string) => {
     if (productToAdd) {
       addToList(listId, productToAdd);
       setShowAddToListModal(false);

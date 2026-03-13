@@ -82,7 +82,7 @@ cd C:\path\to\mall-e
 .\scripts\generate_mock_data.ps1
 ```
 
-**First time setup (if venv doesn't exist):**
+**First time setup (if `venv` doesn't exist):**
 - The script will automatically create a Python virtual environment
 - Install dependencies (takes 5-10 minutes)
 - Install Playwright Chromium browser

@@ -42,7 +42,7 @@ const ProductDetailScreen = () => {
       if (canOpen) {
         await Linking.openURL(product.item_link);
       }
-    } catch (error) {
+    } catch (_error) {
       Alert.alert('Error', 'Failed to open link');
     }
   };

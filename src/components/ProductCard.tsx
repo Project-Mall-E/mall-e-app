@@ -14,12 +14,13 @@ import { useUser } from '../context/UserContext';
 interface ProductCardProps {
   product: Product;
   onPress: (product: Product) => void;
+  onTagPress?: (tag: string) => void;
 }
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - 48) / 2;
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onPress }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onPress, onTagPress }) => {
   const { isFavorite, toggleFavorite } = useUser();
   const favorite = isFavorite(product);
 
@@ -57,7 +58,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onPress }) => {
         <View style={styles.tagsContainer}>
           {product.tags.slice(0, 2).map((tag, index) => (
             <View key={index} style={styles.tag}>
-              <Text style={styles.tagText} numberOfLines={1}>
+              <Text
+                style={styles.tagText}
+                numberOfLines={1}
+                onPress={() => onTagPress?.(tag)}
+              >
                 {tag}
               </Text>
             </View>

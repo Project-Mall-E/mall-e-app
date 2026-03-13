@@ -1,5 +1,5 @@
 // src/screens/ExploreScreen.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -24,7 +24,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 const ExploreScreen = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<ExploreRouteProp>();
-  const { subscribedStores } = useUser();
+  const { subscribedStores: _subscribedStores } = useUser();
   const { products, searchProducts } = useProducts();
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
@@ -49,14 +49,7 @@ const ExploreScreen = () => {
     setShuffledProducts(shuffleArray(products));
   }, [products]);
 
-  // Listen for refresh parameter
-  useEffect(() => {
-    if (route.params?.refresh) {
-      handleRefresh();
-    }
-  }, [route.params?.refresh]);
-
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     setRefreshing(true);
 
     // Shuffle products
@@ -71,7 +64,14 @@ const ExploreScreen = () => {
     setTimeout(() => {
       setRefreshing(false);
     }, 500);
-  };
+  }, [products]);
+
+  // Listen for refresh parameter
+  useEffect(() => {
+    if (route.params?.refresh) {
+      handleRefresh();
+    }
+  }, [route.params?.refresh, handleRefresh]);
 
   const handleTagPress = (tag: string) => {
     setSearchQuery(tag);

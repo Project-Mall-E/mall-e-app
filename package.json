@@ -9,7 +9,9 @@
     "web": "expo start --web",
     "prepare": "lefthook install",
     "typecheck": "tsc --noEmit",
-    "validate:hooks": "lefthook run pre-commit"
+    "validate:hooks": "lefthook run pre-commit --all-files",
+    "lint": "expo lint",
+    "lint:eslint:fix": "eslint --fix"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
@@ -35,7 +37,10 @@
   "devDependencies": {
     "@babel/core": "^7.25.0",
     "@types/react": "~19.1.10",
+    "@typescript-eslint/eslint-plugin": "^8.57.0",
     "cspell": "^9.7.0",
+    "eslint": "^9.39.4",
+    "eslint-config-expo": "~10.0.0",
     "lefthook": "^2.1.4",
     "typescript": "~5.9.2"
   },
