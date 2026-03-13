@@ -1,0 +1,15 @@
+pre-commit:
+  parallel: true
+  commands:
+    typecheck:
+      glob: '*.{ts,tsx}'
+      run: npm run typecheck
+    eslint:
+      glob: '*.{js,ts,jsx,tsx}'
+      run: npm run lint:eslint:fix {staged_files}
+    stylelint:
+      glob: '*.{js,ts,jsx,tsx}' # For CSS-in-JS
+      run: npm run lint:style {staged_files}
+    spelling:
+      glob: '*.{js,ts,jsx,tsx}'
+      run: npx cspell {staged_files}

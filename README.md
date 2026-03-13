@@ -145,6 +145,18 @@ npm install
 
 See [Dependencies](#dependencies) for full instructions on installing, upgrading, adding, and troubleshooting dependencies.
 
+### Git hooks (Lefthook)
+
+Pre-commit hooks run checks before each commit so broken code is not committed. They use **TypeScript** (typecheck), **ESLint**, **Stylelint**, and **cspell** (spelling). All of these tools are installed as dev dependencies when you run `npm install`, so the hooks never prompt to install packages.
+
+**Installation (all platforms):** No extra steps. When you run `npm install` in `mall-e-app` (Step 3 above), the `prepare` script automatically runs `lefthook install` and installs the Git hooks. This works the same on Linux, Mac, and Windows.
+
+**Verify hooks are installed:** Run `npx lefthook install`. It should complete without errors.
+
+**Verify the hook runs:** Run `npx lefthook run pre-commit` (or `npm run validate:hooks`). Success means the pre-commit checks (e.g. typecheck) run and pass.
+
+If a commit is blocked by the hook, fix the reported errors and try again. To skip hooks for a single commit (not recommended): `git commit --no-verify`.
+
 ### Step 4: Run the App
 
 #### Option A: Web Browser (Easiest - works on all platforms)
