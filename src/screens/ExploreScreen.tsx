@@ -73,10 +73,10 @@ const ExploreScreen = () => {
     }
   }, [route.params?.refresh, handleRefresh]);
 
-  const handleTagPress = (tag: string) => {
+  const handleTagPress = useCallback((tag: string) => {
     setSearchQuery(tag);
     setShowSearch(true);
-  };
+  }, []);
 
   const getDisplayProducts = () => {
     // Show ALL products for doomscrolling exploration
@@ -100,9 +100,12 @@ const ExploreScreen = () => {
 
   const displayProducts = getDisplayProducts();
 
-  const handleProductPress = (product: Product) => {
-    navigation.navigate('ProductDetail', { product });
-  };
+  const handleProductPress = useCallback(
+    (product: Product) => {
+      navigation.navigate('ProductDetail', { product });
+    },
+    [navigation]
+  );
 
   const toggleSearch = () => {
     setShowSearch(!showSearch);
@@ -202,14 +205,11 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
+    borderCurve: 'continuous',
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    boxShadow: '0 2px 3.84px rgba(0, 0, 0, 0.25)',
     position: 'relative',
   },
   iconButtonActive: {
@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
+    borderCurve: 'continuous',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
@@ -247,11 +248,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderRadius: 22,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    borderCurve: 'continuous',
+    boxShadow: '0 2px 3.84px rgba(0, 0, 0, 0.25)',
   },
   searchIcon: {
     marginRight: 8,

@@ -11,7 +11,6 @@ import {
   Modal,
 } from 'react-native';
 import { Image } from 'expo-image';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -53,8 +52,11 @@ const ProductDetailScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <View style={styles.container}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentInsetAdjustmentBehavior="automatic"
+      >
         <View style={styles.imageContainer}>
           <Image
             source={{ uri: product.item_image_link }}
@@ -169,7 +171,7 @@ const ProductDetailScreen = () => {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -216,6 +218,7 @@ const styles = StyleSheet.create({
   subscribeButton: {
     padding: 8,
     borderRadius: 20,
+    borderCurve: 'continuous',
   },
   subscribedButton: {
     backgroundColor: '#007AFF',
@@ -245,6 +248,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 16,
+    borderCurve: 'continuous',
   },
   tagText: {
     fontSize: 13,
@@ -271,6 +275,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 18,
     borderRadius: 12,
+    borderCurve: 'continuous',
     gap: 8,
   },
   shopButtonText: {
@@ -287,6 +292,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    borderCurve: 'continuous',
     paddingTop: 20,
     maxHeight: '70%',
   },

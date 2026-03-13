@@ -1,5 +1,5 @@
 // src/screens/HomeScreen.tsx
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -52,14 +52,17 @@ const HomeScreen = () => {
 
   const displayProducts = getDisplayProducts();
 
-  const handleTagPress = (tag: string) => {
+  const handleTagPress = useCallback((tag: string) => {
     setSearchQuery(tag);
     setShowSearch(true);
-  };
+  }, []);
 
-  const handleProductPress = (product: Product) => {
-    navigation.navigate('ProductDetail', { product });
-  };
+  const handleProductPress = useCallback(
+    (product: Product) => {
+      navigation.navigate('ProductDetail', { product });
+    },
+    [navigation]
+  );
 
   const toggleSearch = () => {
     setShowSearch(!showSearch);
@@ -174,6 +177,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    borderCurve: 'continuous',
     backgroundColor: '#F0F0F0',
     justifyContent: 'center',
     alignItems: 'center',
@@ -190,6 +194,7 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 9,
+    borderCurve: 'continuous',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
@@ -210,6 +215,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderRadius: 12,
+    borderCurve: 'continuous',
     borderWidth: 1,
     borderColor: '#E0E0E0',
   },

@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
+    borderCurve: 'continuous',
     maxHeight: '85%',
   },
   header: {

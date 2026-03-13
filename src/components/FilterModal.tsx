@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
+    borderCurve: 'continuous',
     maxHeight: '80%',
   },
   header: {
@@ -220,6 +221,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: '#F0F0F0',
     borderRadius: 12,
+    borderCurve: 'continuous',
     alignItems: 'center',
   },
   actionButtonText: {
@@ -256,6 +258,7 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 9,
+    borderCurve: 'continuous',
     backgroundColor: '#E3F2FD',
     justifyContent: 'center',
     alignItems: 'center',
@@ -264,6 +267,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
+    borderCurve: 'continuous',
     borderWidth: 2,
     borderColor: '#CCC',
     justifyContent: 'center',
@@ -279,6 +283,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     paddingVertical: 16,
     borderRadius: 12,
+    borderCurve: 'continuous',
     alignItems: 'center',
   },
   applyButtonText: {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -36,9 +36,12 @@ const FavoritesScreen = () => {
   const [_showAddToListModal, setShowAddToListModal] = useState(false);
   const [productToAdd, setProductToAdd] = useState<Product | null>(null);
 
-  const handleProductPress = (product: Product) => {
-    navigation.navigate('ProductDetail', { product });
-  };
+  const handleProductPress = useCallback(
+    (product: Product) => {
+      navigation.navigate('ProductDetail', { product });
+    },
+    [navigation]
+  );
 
   const handleCreateList = () => {
     if (newListName.trim()) {
@@ -121,7 +124,10 @@ const FavoritesScreen = () => {
     }
 
     return (
-      <ScrollView style={styles.listsContainer}>
+      <ScrollView
+        style={styles.listsContainer}
+        contentInsetAdjustmentBehavior="automatic"
+      >
         <Pressable
           style={styles.createListButton}
           onPress={() => setShowNewListModal(true)}
@@ -277,6 +283,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFF',
     borderRadius: 12,
+    borderCurve: 'continuous',
     borderWidth: 1,
     borderColor: '#E0E0E0',
   },
@@ -300,6 +307,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     padding: 24,
     borderRadius: 12,
+    borderCurve: 'continuous',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -324,11 +332,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     padding: 16,
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderCurve: 'continuous',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   },
   listCardHeader: {
     flexDirection: 'row',

@@ -347,6 +347,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
+    borderCurve: 'continuous',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
@@ -413,6 +414,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
+    borderCurve: 'continuous',
   },
   featuredTagItem: {
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
@@ -433,6 +435,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
+    borderCurve: 'continuous',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -441,6 +444,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
+    borderCurve: 'continuous',
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   // Compact variant styles
@@ -470,6 +474,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
+    borderCurve: 'continuous',
   },
   compactBottom: {
     gap: 4,
