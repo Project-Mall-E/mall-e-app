@@ -1,9 +1,8 @@
 // src/navigation/AppNavigator.tsx
 import React from 'react';
-import { Platform } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createNativeBottomTabNavigator } from '@bottom-tabs/react-navigation';
-import type { AppleIcon } from 'react-native-bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
@@ -11,43 +10,35 @@ import ProductDetailScreen from '../screens/ProductDetailScreen';
 import { RootStackParamList, BottomTabParamList } from '../types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const Tab = createNativeBottomTabNavigator<BottomTabParamList>();
-
-// Placeholder 1x1 transparent PNG for Android tab icons (SF Symbols are iOS-only).
-// Replace with require('./assets/icons/...') for proper Android icons.
-const ANDROID_TAB_ICON_PLACEHOLDER = {
-  uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
-};
+const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 function getTabBarIcon(
-  routeName: string,
+  routeName: keyof BottomTabParamList,
   focused: boolean
-): AppleIcon | { uri: string } {
-  if (Platform.OS === 'ios') {
-    const sfSymbol =
-      routeName === 'Home'
-        ? focused
-          ? 'house.fill'
-          : 'house'
-        : routeName === 'Explore'
-          ? focused
-            ? 'compass.fill'
-            : 'compass'
-          : routeName === 'Favorites'
-            ? focused
-              ? 'heart.fill'
-              : 'heart'
-            : 'questionmark.circle';
-    return { sfSymbol: sfSymbol as AppleIcon['sfSymbol'] };
+): string {
+  switch (routeName) {
+    case 'Home':
+      return focused ? 'home' : 'home-outline';
+    case 'Explore':
+      return focused ? 'compass' : 'compass-outline';
+    case 'Favorites':
+      return focused ? 'heart' : 'heart-outline';
+    default:
+      return 'ellipse-outline';
   }
-  return ANDROID_TAB_ICON_PLACEHOLDER;
 }
 
 const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused }) => getTabBarIcon(route.name, focused),
+        tabBarIcon: ({ focused, color, size }) => (
+          <Ionicons
+            name={getTabBarIcon(route.name, focused) as keyof typeof Ionicons.glyphMap}
+            size={size}
+            color={color}
+          />
+        ),
         tabBarActiveTintColor: '#007AFF',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
