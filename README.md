@@ -20,12 +20,25 @@ Before you begin, make sure you have these installed:
 - **Git**: [Download here](https://git-scm.com/)
 - **Python 3.8+**: [Download here](https://www.python.org/downloads/)
 
-### Optional (for mobile testing):
-- **Expo Go app** on your phone:
-  - [iOS App Store](https://apps.apple.com/app/expo-go/id982107779)
-  - [Android Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent)
+### For native iOS/Android (Expo Developer Builds):
+This app uses **Expo Developer Builds** (a custom dev client), not Expo Go. You need native tooling to build and run on device or simulator:
+- **iOS**: Mac with [Xcode](https://developer.apple.com/xcode/) (for simulator or device)
+- **Android**: [Android Studio](https://developer.android.com/studio) with SDK and an emulator or physical device
 
     
+## Quick start (run the project)
+
+```bash
+cd mall-e-app
+npm install          # Install dependencies (includes postinstall patches)
+npm run web          # Run in browser (no native setup required)
+# Or for native:
+npx expo run:ios     # Build and run on iOS simulator (Mac only)
+npx expo run:android # Build and run on Android emulator
+```
+
+See [Setup Instructions](#setup-instructions) and [Step 4: Run the App](#step-4-run-the-app) for full steps (including mock data and physical devices).
+
 ## Project Structure
 ```markdown
 mall-e/
@@ -162,7 +175,8 @@ cd mall-e-app
 npm install
 ```
 
-See [Dependencies](#dependencies) for full instructions on installing, upgrading, adding, and troubleshooting dependencies.
+- **First run:** `npm install` also runs `patch-package` (postinstall) to apply any patches in `patches/`. Commit `package-lock.json` so everyone gets the same versions.
+- See [Dependencies](#dependencies) for full instructions on installing, upgrading, adding, and troubleshooting dependencies.
 
 ### Git hooks (Lefthook)
 
@@ -178,39 +192,41 @@ If a commit is blocked by the hook, fix the reported errors and try again. To sk
 
 ### Step 4: Run the App
 
-#### Option A: Web Browser (Easiest - works on all platforms)
+This project uses **Expo Developer Builds** (custom dev client with `expo-dev-client`), not Expo Go. You run a native build that connects to the Metro bundler for fast refresh and dev tools.
+
+#### Option A: Web Browser (easiest — no native setup)
 
 ```bash
 npm run web
 ```
 
-This opens the app in your default browser. Best for initial testing and development.
+Opens the app in your default browser. Best for initial testing and development.
 
 #### Option B: iOS (Mac only)
 
 ```bash
-npm run ios
+npx expo run:ios
 ```
 
-Opens in iOS Simulator (requires Xcode).
+Builds the native app and opens it in the iOS Simulator (requires Xcode). First run may take a few minutes while the native project is built.
 
 #### Option C: Android
 
 ```bash
-npm run android
+npx expo run:android
 ```
 
-Opens in Android Emulator (requires Android Studio setup).
+Builds the native app and opens it in the Android emulator (requires Android Studio and an AVD). First run may take a few minutes.
 
-#### Option D: Physical Device (iPhone or Android)
+#### Option D: Physical device (iPhone or Android)
 
-1. **Install Expo Go** on your phone
-2. Run: `npm start`
-3. Scan the QR code with:
-    - **iOS**: Camera app → Opens in Expo Go
-    - **Android**: Expo Go app → Scan QR code button
+1. **Build and install the dev client** on your device:
+   - **iOS**: Connect your iPhone, then run `npx expo run:ios` and choose your device from the list (or open `ios/MallE.xcworkspace` in Xcode and run to your device).
+   - **Android**: Enable USB debugging, connect the device, then run `npx expo run:android` (it will install the debug build).
+2. **Start the dev server:** `npm start`
+3. The app on your device will connect to Metro. If it doesn’t, shake the device (or press the menu key on Android) to open the dev menu and enter your machine’s IP (your computer and phone must be on the same Wi‑Fi network).
 
-**Important:** Your phone and computer must be on the same WiFi network.
+**Note:** We no longer use Expo Go; the app requires a developer build that includes native code and the dev client.
 
 ---
 
@@ -225,6 +241,7 @@ cd mall-e-app
 npm install
 ```
 
+- This runs the `postinstall` script (`patch-package`), which applies patches in the `patches/` folder. No extra step needed.
 - Commit and use `package-lock.json` so everyone gets the same dependency versions.
 - If you see peer dependency or version errors, see [Troubleshooting dependencies](#4-troubleshooting-dependencies) below.
 
@@ -394,16 +411,14 @@ npm start -- --port 8082
 - Verify `mock-data.json` has valid image URLs
 - Some stores may block external image requests (normal)
 
-### SDK version mismatch (Expo Go)
+### SDK version mismatch (developer build)
 
-**Error: "Project is incompatible with this version of Expo Go"**
+**Error: "Project is incompatible with this version of Expo Go" or similar**
 
-**Fix:** Use web version instead:
-```bash
-npm run web
-```
+This app does **not** use Expo Go; it uses Expo Developer Builds. If you see compatibility errors:
 
-Or update Expo Go app on your phone to the latest version.
+- **On device/simulator:** Rebuild the dev client so it matches the project’s Expo SDK: run `npx expo run:ios` or `npx expo run:android` again (clean if needed: e.g. `npx expo run:ios --no-build-cache`).
+- **Quick workaround:** Run in the browser: `npm run web`.
 
 ---
 
@@ -418,10 +433,11 @@ Or update Expo Go app on your phone to the latest version.
 ### Useful Commands
 
 ```bash
-npm start          # Start dev server (choose platform)
-npm run web        # Run in web browser
-npm run ios        # Run on iOS simulator (Mac only)
-npm run android    # Run on Android emulator
+npm install        # Install dependencies (run after clone or when package.json changes)
+npm start          # Start Metro dev server (for dev builds / web)
+npm run web        # Run in web browser (no native build)
+npx expo run:ios     # Build and run on iOS simulator (Mac only, developer build)
+npx expo run:android # Build and run on Android emulator (developer build)
 
 # Clear cache if you see weird errors
 npm start -- --clear
@@ -456,8 +472,8 @@ npm start -- --clear
 ### Current Limitations:
 
 1. **Static data**: Uses mock data from one-time scrape. No live updates.
-2. **SDK 51**: Using older Expo SDK due to compatibility. Will upgrade later.
-3. **Web only recommended**: iOS/Android have some setup issues on Windows.
+2. **Developer builds required**: The app uses Expo Developer Builds (custom dev client), not Expo Go; you need Xcode (iOS) or Android Studio (Android) to run on device or simulator.
+3. **Web for quickest start**: For the fastest run without native tooling, use `npm run web`; iOS/Android require native setup.
 4. **No authentication**: User data stored locally (AsyncStorage).
 
 ### Planned Improvements:
