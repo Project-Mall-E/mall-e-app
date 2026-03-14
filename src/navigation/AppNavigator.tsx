@@ -12,25 +12,33 @@ import { RootStackParamList, BottomTabParamList } from '../types';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
+function getTabBarIcon(
+  routeName: keyof BottomTabParamList,
+  focused: boolean
+): string {
+  switch (routeName) {
+    case 'Home':
+      return focused ? 'home' : 'home-outline';
+    case 'Explore':
+      return focused ? 'compass' : 'compass-outline';
+    case 'Favorites':
+      return focused ? 'heart' : 'heart-outline';
+    default:
+      return 'ellipse-outline';
+  }
+}
+
 const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName: keyof typeof Ionicons.glyphMap;
-
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Explore') {
-            iconName = focused ? 'compass' : 'compass-outline';
-          } else if (route.name === 'Favorites') {
-            iconName = focused ? 'heart' : 'heart-outline';
-          } else {
-            iconName = 'help-outline';
-          }
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
+        tabBarIcon: ({ focused, color, size }) => (
+          <Ionicons
+            name={getTabBarIcon(route.name, focused) as keyof typeof Ionicons.glyphMap}
+            size={size}
+            color={color}
+          />
+        ),
         tabBarActiveTintColor: '#007AFF',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
@@ -42,12 +50,10 @@ const TabNavigator = () => {
         component={ExploreScreen}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
-            // Check if already on Explore screen
             const state = navigation.getState();
             const currentRoute = state.routes[state.index];
 
             if (currentRoute.name === 'Explore') {
-              // Already on Explore, refresh the screen
               e.preventDefault();
               navigation.navigate('Explore', { refresh: Date.now() });
             }

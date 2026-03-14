@@ -1,5 +1,8 @@
 {
   "expo": {
+    "plugins": [
+      ["expo-build-properties", { "ios": { "deploymentTarget": "15.1" } }]
+    ],
     "name": "Mall-E",
     "slug": "mall-e-app",
     "version": "1.0.0",

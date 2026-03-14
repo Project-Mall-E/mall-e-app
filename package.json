@@ -4,8 +4,9 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "android:install": "adb install -r android/app/build/outputs/apk/debug/app-debug.apk && adb shell am start -n com.yourcompany.malle/.MainActivity",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "prepare": "lefthook install",
     "typecheck": "tsc --noEmit",
@@ -18,10 +19,12 @@
     "@expo/metro-runtime": "~6.1.2",
     "@expo/vector-icons": "^15.1.1",
     "@react-native-async-storage/async-storage": "^2.2.0",
-    "@react-navigation/bottom-tabs": "^7.2.1",
+    "@react-navigation/bottom-tabs": "^7.15.5",
     "@react-navigation/native": "^7.0.10",
     "@react-navigation/native-stack": "^7.2.0",
     "expo": "~54.0.0",
+    "expo-build-properties": "~1.0.10",
+    "expo-dev-client": "~6.0.20",
     "expo-image": "^55.0.6",
     "expo-linear-gradient": "~15.0.8",
     "expo-status-bar": "~3.0.9",
@@ -45,6 +48,7 @@
     "eslint-config-expo": "~10.0.0",
     "eslint-plugin-react": "^7.37.5",
     "lefthook": "^2.1.4",
+    "patch-package": "^8.0.1",
     "typescript": "~5.9.2"
   },
   "private": true
