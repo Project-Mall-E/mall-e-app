@@ -1,0 +1,671 @@
+diff --git a/node_modules/expo-manifests/android/build/.transforms/e7d541c5bf0d456c2a5817dfd66faad8/results.bin b/node_modules/expo-manifests/android/build/.transforms/e7d541c5bf0d456c2a5817dfd66faad8/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/.transforms/e7d541c5bf0d456c2a5817dfd66faad8/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/expo-manifests/android/build/.transforms/e7d541c5bf0d456c2a5817dfd66faad8/transformed/classes/classes_dex/classes.dex b/node_modules/expo-manifests/android/build/.transforms/e7d541c5bf0d456c2a5817dfd66faad8/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..fe48d87
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/.transforms/e7d541c5bf0d456c2a5817dfd66faad8/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/expo-manifests/android/build/generated/source/buildConfig/debug/expo/modules/manifests/BuildConfig.java b/node_modules/expo-manifests/android/build/generated/source/buildConfig/debug/expo/modules/manifests/BuildConfig.java
+new file mode 100644
+index 0000000..2204b52
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/generated/source/buildConfig/debug/expo/modules/manifests/BuildConfig.java
+@@ -0,0 +1,10 @@
++/**
++ * Automatically generated file. DO NOT MODIFY
++ */
++package expo.modules.manifests;
++
++public final class BuildConfig {
++  public static final boolean DEBUG = Boolean.parseBoolean("true");
++  public static final String LIBRARY_PACKAGE_NAME = "expo.modules.manifests";
++  public static final String BUILD_TYPE = "debug";
++}
+diff --git a/node_modules/expo-manifests/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml b/node_modules/expo-manifests/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml
+new file mode 100644
+index 0000000..a054e32
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="expo.modules.manifests" >
++
++    <uses-sdk android:minSdkVersion="24" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/expo-manifests/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json b/node_modules/expo-manifests/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json
+new file mode 100644
+index 0000000..49a3b65
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json
+@@ -0,0 +1,18 @@
++{
++  "version": 3,
++  "artifactType": {
++    "type": "AAPT_FRIENDLY_MERGED_MANIFESTS",
++    "kind": "Directory"
++  },
++  "applicationId": "expo.modules.manifests",
++  "variantName": "debug",
++  "elements": [
++    {
++      "type": "SINGLE",
++      "filters": [],
++      "attributes": [],
++      "outputFile": "AndroidManifest.xml"
++    }
++  ],
++  "elementType": "File"
++}
+\ No newline at end of file
+diff --git a/node_modules/expo-manifests/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties b/node_modules/expo-manifests/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties
+new file mode 100644
+index 0000000..1211b1e
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties
+@@ -0,0 +1,6 @@
++aarFormatVersion=1.0
++aarMetadataVersion=1.0
++minCompileSdk=1
++minCompileSdkExtension=0
++minAndroidGradlePluginVersion=1.0.0
++coreLibraryDesugaringEnabled=false
+diff --git a/node_modules/expo-manifests/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json b/node_modules/expo-manifests/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json
+new file mode 100644
+index 0000000..9e26dfe
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json
+@@ -0,0 +1 @@
++{}
+\ No newline at end of file
+diff --git a/node_modules/expo-manifests/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar b/node_modules/expo-manifests/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar
+new file mode 100644
+index 0000000..3e7aa7e
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar differ
+diff --git a/node_modules/expo-manifests/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar b/node_modules/expo-manifests/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar
+new file mode 100644
+index 0000000..f34ce45
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar differ
+diff --git a/node_modules/expo-manifests/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt b/node_modules/expo-manifests/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/expo-manifests/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties b/node_modules/expo-manifests/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+new file mode 100644
+index 0000000..ebb61f0
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+@@ -0,0 +1 @@
++#Sat Mar 14 09:33:12 EDT 2026
+diff --git a/node_modules/expo-manifests/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml b/node_modules/expo-manifests/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+new file mode 100644
+index 0000000..515c9a5
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated" generated-set="generated$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/build/generated/res/resValues/debug"/></dataSet><mergedItems/></merger>
+\ No newline at end of file
+diff --git a/node_modules/expo-manifests/android/build/intermediates/incremental/mergeDebugAssets/merger.xml b/node_modules/expo-manifests/android/build/intermediates/incremental/mergeDebugAssets/merger.xml
+new file mode 100644
+index 0000000..f1c75e1
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/incremental/mergeDebugAssets/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/assets"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/debug/assets"/></dataSet><dataSet config="generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/build/intermediates/shader_assets/debug/compileDebugShaders/out"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/expo-manifests/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml b/node_modules/expo-manifests/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+new file mode 100644
+index 0000000..d29caee
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/jniLibs"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/debug/jniLibs"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/expo-manifests/android/build/intermediates/incremental/mergeDebugShaders/merger.xml b/node_modules/expo-manifests/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+new file mode 100644
+index 0000000..415550c
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/shaders"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/debug/shaders"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/expo-manifests/android/build/intermediates/java_res/debug/processDebugJavaRes/out/META-INF/expo-manifests_debug.kotlin_module b/node_modules/expo-manifests/android/build/intermediates/java_res/debug/processDebugJavaRes/out/META-INF/expo-manifests_debug.kotlin_module
+new file mode 100644
+index 0000000..7d8f1ac
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/intermediates/java_res/debug/processDebugJavaRes/out/META-INF/expo-manifests_debug.kotlin_module differ
+diff --git a/node_modules/expo-manifests/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/manifests/BuildConfig.class b/node_modules/expo-manifests/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/manifests/BuildConfig.class
+new file mode 100644
+index 0000000..22ea40f
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/expo/modules/manifests/BuildConfig.class differ
+diff --git a/node_modules/expo-manifests/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt b/node_modules/expo-manifests/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+new file mode 100644
+index 0000000..78ac5b8
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+@@ -0,0 +1,2 @@
++R_DEF: Internal format may change without notice
++local
+diff --git a/node_modules/expo-manifests/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt b/node_modules/expo-manifests/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+new file mode 100644
+index 0000000..3f58d5d
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+@@ -0,0 +1,7 @@
++1<?xml version="1.0" encoding="utf-8"?>
++2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++3    package="expo.modules.manifests" >
++4
++5    <uses-sdk android:minSdkVersion="24" />
++6
++7</manifest>
+diff --git a/node_modules/expo-manifests/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml b/node_modules/expo-manifests/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
+new file mode 100644
+index 0000000..a054e32
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="expo.modules.manifests" >
++
++    <uses-sdk android:minSdkVersion="24" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/expo-manifests/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json b/node_modules/expo-manifests/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json
+new file mode 100644
+index 0000000..0637a08
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json
+@@ -0,0 +1 @@
++[]
+\ No newline at end of file
+diff --git a/node_modules/expo-manifests/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt b/node_modules/expo-manifests/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+new file mode 100644
+index 0000000..08f4ebe
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+@@ -0,0 +1 @@
++0 Warning/Error
+\ No newline at end of file
+diff --git a/node_modules/expo-manifests/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar b/node_modules/expo-manifests/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar
+new file mode 100644
+index 0000000..b7c751b
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar differ
+diff --git a/node_modules/expo-manifests/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt b/node_modules/expo-manifests/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+new file mode 100644
+index 0000000..c2b0b06
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+@@ -0,0 +1 @@
++expo.modules.manifests
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab
+new file mode 100644
+index 0000000..08065f1
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream
+new file mode 100644
+index 0000000..abc784b
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream.len
+new file mode 100644
+index 0000000..74375ec
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.len
+new file mode 100644
+index 0000000..93a595b
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.values.at b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.values.at
+new file mode 100644
+index 0000000..1691db8
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.values.at differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i
+new file mode 100644
+index 0000000..b4ca2e6
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab
+new file mode 100644
+index 0000000..7b163d5
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream
+new file mode 100644
+index 0000000..338cb64
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream.len
+new file mode 100644
+index 0000000..7786be3
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.len
+new file mode 100644
+index 0000000..fa606b6
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.values.at b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.values.at
+new file mode 100644
+index 0000000..a9bc39a
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.values.at differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i
+new file mode 100644
+index 0000000..3cc5710
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab
+new file mode 100644
+index 0000000..67e6b82
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream
+new file mode 100644
+index 0000000..338cb64
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream.len
+new file mode 100644
+index 0000000..7786be3
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.len
+new file mode 100644
+index 0000000..fa606b6
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.at b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.at
+new file mode 100644
+index 0000000..07fa783
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.at differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i
+new file mode 100644
+index 0000000..3cc5710
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab
+new file mode 100644
+index 0000000..a2b7432
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream
+new file mode 100644
+index 0000000..286cfa1
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream.len
+new file mode 100644
+index 0000000..0dfc082
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.len
+new file mode 100644
+index 0000000..fd5292d
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values.at b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values.at
+new file mode 100644
+index 0000000..ccece63
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values.at differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i
+new file mode 100644
+index 0000000..db79b10
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab
+new file mode 100644
+index 0000000..239fe33
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.keystream b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.keystream
+new file mode 100644
+index 0000000..c9fdd7a
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.keystream differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.keystream.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.keystream.len
+new file mode 100644
+index 0000000..3b2802b
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.keystream.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.len
+new file mode 100644
+index 0000000..01bdaa1
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.values.at b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.values.at
+new file mode 100644
+index 0000000..6fcb00a
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab.values.at differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab_i b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab_i
+new file mode 100644
+index 0000000..18a4135
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab_i differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab_i.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/package-parts.tab_i.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab
+new file mode 100644
+index 0000000..a59b716
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream
+new file mode 100644
+index 0000000..e33de29
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream.len
+new file mode 100644
+index 0000000..466716a
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.len
+new file mode 100644
+index 0000000..a541356
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.values.at b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.values.at
+new file mode 100644
+index 0000000..1c47fc6
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.values.at differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i
+new file mode 100644
+index 0000000..9868799
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab
+new file mode 100644
+index 0000000..bb42d3c
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream
+new file mode 100644
+index 0000000..abc784b
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream.len
+new file mode 100644
+index 0000000..74375ec
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.len
+new file mode 100644
+index 0000000..93a595b
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.values.at b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.values.at
+new file mode 100644
+index 0000000..57ffd6b
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.values.at differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i
+new file mode 100644
+index 0000000..b4ca2e6
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab
+new file mode 100644
+index 0000000..be3b946
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream
+new file mode 100644
+index 0000000..268824c
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream.len
+new file mode 100644
+index 0000000..066dfb4
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.len
+new file mode 100644
+index 0000000..01bdaa1
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.values.at b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.values.at
+new file mode 100644
+index 0000000..352b8ee
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.values.at differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i
+new file mode 100644
+index 0000000..125d257
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab
+new file mode 100644
+index 0000000..0377659
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream
+new file mode 100644
+index 0000000..37814f4
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream.len
+new file mode 100644
+index 0000000..4a3c61e
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.len
+new file mode 100644
+index 0000000..93a595b
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.values.at b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.values.at
+new file mode 100644
+index 0000000..678e9b9
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.values.at differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i
+new file mode 100644
+index 0000000..c082305
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/counters.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/counters.tab
+new file mode 100644
+index 0000000..26d3b09
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/counters.tab
+@@ -0,0 +1,2 @@
++4
++0
+\ No newline at end of file
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab
+new file mode 100644
+index 0000000..3393684
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream
+new file mode 100644
+index 0000000..abc784b
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream.len
+new file mode 100644
+index 0000000..74375ec
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.len
+new file mode 100644
+index 0000000..93a595b
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.values.at b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.values.at
+new file mode 100644
+index 0000000..3e23c2a
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.values.at differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i
+new file mode 100644
+index 0000000..b4ca2e6
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab
+new file mode 100644
+index 0000000..95e88be
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream
+new file mode 100644
+index 0000000..6e7a926
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream.len
+new file mode 100644
+index 0000000..eb52963
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.len
+new file mode 100644
+index 0000000..93a595b
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.values.at b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.values.at
+new file mode 100644
+index 0000000..fd32c04
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.values.at differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i
+new file mode 100644
+index 0000000..6936967
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab
+new file mode 100644
+index 0000000..6939ca7
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream
+new file mode 100644
+index 0000000..a7177d1
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream.len
+new file mode 100644
+index 0000000..5c6c1b3
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.len
+new file mode 100644
+index 0000000..a3d3013
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.values.at b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.values.at
+new file mode 100644
+index 0000000..3f12ccc
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.values.at differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i
+new file mode 100644
+index 0000000..196fcd7
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i.len b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i.len differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/last-build.bin b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/last-build.bin
+new file mode 100644
+index 0000000..5a05e80
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/cacheable/last-build.bin differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/classpath-snapshot/shrunk-classpath-snapshot.bin b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/classpath-snapshot/shrunk-classpath-snapshot.bin
+new file mode 100644
+index 0000000..39dd356
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/classpath-snapshot/shrunk-classpath-snapshot.bin differ
+diff --git a/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/local-state/build-history.bin b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/local-state/build-history.bin
+new file mode 100644
+index 0000000..34a6e5f
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/kotlin/compileDebugKotlin/local-state/build-history.bin differ
+diff --git a/node_modules/expo-manifests/android/build/outputs/logs/manifest-merger-debug-report.txt b/node_modules/expo-manifests/android/build/outputs/logs/manifest-merger-debug-report.txt
+new file mode 100644
+index 0000000..d808de6
+--- /dev/null
++++ b/node_modules/expo-manifests/android/build/outputs/logs/manifest-merger-debug-report.txt
+@@ -0,0 +1,16 @@
++-- Merging decision tree log ---
++manifest
++ADDED from /home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/AndroidManifest.xml:1:1-2:12
++INJECTED from /home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/AndroidManifest.xml:1:1-2:12
++	package
++		INJECTED from /home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/AndroidManifest.xml
++	xmlns:android
++		ADDED from /home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/AndroidManifest.xml:1:11-69
++uses-sdk
++INJECTED from /home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
++INJECTED from /home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/AndroidManifest.xml
++INJECTED from /home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/AndroidManifest.xml
++	android:targetSdkVersion
++		INJECTED from /home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/AndroidManifest.xml
++	android:minSdkVersion
++		INJECTED from /home/rob/Development/mall-e/mall-e-app/node_modules/expo-manifests/android/src/main/AndroidManifest.xml
+diff --git a/node_modules/expo-manifests/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin b/node_modules/expo-manifests/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin
+new file mode 100644
+index 0000000..0721bcb
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin differ
+diff --git a/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/META-INF/expo-manifests_debug.kotlin_module b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/META-INF/expo-manifests_debug.kotlin_module
+new file mode 100644
+index 0000000..7d8f1ac
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/META-INF/expo-manifests_debug.kotlin_module differ
+diff --git a/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/EmbeddedManifest.class b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/EmbeddedManifest.class
+new file mode 100644
+index 0000000..2020a60
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/EmbeddedManifest.class differ
+diff --git a/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/ExpoUpdatesManifest.class b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/ExpoUpdatesManifest.class
+new file mode 100644
+index 0000000..07455b4
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/ExpoUpdatesManifest.class differ
+diff --git a/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/JSONObjectExtensionKt.class b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/JSONObjectExtensionKt.class
+new file mode 100644
+index 0000000..2ac4fad
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/JSONObjectExtensionKt.class differ
+diff --git a/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/Manifest$Companion.class b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/Manifest$Companion.class
+new file mode 100644
+index 0000000..595467b
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/Manifest$Companion.class differ
+diff --git a/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/Manifest.class b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/Manifest.class
+new file mode 100644
+index 0000000..aeb7719
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/Manifest.class differ
+diff --git a/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/ManifestKt.class b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/ManifestKt.class
+new file mode 100644
+index 0000000..cd9804c
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/ManifestKt.class differ
+diff --git a/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/PluginType$Companion.class b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/PluginType$Companion.class
+new file mode 100644
+index 0000000..71f4bbd
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/PluginType$Companion.class differ
+diff --git a/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/PluginType$WithProps.class b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/PluginType$WithProps.class
+new file mode 100644
+index 0000000..3588463
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/PluginType$WithProps.class differ
+diff --git a/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/PluginType$WithoutProps.class b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/PluginType$WithoutProps.class
+new file mode 100644
+index 0000000..761cb2e
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/PluginType$WithoutProps.class differ
+diff --git a/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/PluginType.class b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/PluginType.class
+new file mode 100644
+index 0000000..4ee25e4
+Binary files /dev/null and b/node_modules/expo-manifests/android/build/tmp/kotlin-classes/debug/expo/modules/manifests/core/PluginType.class differ
+diff --git a/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/EmbeddedManifest.kt b/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/EmbeddedManifest.kt
+index fcf17a2..812746e 100644
+--- a/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/EmbeddedManifest.kt
++++ b/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/EmbeddedManifest.kt
+@@ -7,6 +7,7 @@ import org.json.JSONException
+ import org.json.JSONObject
+ 
+ class EmbeddedManifest(json: JSONObject) : Manifest(json) {
++
+   /**
+    * A UUID for this manifest.
+    */
+@@ -16,7 +17,8 @@ class EmbeddedManifest(json: JSONObject) : Manifest(json) {
+   @Throws(JSONException::class)
+   fun getCommitTimeLong(): Long = json.require("commitTime")
+ 
+-  override fun getStableLegacyID(): String = json.getNullable("originalFullName") ?: getLegacyID()
++  @Deprecated("Prefer scopeKey or projectId depending on use case", ReplaceWith("getScopeKey()"))
++  override fun getStableLegacyID(): String = json.getNullable("originalFullName") ?: json.require("id")
+ 
+   override fun getScopeKey(): String = json.getNullable("scopeKey") ?: getStableLegacyID()
+ 
+diff --git a/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/ExpoUpdatesManifest.kt b/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/ExpoUpdatesManifest.kt
+index dcf9bd7..2df1f5a 100644
+--- a/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/ExpoUpdatesManifest.kt
++++ b/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/ExpoUpdatesManifest.kt
+@@ -13,6 +13,7 @@ class ExpoUpdatesManifest(json: JSONObject) : Manifest(json) {
+   @Throws(JSONException::class)
+   fun getID(): String = json.require("id")
+ 
++  @Deprecated("Prefer scopeKey or projectId depending on use case")
+   override fun getStableLegacyID(): String? = null
+ 
+   @Throws(JSONException::class)
