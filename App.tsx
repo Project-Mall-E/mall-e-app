@@ -1,20 +1,47 @@
 // App.tsx
+import { useEffect } from 'react';
+import { Linking } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import AppNavigator from './src/navigation/AppNavigator';
+import { AuthProvider } from './src/context/AuthContext';
 import { UserProvider } from './src/context/UserContext';
+import RootNavigator from './src/navigation/RootNavigator';
+import { setSessionFromUrl } from './src/lib/authRedirect';
 
+const AUTH_SCHEME = 'com.celestialdragonfly.malle';
+
+function useAuthDeepLink() {
+  useEffect(() => {
+    const handleUrl = (event: { url: string }) => {
+      if (event.url.startsWith(`${AUTH_SCHEME}:`)) {
+        setSessionFromUrl(event.url);
+      }
+    };
+
+    const subscription = Linking.addEventListener('url', handleUrl);
+    Linking.getInitialURL().then(url => {
+      if (url?.startsWith(`${AUTH_SCHEME}:`)) {
+        setSessionFromUrl(url);
+      }
+    });
+    return () => subscription.remove();
+  }, []);
+}
 
 export default function App() {
+  useAuthDeepLink();
+
   return (
     <SafeAreaProvider>
-      <UserProvider>
-        <NavigationContainer>
-          <AppNavigator />
-          <StatusBar style="auto" />
-        </NavigationContainer>
-      </UserProvider>
+      <AuthProvider>
+        <UserProvider>
+          <NavigationContainer>
+            <RootNavigator />
+            <StatusBar style="auto" />
+          </NavigationContainer>
+        </UserProvider>
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }

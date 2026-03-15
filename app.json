@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "com.celestialdragonfly.malle",
     "plugins": [
       ["expo-build-properties", { "ios": { "deploymentTarget": "15.1" } }]
     ],

@@ -7,6 +7,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 import { RootStackParamList, BottomTabParamList } from '../types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -23,6 +24,8 @@ function getTabBarIcon(
       return focused ? 'compass' : 'compass-outline';
     case 'Favorites':
       return focused ? 'heart' : 'heart-outline';
+    case 'Profile':
+      return focused ? 'person' : 'person-outline';
     default:
       return 'ellipse-outline';
   }
@@ -61,6 +64,7 @@ const TabNavigator = () => {
         })}
       />
       <Tab.Screen name="Favorites" component={FavoritesScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 };
