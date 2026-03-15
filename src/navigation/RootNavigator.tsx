@@ -1,0 +1,38 @@
+import React from 'react';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { useAuth } from '../context/AuthContext';
+import AuthNavigator from './AuthNavigator';
+import AppNavigator from './AppNavigator';
+
+export default function RootNavigator() {
+  const { session, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={styles.loadingText}>Loading…</Text>
+      </View>
+    );
+  }
+
+  if (session == null) {
+    return <AuthNavigator />;
+  }
+
+  return <AppNavigator />;
+}
+
+const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: '#FFF',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#666',
+  },
+});

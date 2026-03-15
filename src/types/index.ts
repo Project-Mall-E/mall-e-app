@@ -21,13 +21,28 @@ export interface UserData {
   lists: List[];
 }
 
+export interface Profile {
+  id: string;
+  username: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export type RootStackParamList = {
   MainTabs: undefined;
   ProductDetail: { product: Product };
+};
+
+export type AuthStackParamList = {
+  SignIn: undefined;
+  SignUp: undefined;
 };
 
 export type BottomTabParamList = {
   Home: undefined;
   Explore: { refresh?: number } | undefined;
   Favorites: undefined;
+  Profile: undefined;
 };
