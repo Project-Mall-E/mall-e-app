@@ -5,9 +5,11 @@ A React Native mobile shopping app that displays products from multiple clothing
 
 ## Features
 
+- **Authentication**: Email/password sign-up and sign-in via Supabase; email confirmation; profile (username, first name, last name) stored in a secure `profiles` table
 - **Home Screen**: View products from stores you're subscribed to
 - **Explore Screen**: Discover products from all available stores
 - **Favorites**: Save products and organize them into custom lists
+- **Profile**: View and edit your profile; sign out
 - **Product Details**: View detailed product information and open store links
 - **Store Subscriptions**: Subscribe/unsubscribe from stores to personalize your feed
 
@@ -38,6 +40,45 @@ npx expo run:android # Build and run on Android emulator
 ```
 
 See [Setup Instructions](#setup-instructions) and [Step 4: Run the App](#step-4-run-the-app) for full steps (including mock data and physical devices).
+
+## Authentication & Supabase environment
+
+The app uses **Supabase** for authentication (email/password) and for storing user profiles. You must configure a Supabase project and set local environment variables before the auth flow will work.
+
+### Setting up your `.env` for Supabase
+
+1. **Copy the example env file** (do not commit your real `.env`):
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Get your Supabase credentials** from the [Supabase Dashboard](https://supabase.com/dashboard):
+   - Open your project → **Project Settings** (gear) → **API**.
+   - Copy **Project URL** and **Publishable (anon) key**.  
+   - Do **not** use or expose the **service_role** key in the app; it bypasses Row Level Security.
+
+3. **Edit `.env`** and set:
+
+   ```bash
+   EXPO_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+   EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_key_here
+   ```
+
+   Replace `YOUR_PROJECT_REF` and `your_publishable_key_here` with your actual values.
+
+4. **Keep `.env` out of version control.** The repo already ignores `.env` and `.env.local` in `.gitignore`. Never commit real keys.
+
+5. **Restart the dev server** after changing env vars (e.g. `npm start` or `npm run web`). Expo only reads `EXPO_PUBLIC_*` variables at build/start time.
+
+### How authentication works
+
+- **Sign up**: Users enter email, password, username, first name, and last name. A confirmation email is sent (if enabled in Supabase). After they open the link (which deep-links back into the app), they are signed in and a row is created in the `profiles` table via a database trigger.
+- **Sign in**: Email and password; on success the app shows the main tabs (Home, Explore, Favorites, Profile).
+- **Session**: Stored in AsyncStorage and restored on app launch. Deep links from confirmation emails are handled so tapping the link opens the app and completes sign-in.
+- **Profile**: Stored in Supabase `profiles` with RLS so users can only read/update their own row. The Profile tab lets users edit username, first name, last name and sign out.
+
+Supabase dashboard setup (Auth providers, redirect URLs, `profiles` table, RLS, trigger) is required for this to work; see the project’s Supabase auth flow plan for the full phased setup.
 
 ## Project Structure
 ```markdown
@@ -464,6 +505,7 @@ npm start -- --clear
 - [ ] **Favorites tab**: View hearted products
 - [ ] **Lists**: Create a new list, add products to it
 - [ ] **Product Detail**: "View on [Store]" opens store link
+- [ ] **Auth**: Sign up (with email confirmation), sign in, Profile tab (edit profile, sign out)
 
 ---
 
@@ -474,12 +516,12 @@ npm start -- --clear
 1. **Static data**: Uses mock data from one-time scrape. No live updates.
 2. **Developer builds required**: The app uses Expo Developer Builds (custom dev client), not Expo Go; you need Xcode (iOS) or Android Studio (Android) to run on device or simulator.
 3. **Web for quickest start**: For the fastest run without native tooling, use `npm run web`; iOS/Android require native setup.
-4. **No authentication**: User data stored locally (AsyncStorage).
+4. **Auth requires Supabase**: Sign-up/sign-in and profiles depend on a configured Supabase project and a local `.env` with `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Favorites and lists are still stored locally (AsyncStorage).
 
 ### Planned Improvements:
 
 - [ ] Backend API for real-time product updates
-- [ ] User authentication and cloud sync
+- [ ] Cloud sync for favorites and lists
 - [ ] Push notifications for price drops
 - [ ] Filter by price, size, color
 - [ ] Share products with friends
@@ -493,7 +535,8 @@ npm start -- --clear
 - **Expo**: Development tooling
 - **TypeScript**: Type safety
 - **React Navigation**: Screen navigation
-- **AsyncStorage**: Local data persistence
+- **Supabase**: Authentication and user profiles (email/password, RLS)
+- **AsyncStorage**: Local data persistence (session, favorites, lists)
 - **Python**: Backend scraper for product data
 
 ---
