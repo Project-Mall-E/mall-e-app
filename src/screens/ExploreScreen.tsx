@@ -33,14 +33,14 @@ const ExploreScreen = () => {
   const [publicLists, setPublicLists] = useState<PublicList[]>([]);
   const [loadingLists, setLoadingLists] = useState(false);
 
-  // Reset to selector when user re-taps the Explore tab
+  // Reset to selector only when user leaves Explore tab and comes back (re-focus)
   useEffect(() => {
-    if (isFocused && prevFocused.current && mode !== 'selector') {
+    if (isFocused && !prevFocused.current) {
       setMode('selector');
       setSelectedStores([]);
     }
     prevFocused.current = isFocused;
-  }, [isFocused, mode]);
+  }, [isFocused]);
 
   const shuffleArray = (array: Product[]) => {
     const shuffled = [...array];
