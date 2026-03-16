@@ -202,7 +202,7 @@ const ExploreScreen = () => {
                   </Pressable>
                   {list.user_id && list.user_id !== currentUserId ? <Pressable
                       style={[styles.followButtonSmall, isFollowing(list.user_id) ? { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border } : undefined]}
-                      onPress={() => { isFollowing(list.user_id!) ? unfollowUser(list.user_id!) : followUser(list.user_id!); }}
+                      onPress={() => { if (isFollowing(list.user_id!)) unfollowUser(list.user_id!); else followUser(list.user_id!); }}
                     >
                       <Ionicons name={isFollowing(list.user_id) ? 'checkmark' : 'add'} size={16} color={isFollowing(list.user_id) ? colors.textSecondary : '#FFF'} />
                     </Pressable> : null}
