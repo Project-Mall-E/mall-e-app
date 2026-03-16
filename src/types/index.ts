@@ -11,8 +11,16 @@ export interface Product {
 export interface List {
   id: string;
   name: string;
+  description?: string;
   products: Product[];
   createdAt: string;
+  user_id?: string;
+  is_public?: boolean;
+}
+
+export interface PublicList extends List {
+  user_id: string;
+  profile?: Profile;
 }
 
 export interface UserData {
@@ -33,6 +41,8 @@ export interface Profile {
 export type RootStackParamList = {
   MainTabs: undefined;
   ProductDetail: { product: Product };
+  UserProfile: { userId: string };
+  ListDetail: { list: PublicList };
 };
 
 export type AuthStackParamList = {
@@ -43,6 +53,7 @@ export type AuthStackParamList = {
 export type BottomTabParamList = {
   Home: undefined;
   Explore: { refresh?: number } | undefined;
+  Search: undefined;
   Favorites: undefined;
   Profile: undefined;
 };

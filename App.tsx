@@ -8,6 +8,7 @@ import { AuthProvider } from './src/context/AuthContext';
 import { UserProvider } from './src/context/UserContext';
 import RootNavigator from './src/navigation/RootNavigator';
 import { setSessionFromUrl } from './src/lib/authRedirect';
+import { ThemeProvider } from './src/context/ThemeContext';
 
 const AUTH_SCHEME = 'com.celestialdragonfly.malle';
 
@@ -34,14 +35,16 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <AuthProvider>
-        <UserProvider>
-          <NavigationContainer>
-            <RootNavigator />
-            <StatusBar style="auto" />
-          </NavigationContainer>
-        </UserProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <UserProvider>
+            <NavigationContainer>
+              <RootNavigator />
+              <StatusBar style="auto" />
+            </NavigationContainer>
+          </UserProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }

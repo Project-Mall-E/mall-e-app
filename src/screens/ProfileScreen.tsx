@@ -1,3 +1,4 @@
+// src/screens/ProfileScreen.tsx
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -6,9 +7,12 @@ import {
   Pressable,
   TextInput,
   ActivityIndicator,
+  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { supabase } from '../lib/supabase';
 
 const MAX_USERNAME_LENGTH = 50;
@@ -16,20 +20,23 @@ const MAX_NAME_LENGTH = 100;
 
 export default function ProfileScreen() {
   const { user, profile, signOut, refreshProfile } = useAuth();
+  const { dark, toggleDark, colors } = useTheme();
+
   const [editing, setEditing] = useState(false);
   const [username, setUsername] = useState(profile?.username ?? '');
   const [firstName, setFirstName] = useState(profile?.first_name ?? '');
   const [lastName, setLastName] = useState(profile?.last_name ?? '');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setUsername(profile?.username ?? '');
     setFirstName(profile?.first_name ?? '');
     setLastName(profile?.last_name ?? '');
   }, [profile?.username, profile?.first_name, profile?.last_name]);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const displayName = [firstName, lastName].filter(Boolean).join(' ') || username || (user?.email ?? '—');
+  const displayName =
+    [firstName, lastName].filter(Boolean).join(' ') || username || (user?.email ?? '—');
 
   const handleSave = async () => {
     if (!user?.id) return;
@@ -53,167 +60,205 @@ export default function ProfileScreen() {
       })
       .eq('id', user.id);
     setSaving(false);
-    if (err) {
-      setError(err.message);
-      return;
-    }
+    if (err) { setError(err.message); return; }
     await refreshProfile();
     setEditing(false);
   };
 
+  const s = makeStyles(colors);
+
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Profile</Text>
-        <Text style={styles.email}>{user?.email ?? '—'}</Text>
-        <Text style={styles.displayLabel}>Display name</Text>
-        <Text style={styles.displayName}>{displayName}</Text>
+    <SafeAreaView style={s.container} edges={['top', 'bottom']}>
+      <View style={s.content}>
+        <Text style={s.title}>Profile</Text>
+        <Text style={s.email}>{user?.email ?? '—'}</Text>
+        <Text style={s.displayLabel}>Display name</Text>
+        <Text style={s.displayName}>{displayName}</Text>
 
         {error ? (
-          <View style={styles.errorBox}>
-            <Text style={styles.errorText}>{error}</Text>
+          <View style={s.errorBox}>
+            <Text style={s.errorText}>{error}</Text>
           </View>
         ) : null}
 
         {editing ? (
           <>
             <TextInput
-              style={styles.input}
+              style={s.input}
               placeholder="Username"
-              placeholderTextColor="#999"
+              placeholderTextColor={colors.textTertiary}
               value={username}
               onChangeText={setUsername}
               autoCapitalize="none"
               editable={!saving}
             />
             <TextInput
-              style={styles.input}
+              style={s.input}
               placeholder="First name"
-              placeholderTextColor="#999"
+              placeholderTextColor={colors.textTertiary}
               value={firstName}
               onChangeText={setFirstName}
               editable={!saving}
             />
             <TextInput
-              style={styles.input}
+              style={s.input}
               placeholder="Last name"
-              placeholderTextColor="#999"
+              placeholderTextColor={colors.textTertiary}
               value={lastName}
               onChangeText={setLastName}
               editable={!saving}
             />
             <Pressable
-              style={[styles.button, saving && styles.buttonDisabled]}
+              style={[s.button, saving && s.buttonDisabled]}
               onPress={handleSave}
               disabled={saving}
             >
-              {saving ? (
-                <ActivityIndicator color="#FFF" />
-              ) : (
-                <Text style={styles.buttonText}>Save</Text>
-              )}
+              {saving ? <ActivityIndicator color="#FFF" /> : <Text style={s.buttonText}>Save</Text>}
             </Pressable>
-            <Pressable
-              style={styles.secondaryButton}
-              onPress={() => setEditing(false)}
-              disabled={saving}
-            >
-              <Text style={styles.secondaryButtonText}>Cancel</Text>
+            <Pressable style={s.secondaryButton} onPress={() => setEditing(false)} disabled={saving}>
+              <Text style={s.secondaryButtonText}>Cancel</Text>
             </Pressable>
           </>
         ) : (
-          <Pressable style={styles.button} onPress={() => setEditing(true)}>
-            <Text style={styles.buttonText}>Edit profile</Text>
+          <Pressable style={s.button} onPress={() => setEditing(true)}>
+            <Text style={s.buttonText}>Edit profile</Text>
           </Pressable>
         )}
 
-        <Pressable style={styles.signOutButton} onPress={() => signOut()}>
-          <Text style={styles.signOutText}>Sign out</Text>
+        {/* ── Appearance section ── */}
+        <View style={s.section}>
+          <Text style={s.sectionTitle}>Appearance</Text>
+          <View style={s.row}>
+            <View style={s.rowLeft}>
+              <View style={[s.rowIcon, { backgroundColor: dark ? '#2C2C2E' : '#F2F2F7' }]}>
+                <Ionicons name={dark ? 'moon' : 'sunny'} size={20} color={dark ? '#0A84FF' : '#FF9F0A'} />
+              </View>
+              <Text style={s.rowLabel}>Dark mode</Text>
+            </View>
+            <Switch
+              value={dark}
+              onValueChange={toggleDark}
+              trackColor={{ false: '#E5E5EA', true: '#0A84FF' }}
+              thumbColor="#FFF"
+            />
+          </View>
+        </View>
+
+        <Pressable style={s.signOutButton} onPress={() => signOut()}>
+          <Text style={s.signOutText}>Sign out</Text>
         </Pressable>
       </View>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-  },
-  content: {
-    flex: 1,
-    padding: 24,
-    gap: 16,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#000',
-  },
-  email: {
-    fontSize: 15,
-    color: '#666',
-  },
-  displayLabel: {
-    fontSize: 13,
-    color: '#999',
-    marginTop: 8,
-  },
-  displayName: {
-    fontSize: 18,
-    color: '#000',
-    fontWeight: '500',
-  },
-  errorBox: {
-    backgroundColor: '#FFEBEE',
-    padding: 12,
-    borderRadius: 12,
-    borderCurve: 'continuous',
-  },
-  errorText: {
-    color: '#C62828',
-    fontSize: 14,
-  },
-  input: {
-    backgroundColor: '#F5F5F5',
-    padding: 16,
-    borderRadius: 12,
-    borderCurve: 'continuous',
-    fontSize: 16,
-    color: '#000',
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 16,
-    borderRadius: 12,
-    borderCurve: 'continuous',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 17,
-    fontWeight: '600',
-  },
-  secondaryButton: {
-    padding: 16,
-    alignItems: 'center',
-  },
-  secondaryButtonText: {
-    color: '#007AFF',
-    fontSize: 17,
-  },
-  signOutButton: {
-    marginTop: 'auto',
-    padding: 16,
-    alignItems: 'center',
-  },
-  signOutText: {
-    color: '#C62828',
-    fontSize: 17,
-    fontWeight: '600',
-  },
-});
+const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').useTheme>['colors']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    content: {
+      flex: 1,
+      padding: 24,
+      gap: 16,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    email: {
+      fontSize: 15,
+      color: colors.textSecondary,
+    },
+    displayLabel: {
+      fontSize: 13,
+      color: colors.textTertiary,
+      marginTop: 8,
+    },
+    displayName: {
+      fontSize: 18,
+      color: colors.text,
+      fontWeight: '500',
+    },
+    errorBox: {
+      backgroundColor: colors.errorBg,
+      padding: 12,
+      borderRadius: 12,
+    },
+    errorText: {
+      color: colors.error,
+      fontSize: 14,
+    },
+    input: {
+      backgroundColor: colors.inputBg,
+      padding: 16,
+      borderRadius: 12,
+      fontSize: 16,
+      color: colors.inputText,
+    },
+    button: {
+      backgroundColor: '#007AFF',
+      padding: 16,
+      borderRadius: 12,
+      alignItems: 'center',
+      marginTop: 8,
+    },
+    buttonDisabled: { opacity: 0.6 },
+    buttonText: { color: '#FFF', fontSize: 17, fontWeight: '600' },
+    secondaryButton: { padding: 16, alignItems: 'center' },
+    secondaryButtonText: { color: '#007AFF', fontSize: 17 },
+
+    // Appearance section
+    section: {
+      marginTop: 8,
+      backgroundColor: colors.surface,
+      borderRadius: 16,
+      overflow: 'hidden',
+    },
+    sectionTitle: {
+      fontSize: 13,
+      fontWeight: '600',
+      color: colors.textTertiary,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      paddingHorizontal: 16,
+      paddingTop: 16,
+      paddingBottom: 8,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    rowLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+    },
+    rowIcon: {
+      width: 36,
+      height: 36,
+      borderRadius: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    rowLabel: {
+      fontSize: 16,
+      color: colors.text,
+      fontWeight: '500',
+    },
+    signOutButton: {
+      marginTop: 'auto',
+      padding: 16,
+      alignItems: 'center',
+    },
+    signOutText: {
+      color: colors.error,
+      fontSize: 17,
+      fontWeight: '600',
+    },
+  });
