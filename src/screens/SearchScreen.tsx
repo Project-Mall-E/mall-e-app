@@ -140,8 +140,7 @@ const SearchScreen = () => {
           </View>
         ) : (
           <>
-            {showStores && filteredStores.length > 0 && (
-              <View style={styles.section}>
+            {showStores && filteredStores.length > 0 ? <View style={styles.section}>
                 <Text style={[styles.sectionTitle, { color: colors.text }]}>Stores ({filteredStores.length})</Text>
                 <View style={[styles.storesList, { backgroundColor: colors.surfaceRaised }]}>
                   {filteredStores.map((store, index) => {
@@ -161,11 +160,9 @@ const SearchScreen = () => {
                     );
                   })}
                 </View>
-              </View>
-            )}
+              </View> : null}
 
-            {showProducts && searchedProducts.length > 0 && (
-              <View style={styles.section}>
+            {showProducts && searchedProducts.length > 0 ? <View style={styles.section}>
                 <Text style={[styles.sectionTitle, { color: colors.text }]}>Products ({searchedProducts.length})</Text>
                 <View style={styles.productsGrid}>
                   {searchedProducts.slice(0, 20).map((product, index) => (
@@ -183,11 +180,9 @@ const SearchScreen = () => {
                     </Pressable>
                   ))}
                 </View>
-              </View>
-            )}
+              </View> : null}
 
-            {showUsers && filteredUsers.length > 0 && (
-              <View style={styles.section}>
+            {showUsers && filteredUsers.length > 0 ? <View style={styles.section}>
                 <Text style={[styles.sectionTitle, { color: colors.text }]}>Users ({filteredUsers.length})</Text>
                 <View style={[styles.usersList, { backgroundColor: colors.surfaceRaised }]}>
                   {filteredUsers.map((profile, index) => {
@@ -207,11 +202,9 @@ const SearchScreen = () => {
                             <Text style={[styles.userName, { color: colors.text }]}>
                               {profile.username || `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Anonymous'}
                             </Text>
-                            {profile.username && (profile.first_name || profile.last_name) && (
-                              <Text style={[styles.userSubtext, { color: colors.textSecondary }]}>
+                            {profile.username && (profile.first_name || profile.last_name) ? <Text style={[styles.userSubtext, { color: colors.textSecondary }]}>
                                 {`${profile.first_name || ''} ${profile.last_name || ''}`.trim()}
-                              </Text>
-                            )}
+                              </Text> : null}
                           </View>
                         </Pressable>
                         {!isCurrentUser && (
@@ -229,8 +222,7 @@ const SearchScreen = () => {
                     );
                   })}
                 </View>
-              </View>
-            )}
+              </View> : null}
           </>
         )}
       </ScrollView>

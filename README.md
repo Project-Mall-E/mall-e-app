@@ -7,9 +7,10 @@ A React Native mobile shopping app that displays products from multiple clothing
 
 - **Authentication**: Email/password sign-up and sign-in via Supabase; email confirmation; profile (username, first name, last name) stored in a secure `profiles` table
 - **Home Screen**: View products from stores you're subscribed to
-- **Explore Screen**: Discover products from all available stores
+- **Explore Screen**: Discover products with a selector to browse by stores or by curated public lists; snap-up layout and refreshed product grid
+- **Search Tab**: Search across **stores**, **products**, and **users** with filter chips (All, Stores, Products, Users); subscribe to stores or follow users from results
 - **Favorites**: Save products and organize them into custom lists
-- **Profile**: View and edit your profile; sign out
+- **Profile**: View and edit your profile; sign out; toggle **dark mode** (preference saved)
 - **Product Details**: View detailed product information and open store links
 - **Store Subscriptions**: Subscribe/unsubscribe from stores to personalize your feed
 
@@ -496,16 +497,17 @@ npm start -- --clear
 ### Quick Feature Test Checklist:
 
 - [ ] **Home Screen**: Shows products from subscribed stores (default: AmericanEagle)
-- [ ] **Search**: Type in search bar to filter products
+- [ ] **Explore tab**: Select "Stores" or "Lists" to browse; store chips and product grid
+- [ ] **Search tab**: Type to search; filter by All / Stores / Products / Users; subscribe or follow from results
 - [ ] **Tap product**: Opens Product Detail screen
 - [ ] **Heart icon**: Adds/removes from favorites
-- [ ] **Explore tab**: Shows all products from all stores
 - [ ] **Store chips**: Tap to filter by store
 - [ ] **Subscribe button**: Toggle store subscription
 - [ ] **Favorites tab**: View hearted products
 - [ ] **Lists**: Create a new list, add products to it
 - [ ] **Product Detail**: "View on [Store]" opens store link
 - [ ] **Auth**: Sign up (with email confirmation), sign in, Profile tab (edit profile, sign out)
+- [ ] **Dark mode**: Toggle in Profile; app and tab bar switch to dark theme; preference persists
 
 ---
 
@@ -525,7 +527,6 @@ npm start -- --clear
 - [ ] Push notifications for price drops
 - [ ] Filter by price, size, color
 - [ ] Share products with friends
-- [ ] Dark mode
 
 ---
 
@@ -534,9 +535,10 @@ npm start -- --clear
 - **React Native**: Mobile framework
 - **Expo**: Development tooling
 - **TypeScript**: Type safety
-- **React Navigation**: Screen navigation
+- **React Navigation**: Screen navigation (tabs: Home, Explore, Search, Favorites, Profile)
+- **ThemeContext**: App-wide light/dark mode (persisted via AsyncStorage)
 - **Supabase**: Authentication and user profiles (email/password, RLS)
-- **AsyncStorage**: Local data persistence (session, favorites, lists)
+- **AsyncStorage**: Local data persistence (session, favorites, lists, dark mode preference)
 - **Python**: Backend scraper for product data
 
 ---

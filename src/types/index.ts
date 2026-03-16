@@ -39,7 +39,7 @@ export interface Profile {
 }
 
 export type RootStackParamList = {
-  MainTabs: undefined;
+  MainTabs: { screen?: keyof BottomTabParamList } | undefined;
   ProductDetail: { product: Product };
   UserProfile: { userId: string };
   ListDetail: { list: PublicList };

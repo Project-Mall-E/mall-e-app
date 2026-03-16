@@ -12,7 +12,7 @@ import FilterModal from '../components/FilterModal';
 import { useProducts } from '../hooks/useProducts';
 import { useUser } from '../context/UserContext';
 import { useTheme } from '../context/ThemeContext';
-import { RootStackParamList, BottomTabParamList, Product, PublicList } from '../types';
+import { RootStackParamList, Product, PublicList } from '../types';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 type ExploreMode = 'selector' | 'stores' | 'lists';
@@ -114,7 +114,7 @@ const ExploreScreen = () => {
                   <Ionicons name="storefront-outline" size={32} color="#0A84FF" />
                 </View>
                 <Text style={[styles.cardTitle, { color: colors.text }]}>Stores</Text>
-                <Text style={[styles.cardSub, { color: colors.textTertiary }]}>Browse products from your favourite stores</Text>
+                <Text style={[styles.cardSub, { color: colors.textTertiary }]}>Browse products from your favorite stores</Text>
                 <View style={[styles.cardArrow, { backgroundColor: '#0A84FF' }]}>
                   <Ionicons name="arrow-forward" size={16} color="#FFF" />
                 </View>
@@ -200,18 +200,16 @@ const ExploreScreen = () => {
                       <Text style={[styles.listTimestamp, { color: colors.textTertiary }]}>{new Date(list.createdAt).toLocaleDateString()}</Text>
                     </View>
                   </Pressable>
-                  {list.user_id && list.user_id !== currentUserId && (
-                    <Pressable
-                      style={[styles.followButtonSmall, isFollowing(list.user_id) && { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border }]}
+                  {list.user_id && list.user_id !== currentUserId ? <Pressable
+                      style={[styles.followButtonSmall, isFollowing(list.user_id) ? { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border } : undefined]}
                       onPress={() => { isFollowing(list.user_id!) ? unfollowUser(list.user_id!) : followUser(list.user_id!); }}
                     >
                       <Ionicons name={isFollowing(list.user_id) ? 'checkmark' : 'add'} size={16} color={isFollowing(list.user_id) ? colors.textSecondary : '#FFF'} />
-                    </Pressable>
-                  )}
+                    </Pressable> : null}
                 </View>
                 <Pressable onPress={() => handleListPress(list)}>
                   <Text style={[styles.listTitle, { color: colors.text }]}>{list.name}</Text>
-                  {list.description && <Text style={[styles.listDescription, { color: colors.textSecondary }]}>{list.description}</Text>}
+                  {list.description ? <Text style={[styles.listDescription, { color: colors.textSecondary }]}>{list.description}</Text> : null}
                   <View style={styles.listProductGrid}>
                     {list.products.slice(0, 4).map((product, index) => (
                       <View key={index} style={[styles.listProductItem, { backgroundColor: colors.surface }]}>

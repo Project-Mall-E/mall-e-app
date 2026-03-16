@@ -35,7 +35,6 @@ const ProductCard: React.FC<{
       <Pressable
         style={styles.imageContainer}
         onPress={() => onProductPress(item)}
-        activeOpacity={0.95}
       >
         <Image
           source={{ uri: item.item_image_link }}
@@ -50,15 +49,13 @@ const ProductCard: React.FC<{
           <Text style={styles.storeName}>{item.store}</Text>
           <Text style={styles.productName} numberOfLines={2}>{item.item_name}</Text>
           <Text style={styles.productPrice}>{item.price}</Text>
-          {item.tags && item.tags.length > 0 && (
-            <View style={styles.tagsContainer}>
+          {item.tags && item.tags.length > 0 ? <View style={styles.tagsContainer}>
               {item.tags.slice(0, 3).map((tag, idx) => (
                 <Pressable key={idx} style={styles.tag} onPress={() => onTagPress(tag)}>
                   <Text style={styles.tagText}>#{tag}</Text>
                 </Pressable>
               ))}
-            </View>
-          )}
+            </View> : null}
         </View>
       </Pressable>
     </View>
