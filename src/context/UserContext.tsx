@@ -6,9 +6,13 @@ interface UserContextType {
   subscribedStores: string[];
   favorites: Product[];
   lists: List[];
+  currentUserId: string | null;
   toggleStoreSubscription: (storeName: string) => void;
   toggleFavorite: (product: Product) => void;
   isFavorite: (product: Product) => boolean;
+  followUser: (userId: string) => void;
+  unfollowUser: (userId: string) => void;
+  isFollowing: (userId: string) => boolean;
   createList: (name: string) => void;
   deleteList: (listId: string) => void;
   addToList: (listId: string, product: Product) => void;
@@ -23,6 +27,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [subscribedStores, setSubscribedStores] = useState<string[]>(['AmericanEagle']);
   const [favorites, setFavorites] = useState<Product[]>([]);
   const [lists, setLists] = useState<List[]>([]);
+  const [followingIds, setFollowingIds] = useState<Set<string>>(new Set());
+  const currentUserId: string | null = null;
 
   useEffect(() => {
     loadUserData();
@@ -77,6 +83,20 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     return favorites.some(p => p.item_link === product.item_link);
   };
 
+  const followUser = (userId: string) => {
+    setFollowingIds(prev => new Set(prev).add(userId));
+  };
+
+  const unfollowUser = (userId: string) => {
+    setFollowingIds(prev => {
+      const next = new Set(prev);
+      next.delete(userId);
+      return next;
+    });
+  };
+
+  const isFollowing = (userId: string) => followingIds.has(userId);
+
   const createList = (name: string) => {
     const newList: List = {
       id: Date.now().toString(),
@@ -125,9 +145,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         subscribedStores,
         favorites,
         lists,
+        currentUserId,
         toggleStoreSubscription,
         toggleFavorite,
         isFavorite,
+        followUser,
+        unfollowUser,
+        isFollowing,
         createList,
         deleteList,
         addToList,
