@@ -2,7 +2,7 @@
 import React from 'react';
 import { FlatList, StyleSheet, View, Text } from 'react-native';
 import ProductCard from './ProductCard';
-import ProductCardSkeleton from './ProductCardSkeleton';
+import { ProductCardSkeleton } from './ProductCardSkeleton';
 import { Product } from '../types';
 
 const SKELETON_PLACEHOLDERS = [0, 1, 2, 3, 4, 5] as const;
