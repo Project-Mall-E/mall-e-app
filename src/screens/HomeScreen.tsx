@@ -17,7 +17,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 const HomeScreen = () => {
   const navigation = useNavigation<NavigationProp>();
   const { subscribedStores } = useUser();
-  const { getProductsByStore } = useProducts();
+  const { getProductsByStore, loading, refreshing, refreshProducts } = useProducts();
   const { colors } = useTheme();
   const [showFilter, setShowFilter] = React.useState(false);
   const [selectedStores, setSelectedStores] = React.useState<string[]>([]);
@@ -62,6 +62,9 @@ const HomeScreen = () => {
       </View>
 
       <ProductGrid
+        loading={loading}
+        refreshing={refreshing}
+        onRefresh={refreshProducts}
         products={getDisplayProducts()}
         onProductPress={handleProductPress}
         onTagPress={handleTagPress}

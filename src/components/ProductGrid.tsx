@@ -1,14 +1,19 @@
 // src/components/ProductGrid.tsx
 import React from 'react';
-import { FlatList, StyleSheet, View, Text, ActivityIndicator } from 'react-native';
+import { FlatList, StyleSheet, View, Text } from 'react-native';
 import ProductCard from './ProductCard';
+import { ProductCardSkeleton } from './ProductCardSkeleton';
 import { Product } from '../types';
+
+const SKELETON_PLACEHOLDERS = [0, 1, 2, 3, 4, 5] as const;
 
 interface ProductGridProps {
   products: Product[];
   onProductPress: (product: Product) => void;
   onTagPress?: (tag: string) => void;
   loading?: boolean;
+  refreshing?: boolean;
+  onRefresh?: () => void;
   emptyMessage?: string;
 }
 
@@ -17,13 +22,23 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   onProductPress,
   onTagPress,
   loading = false,
+  refreshing = false,
+  onRefresh,
   emptyMessage = 'No products found',
 }) => {
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-      </View>
+      <FlatList
+        data={SKELETON_PLACEHOLDERS}
+        renderItem={() => <ProductCardSkeleton />}
+        keyExtractor={item => `skeleton-${item}`}
+        numColumns={2}
+        columnWrapperStyle={styles.row}
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+      />
     );
   }
 
@@ -50,6 +65,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({
       columnWrapperStyle={styles.row}
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
+      refreshing={refreshing}
+      onRefresh={onRefresh}
     />
   );
 };

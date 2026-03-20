@@ -1,14 +1,18 @@
 // src/screens/ProductDetailScreen.tsx
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   Pressable,
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   Linking,
   Alert,
   Modal,
+  Dimensions,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { RouteProp, useRoute } from '@react-navigation/native';
@@ -18,6 +22,7 @@ import { useUser } from '../context/UserContext';
 import { RootStackParamList } from '../types';
 
 type ProductDetailRouteProp = RouteProp<RootStackParamList, 'ProductDetail'>;
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const ProductDetailScreen = () => {
   const route = useRoute<ProductDetailRouteProp>();
@@ -31,6 +36,21 @@ const ProductDetailScreen = () => {
     addToList,
   } = useUser();
   const [showListModal, setShowListModal] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  const productImages = (product.item_image_links?.filter(Boolean)?.length
+    ? product.item_image_links.filter(Boolean)
+    : [product.item_image_link]).filter(Boolean);
+  const images = productImages.length > 0
+    ? productImages
+    : ['https://via.placeholder.com/800x800?text=No+Image'];
+
+  const handleImageScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const width = event.nativeEvent.layoutMeasurement.width;
+    const maxIndex = Math.max(images.length - 1, 0);
+    const nextIndex = Math.max(0, Math.min(Math.round(event.nativeEvent.contentOffset.x / width), maxIndex));
+    setActiveImageIndex(prev => (prev === nextIndex ? prev : nextIndex));
+  }, [images.length]);
 
   const favorite = isFavorite(product);
   const isSubscribed = subscribedStores.includes(product.store);
@@ -58,11 +78,31 @@ const ProductDetailScreen = () => {
         contentInsetAdjustmentBehavior="automatic"
       >
         <View style={styles.imageContainer}>
-          <Image
-            source={{ uri: product.item_image_link }}
-            style={styles.image}
-            contentFit="cover"
+          <FlatList
+            data={images}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(imageUrl, index) => `${imageUrl}-${index}`}
+            onMomentumScrollEnd={handleImageScroll}
+            renderItem={({ item: imageUrl }) => (
+              <Image
+                source={{ uri: imageUrl }}
+                style={styles.image}
+                contentFit="cover"
+              />
+            )}
           />
+          {images.length > 1 ? (
+            <View style={styles.pagination}>
+              {images.map((_, index) => (
+                <View
+                  key={`image-dot-${index}`}
+                  style={[styles.dot, index === activeImageIndex ? styles.dotActive : null]}
+                />
+              ))}
+            </View>
+          ) : null}
           <LinearGradient
             colors={['transparent', 'rgba(0,0,0,0.7)']}
             style={styles.gradient}
@@ -186,9 +226,29 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   image: {
-    width: '100%',
+    width: SCREEN_WIDTH,
     height: '100%',
   },
+  pagination: {
+    position: 'absolute',
+    bottom: 16,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    borderCurve: 'continuous',
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255,255,255,0.45)',
+  },
+  dotActive: { backgroundColor: '#FFF' },
   gradient: {
     position: 'absolute',
     bottom: 0,
