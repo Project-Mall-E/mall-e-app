@@ -1,5 +1,5 @@
 // src/components/ProductFeed.tsx - TikTok-style snap scrolling
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -35,6 +35,24 @@ interface ProductFeedProps {
   onRefresh?: () => void;
   refreshing?: boolean;
 }
+
+const ProductTagPill = memo(function ProductTagPill({
+  tag,
+  onTagPress,
+}: {
+  tag: string;
+  onTagPress: (tag: string) => void;
+}) {
+  const handlePress = useCallback(() => {
+    onTagPress(tag);
+  }, [tag, onTagPress]);
+
+  return (
+    <Pressable style={styles.tag} onPress={handlePress}>
+      <Text style={styles.tagText}>#{tag}</Text>
+    </Pressable>
+  );
+});
 
 const ProductCard: React.FC<{
   item: Product;
@@ -92,6 +110,7 @@ const ProductCard: React.FC<{
         <FlatList
           data={images}
           horizontal
+          nestedScrollEnabled
           pagingEnabled
           showsHorizontalScrollIndicator={false}
           keyExtractor={(imageUrl, index) => `${imageUrl}-${index}`}
@@ -104,24 +123,25 @@ const ProductCard: React.FC<{
           renderItem={renderImagePage}
         />
         <LinearGradient
+          pointerEvents="none"
           colors={['transparent', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.88)']}
           style={styles.gradient}
         />
-        <View style={productInfoStyle}>
+        <Pressable style={productInfoStyle} onPress={onImagePress}>
           <Text style={styles.storeName}>{item.store}</Text>
           <Text style={styles.productName} numberOfLines={2}>{item.item_name}</Text>
           <Text style={styles.productPrice}>{item.price}</Text>
-          {item.tags && item.tags.length > 0 ? <View style={styles.tagsContainer}>
+          {item.tags && item.tags.length > 0 ? (
+            <View style={styles.tagsContainer}>
               {item.tags.slice(0, 3).map((tag, idx) => (
-                <Pressable
+                <ProductTagPill
                   key={`${item.item_link}-tag-${idx}`}
-                  style={styles.tag}
-                  onPress={() => onTagPress(tag)}
-                >
-                  <Text style={styles.tagText}>#{tag}</Text>
-                </Pressable>
+                  tag={tag}
+                  onTagPress={onTagPress}
+                />
               ))}
-            </View> : null}
+            </View>
+          ) : null}
           {images.length > 1 ? (
             <View style={styles.pagination}>
               {images.slice(0, SLIDE_DOT_MAX).map((_, index) => (
@@ -140,7 +160,7 @@ const ProductCard: React.FC<{
               ) : null}
             </View>
           ) : null}
-        </View>
+        </Pressable>
       </View>
     </View>
   );
