@@ -89,11 +89,21 @@ const ProductDetailScreen = () => {
             keyExtractor={(imageUrl, index) => `${imageUrl}-${index}`}
             onMomentumScrollEnd={handleImageScroll}
             renderItem={({ item: imageUrl }) => (
-              <Image
-                source={{ uri: imageUrl }}
-                style={s.image}
-                contentFit="cover"
-              />
+              <View style={s.imageSlide}>
+                <View style={s.imageBackdropWrap} pointerEvents="none">
+                  <Image
+                    source={{ uri: imageUrl }}
+                    style={s.imageBackdrop}
+                    contentFit="cover"
+                    blurRadius={56}
+                  />
+                </View>
+                <Image
+                  source={{ uri: imageUrl }}
+                  style={s.image}
+                  contentFit="contain"
+                />
+              </View>
             )}
           />
           {images.length > 1 ? (
@@ -225,9 +235,24 @@ const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').
       width: '100%',
       height: 400,
       position: 'relative',
+      backgroundColor: colors.surface,
+    },
+    imageSlide: {
+      width: SCREEN_WIDTH,
+      height: '100%',
+      overflow: 'hidden',
+    },
+    imageBackdropWrap: {
+      ...StyleSheet.absoluteFillObject,
+      overflow: 'hidden',
+    },
+    imageBackdrop: {
+      width: '100%',
+      height: '100%',
+      transform: [{ scale: 1.18 }],
     },
     image: {
-      width: SCREEN_WIDTH,
+      width: '100%',
       height: '100%',
     },
     pagination: {
