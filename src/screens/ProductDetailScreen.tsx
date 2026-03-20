@@ -1,5 +1,5 @@
 // src/screens/ProductDetailScreen.tsx
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -45,13 +45,12 @@ const ProductDetailScreen = () => {
     ? productImages
     : ['https://via.placeholder.com/800x800?text=No+Image'];
 
-  const handleImageScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+  const handleImageScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const width = event.nativeEvent.layoutMeasurement.width;
-    const nextIndex = Math.round(event.nativeEvent.contentOffset.x / width);
-    if (nextIndex !== activeImageIndex) {
-      setActiveImageIndex(nextIndex);
-    }
-  };
+    const maxIndex = Math.max(images.length - 1, 0);
+    const nextIndex = Math.max(0, Math.min(Math.round(event.nativeEvent.contentOffset.x / width), maxIndex));
+    setActiveImageIndex(prev => (prev === nextIndex ? prev : nextIndex));
+  }, [images.length]);
 
   const favorite = isFavorite(product);
   const isSubscribed = subscribedStores.includes(product.store);

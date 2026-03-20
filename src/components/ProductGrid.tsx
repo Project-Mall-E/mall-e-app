@@ -29,7 +29,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   if (loading) {
     return (
       <FlatList
-        data={[...SKELETON_PLACEHOLDERS]}
+        data={SKELETON_PLACEHOLDERS}
         renderItem={() => <ProductCardSkeleton />}
         keyExtractor={item => `skeleton-${item}`}
         numColumns={2}

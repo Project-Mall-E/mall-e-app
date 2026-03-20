@@ -1,5 +1,5 @@
 // src/components/ProductFeed.tsx - TikTok-style snap scrolling
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -43,13 +43,12 @@ const ProductCard: React.FC<{
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const images = getProductImages(item);
 
-  const handleImageScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+  const handleImageScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = event.nativeEvent.contentOffset.x;
-    const nextIndex = Math.round(offsetX / SCREEN_WIDTH);
-    if (nextIndex !== activeImageIndex) {
-      setActiveImageIndex(nextIndex);
-    }
-  };
+    const maxIndex = Math.max(images.length - 1, 0);
+    const nextIndex = Math.max(0, Math.min(Math.round(offsetX / SCREEN_WIDTH), maxIndex));
+    setActiveImageIndex(prev => (prev === nextIndex ? prev : nextIndex));
+  }, [images.length]);
 
   return (
     <View style={[styles.slide, { height: SCREEN_HEIGHT }]}>
