@@ -1,5 +1,5 @@
 // src/screens/ExploreScreen.tsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, StyleSheet, Pressable, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -14,7 +14,7 @@ import { RootStackParamList, Product } from '../types';
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const ExploreScreen = () => {
-  const navigation = useNavigation<NavigationProp>();
+  const { navigate } = useNavigation<NavigationProp>();
   const { products } = useProducts();
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
@@ -43,18 +43,17 @@ const ExploreScreen = () => {
   }, [products]);
 
   const handleTagPress = useCallback((_tag: string) => {
-    navigation.navigate('MainTabs', { screen: 'Search' });
-  }, [navigation]);
+    navigate('MainTabs', { screen: 'Search' });
+  }, [navigate]);
 
   const handleProductPress = useCallback((product: Product) => {
-    navigation.navigate('ProductDetail', { product });
-  }, [navigation]);
+    navigate('ProductDetail', { product });
+  }, [navigate]);
 
-  const getDisplayProducts = () => {
-    let filtered = shuffledProducts;
-    if (selectedStores.length > 0) filtered = filtered.filter(p => selectedStores.includes(p.store));
-    return filtered;
-  };
+  const displayProducts = useMemo(() => {
+    if (selectedStores.length === 0) return shuffledProducts;
+    return shuffledProducts.filter(p => selectedStores.includes(p.store));
+  }, [shuffledProducts, selectedStores]);
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -75,7 +74,7 @@ const ExploreScreen = () => {
 
       <View style={styles.feedContainer}>
         <ProductFeed
-          products={getDisplayProducts()}
+          products={displayProducts}
           onProductPress={handleProductPress}
           onTagPress={handleTagPress}
           onRefresh={handleRefresh}

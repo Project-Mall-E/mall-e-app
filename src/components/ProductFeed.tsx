@@ -1,5 +1,5 @@
 // src/components/ProductFeed.tsx - TikTok-style snap scrolling
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,8 @@ import {
   NativeSyntheticEvent,
   ViewToken,
   useWindowDimensions,
+  RefreshControl,
+  ListRenderItemInfo,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -51,10 +53,40 @@ const ProductCard: React.FC<{
     setActiveImageIndex(prev => (prev === nextIndex ? prev : nextIndex));
   }, [images.length, slideWidth]);
 
-  const pageStyle = { width: slideWidth, height: slideHeight };
+  const pageStyle = useMemo(
+    () => ({ width: slideWidth, height: slideHeight }),
+    [slideWidth, slideHeight],
+  );
+
+  const slideDimsStyle = useMemo(
+    () => ({ width: slideWidth, height: slideHeight }),
+    [slideWidth, slideHeight],
+  );
+
+  const productInfoStyle = useMemo(
+    () => [styles.productInfo, { paddingBottom: bottomInset }],
+    [bottomInset],
+  );
+
+  const onImagePress = useCallback(() => {
+    onProductPress(item);
+  }, [item, onProductPress]);
+
+  const renderImagePage = useCallback(
+    ({ item: imageUrl }: ListRenderItemInfo<string>) => (
+      <Pressable style={pageStyle} onPress={onImagePress}>
+        <Image
+          source={{ uri: imageUrl }}
+          style={styles.productImage}
+          contentFit="cover"
+        />
+      </Pressable>
+    ),
+    [pageStyle, onImagePress],
+  );
 
   return (
-    <View style={[styles.slide, { width: slideWidth, height: slideHeight }]}>
+    <View style={[styles.slide, slideDimsStyle]}>
       <View style={styles.imageContainer}>
         <FlatList
           data={images}
@@ -68,27 +100,23 @@ const ProductCard: React.FC<{
             offset: slideWidth * index,
             index,
           })}
-          renderItem={({ item: imageUrl }) => (
-            <Pressable style={pageStyle} onPress={() => onProductPress(item)}>
-              <Image
-                source={{ uri: imageUrl }}
-                style={styles.productImage}
-                contentFit="cover"
-              />
-            </Pressable>
-          )}
+          renderItem={renderImagePage}
         />
         <LinearGradient
           colors={['transparent', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.88)']}
           style={styles.gradient}
         />
-        <View style={[styles.productInfo, { paddingBottom: bottomInset }]}>
+        <View style={productInfoStyle}>
           <Text style={styles.storeName}>{item.store}</Text>
           <Text style={styles.productName} numberOfLines={2}>{item.item_name}</Text>
           <Text style={styles.productPrice}>{item.price}</Text>
           {item.tags && item.tags.length > 0 ? <View style={styles.tagsContainer}>
               {item.tags.slice(0, 3).map((tag, idx) => (
-                <Pressable key={idx} style={styles.tag} onPress={() => onTagPress(tag)}>
+                <Pressable
+                  key={`${item.item_link}-tag-${idx}`}
+                  style={styles.tag}
+                  onPress={() => onTagPress(tag)}
+                >
                   <Text style={styles.tagText}>#{tag}</Text>
                 </Pressable>
               ))}
@@ -121,6 +149,8 @@ const ProductFeed: React.FC<ProductFeedProps> = ({
   products,
   onProductPress,
   onTagPress,
+  onRefresh,
+  refreshing,
 }) => {
   const insets = useSafeAreaInsets();
   const { width: winW, height: winH } = useWindowDimensions();
@@ -147,22 +177,36 @@ const ProductFeed: React.FC<ProductFeedProps> = ({
     }
   }, []);
 
+  const renderProduct = useCallback(
+    ({ item }: ListRenderItemInfo<Product>) => (
+      <ProductCard
+        item={item}
+        slideWidth={slideW}
+        slideHeight={slideH}
+        bottomInset={bottomInset}
+        onProductPress={onProductPress}
+        onTagPress={onTagPress}
+      />
+    ),
+    [slideW, slideH, bottomInset, onProductPress, onTagPress],
+  );
+
+  const keyExtractor = useCallback((item: Product) => item.item_link, []);
+
+  const refreshControl = useMemo(() => {
+    if (!onRefresh || refreshing === undefined) return undefined;
+    return (
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#fff" />
+    );
+  }, [onRefresh, refreshing]);
+
   return (
     <View style={styles.container} onLayout={onLayoutContainer}>
       <FlatList
         ref={flatListRef}
         data={products}
-        renderItem={({ item }) => (
-          <ProductCard
-            item={item}
-            slideWidth={slideW}
-            slideHeight={slideH}
-            bottomInset={bottomInset}
-            onProductPress={onProductPress}
-            onTagPress={onTagPress}
-          />
-        )}
-        keyExtractor={(item, index) => `${item.store}-${item.item_name}-${index}`}
+        renderItem={renderProduct}
+        keyExtractor={keyExtractor}
         pagingEnabled
         showsVerticalScrollIndicator={false}
         snapToInterval={slideH}
@@ -178,6 +222,7 @@ const ProductFeed: React.FC<ProductFeedProps> = ({
           offset: slideH * index,
           index,
         })}
+        refreshControl={refreshControl}
       />
     </View>
   );
