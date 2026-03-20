@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '../context/UserContext';
 import { useProducts } from '../hooks/useProducts';
+import { useTheme } from '../context/ThemeContext';
 
 interface FilterModalProps {
   visible: boolean;
@@ -28,6 +29,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
   onStoresChange,
   showSubscribedOnly = false,
 }) => {
+  const { colors } = useTheme();
+  const s = makeStyles(colors);
   const { subscribedStores } = useUser();
   const { getAllStores } = useProducts();
   const allStores = getAllStores();
@@ -44,22 +47,18 @@ const FilterModal: React.FC<FilterModalProps> = ({
 
   const handleStoreToggle = (store: string) => {
     if (selectedStores.includes(store)) {
-      // Remove store from selection
-      const newSelection = selectedStores.filter(s => s !== store);
+      const newSelection = selectedStores.filter(sel => sel !== store);
       onStoresChange(newSelection);
     } else {
-      // Add store to selection
       onStoresChange([...selectedStores, store]);
     }
   };
 
   const handleSelectAll = () => {
-    // Clear all filters (show all stores)
     onStoresChange([]);
   };
 
   const handleClearAll = () => {
-    // Select all displayed stores (effectively filtering to show only these)
     onStoresChange([...displayStores]);
   };
 
@@ -70,49 +69,39 @@ const FilterModal: React.FC<FilterModalProps> = ({
       animationType="slide"
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Filter Stores</Text>
-            <Pressable onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={28} color="#000" />
+      <View style={s.overlay}>
+        <View style={s.container}>
+          <View style={s.header}>
+            <Text style={s.title}>Filter Stores</Text>
+            <Pressable onPress={onClose} style={s.closeButton}>
+              <Ionicons name="close" size={28} color={colors.text} />
             </Pressable>
           </View>
 
           {!showSubscribedOnly && (
-            <View style={styles.filterSection}>
-              <View style={styles.filterRow}>
-                <Text style={styles.filterLabel}>Subscribed stores only</Text>
+            <View style={s.filterSection}>
+              <View style={s.filterRow}>
+                <Text style={s.filterLabel}>Subscribed stores only</Text>
                 <Switch
                   value={filterSubscribedOnly}
                   onValueChange={setFilterSubscribedOnly}
-                  trackColor={{ false: '#E0E0E0', true: '#007AFF' }}
-                  thumbColor="#FFF"
+                  trackColor={{ false: colors.border, true: colors.tabActive }}
+                  thumbColor={colors.inverseText}
                 />
               </View>
             </View>
           )}
 
-          <View style={styles.actionsRow}>
-            <Pressable
-              style={styles.actionButton}
-              onPress={handleSelectAll}
-            >
-              <Text style={styles.actionButtonText}>
-                Show All
-              </Text>
+          <View style={s.actionsRow}>
+            <Pressable style={s.actionButton} onPress={handleSelectAll}>
+              <Text style={s.actionButtonText}>Show All</Text>
             </Pressable>
-            <Pressable
-              style={styles.actionButton}
-              onPress={handleClearAll}
-            >
-              <Text style={styles.actionButtonText}>
-                Clear Filters
-              </Text>
+            <Pressable style={s.actionButton} onPress={handleClearAll}>
+              <Text style={s.actionButtonText}>Clear Filters</Text>
             </Pressable>
           </View>
 
-          <ScrollView style={styles.storesList}>
+          <ScrollView style={s.storesList}>
             {displayStores.map(store => {
               const isSelected = isStoreSelected(store);
               const isSubscribed = subscribedStores.includes(store);
@@ -120,25 +109,22 @@ const FilterModal: React.FC<FilterModalProps> = ({
               return (
                 <Pressable
                   key={store}
-                  style={styles.storeItem}
+                  style={s.storeItem}
                   onPress={() => handleStoreToggle(store)}
                 >
-                  <View style={styles.storeInfo}>
-                    <View style={styles.storeNameRow}>
-                      <Text style={styles.storeName}>{store}</Text>
+                  <View style={s.storeInfo}>
+                    <View style={s.storeNameRow}>
+                      <Text style={s.storeName}>{store}</Text>
                       {isSubscribed ? (
-                        <View style={styles.subscribedBadge}>
-                          <Ionicons name="checkmark-circle" size={12} color="#007AFF" />
+                        <View style={s.subscribedBadge}>
+                          <Ionicons name="checkmark-circle" size={12} color={colors.tabActive} />
                         </View>
                       ) : null}
                     </View>
                   </View>
-                  <View style={[
-                    styles.checkbox,
-                    isSelected && styles.checkboxSelected
-                  ]}>
+                  <View style={[s.checkbox, isSelected && s.checkboxSelected]}>
                     {isSelected ? (
-                      <Ionicons name="checkmark" size={18} color="#FFF" />
+                      <Ionicons name="checkmark" size={18} color={colors.inverseText} />
                     ) : null}
                   </View>
                 </Pressable>
@@ -146,11 +132,8 @@ const FilterModal: React.FC<FilterModalProps> = ({
             })}
           </ScrollView>
 
-          <Pressable
-            style={styles.applyButton}
-            onPress={onClose}
-          >
-            <Text style={styles.applyButtonText}>
+          <Pressable style={s.applyButton} onPress={onClose}>
+            <Text style={s.applyButtonText}>
               Apply {selectedStores.length > 0 ? `(${selectedStores.length})` : ''}
             </Text>
           </Pressable>
@@ -160,137 +143,138 @@ const FilterModal: React.FC<FilterModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  container: {
-    backgroundColor: '#FFF',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    borderCurve: 'continuous',
-    maxHeight: '80%',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#000',
-  },
-  closeButton: {
-    padding: 4,
-  },
-  filterSection: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  filterRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  filterLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
-  actionsRow: {
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    gap: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  actionButton: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    backgroundColor: '#F0F0F0',
-    borderRadius: 12,
-    borderCurve: 'continuous',
-    alignItems: 'center',
-  },
-  actionButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#007AFF',
-  },
-  storesList: {
-    maxHeight: 400,
-  },
-  storeItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  storeInfo: {
-    flex: 1,
-  },
-  storeNameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  storeName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
-  subscribedBadge: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    borderCurve: 'continuous',
-    backgroundColor: '#E3F2FD',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderCurve: 'continuous',
-    borderWidth: 2,
-    borderColor: '#CCC',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  checkboxSelected: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
-  },
-  applyButton: {
-    backgroundColor: '#007AFF',
-    marginHorizontal: 20,
-    marginVertical: 16,
-    paddingVertical: 16,
-    borderRadius: 12,
-    borderCurve: 'continuous',
-    alignItems: 'center',
-  },
-  applyButtonText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#FFF',
-  },
-});
+const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').useTheme>['colors']) =>
+  StyleSheet.create({
+    overlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'flex-end',
+    },
+    container: {
+      backgroundColor: colors.surfaceRaised,
+      borderTopLeftRadius: 24,
+      borderTopRightRadius: 24,
+      borderCurve: 'continuous',
+      maxHeight: '80%',
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      paddingTop: 20,
+      paddingBottom: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    closeButton: {
+      padding: 4,
+    },
+    filterSection: {
+      paddingHorizontal: 20,
+      paddingVertical: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    filterRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    filterLabel: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    actionsRow: {
+      flexDirection: 'row',
+      paddingHorizontal: 20,
+      paddingVertical: 12,
+      gap: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    actionButton: {
+      flex: 1,
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+      backgroundColor: colors.surface,
+      borderRadius: 12,
+      borderCurve: 'continuous',
+      alignItems: 'center',
+    },
+    actionButtonText: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.tabActive,
+    },
+    storesList: {
+      maxHeight: 400,
+    },
+    storeItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 20,
+      paddingVertical: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    storeInfo: {
+      flex: 1,
+    },
+    storeNameRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    storeName: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    subscribedBadge: {
+      width: 18,
+      height: 18,
+      borderRadius: 9,
+      borderCurve: 'continuous',
+      backgroundColor: colors.accentMuted,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    checkbox: {
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      borderCurve: 'continuous',
+      borderWidth: 2,
+      borderColor: colors.textTertiary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    checkboxSelected: {
+      backgroundColor: colors.tabActive,
+      borderColor: colors.tabActive,
+    },
+    applyButton: {
+      backgroundColor: colors.tabActive,
+      marginHorizontal: 20,
+      marginVertical: 16,
+      paddingVertical: 16,
+      borderRadius: 12,
+      borderCurve: 'continuous',
+      alignItems: 'center',
+    },
+    applyButtonText: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.inverseText,
+    },
+  });
 
 export default FilterModal;

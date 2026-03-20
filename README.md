@@ -10,7 +10,7 @@ A React Native mobile shopping app that displays products from multiple clothing
 - **Explore Screen**: Discover products with a selector to browse by stores or by curated public lists; snap-up layout and refreshed product grid
 - **Search Tab**: Search across **stores**, **products**, and **users** with filter chips (All, Stores, Products, Users); subscribe to stores or follow users from results
 - **Favorites**: Save products and organize them into custom lists
-- **Profile**: View and edit your profile; sign out; toggle **dark mode** (preference saved)
+- **Profile**: View and edit your profile; sign out
 - **Product Details**: View detailed product information and open store links
 - **Store Subscriptions**: Subscribe/unsubscribe from stores to personalize your feed
 
@@ -402,8 +402,6 @@ npm start -- --clear
 - [ ] **Lists**: Create a new list, add products to it
 - [ ] **Product Detail**: "View on [Store]" opens store link
 - [ ] **Auth**: Sign up (with email confirmation), sign in, Profile tab (edit profile, sign out)
-- [ ] **Dark mode**: Toggle in Profile; app and tab bar switch to dark theme; preference persists
-
 ---
 
 ## Known Issues
@@ -430,9 +428,9 @@ npm start -- --clear
 - **Expo**: Development tooling
 - **TypeScript**: Type safety
 - **React Navigation**: Screen navigation (tabs: Home, Explore, Search, Favorites, Profile)
-- **ThemeContext**: App-wide light/dark mode (persisted via AsyncStorage)
+- **ThemeContext**: Shared UI color tokens for screens and components
 - **Supabase**: Authentication and user profiles (email/password, RLS)
-- **AsyncStorage**: Local data persistence (session, favorites, lists, dark mode preference)
+- **AsyncStorage**: Local data persistence (session, favorites, lists)
 
 ---
 

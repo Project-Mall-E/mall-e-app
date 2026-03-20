@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import type { AuthStackParamList } from '../types';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList>;
@@ -22,6 +23,8 @@ const MIN_PASSWORD_LENGTH = 6;
 export default function SignInScreen() {
   const navigation = useNavigation<NavigationProp>();
   const { signIn } = useAuth();
+  const { colors } = useTheme();
+  const s = makeStyles(colors);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -52,25 +55,25 @@ export default function SignInScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+    <SafeAreaView style={s.container} edges={['top', 'bottom']}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.keyboardView}
+        style={s.keyboardView}
       >
-        <View style={styles.content}>
-          <Text style={styles.title}>Sign in</Text>
-          <Text style={styles.subtitle}>Welcome back to Mall-E</Text>
+        <View style={s.content}>
+          <Text style={s.title}>Sign in</Text>
+          <Text style={s.subtitle}>Welcome back to Mall-E</Text>
 
           {error ? (
-            <View style={styles.errorBox}>
-              <Text style={styles.errorText}>{error}</Text>
+            <View style={s.errorBox}>
+              <Text style={s.errorText}>{error}</Text>
             </View>
           ) : null}
 
           <TextInput
-            style={styles.input}
+            style={s.input}
             placeholder="Email"
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.textTertiary}
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
@@ -79,9 +82,9 @@ export default function SignInScreen() {
             editable={!loading}
           />
           <TextInput
-            style={styles.input}
+            style={s.input}
             placeholder="Password"
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.textTertiary}
             value={password}
             onChangeText={setPassword}
             secureTextEntry
@@ -89,24 +92,24 @@ export default function SignInScreen() {
           />
 
           <Pressable
-            style={[styles.button, loading && styles.buttonDisabled]}
+            style={[s.button, loading && s.buttonDisabled]}
             onPress={handleSignIn}
             disabled={loading}
           >
             {loading ? (
-              <ActivityIndicator color="#FFF" />
+              <ActivityIndicator color={colors.inverseText} />
             ) : (
-              <Text style={styles.buttonText}>Sign in</Text>
+              <Text style={s.buttonText}>Sign in</Text>
             )}
           </Pressable>
 
           <Pressable
-            style={styles.linkButton}
+            style={s.linkButton}
             onPress={() => navigation.navigate('SignUp')}
             disabled={loading}
           >
-            <Text style={styles.linkText}>
-              Don&apos;t have an account? <Text style={styles.linkTextBold}>Sign up</Text>
+            <Text style={s.linkText}>
+              Don&apos;t have an account? <Text style={s.linkTextBold}>Sign up</Text>
             </Text>
           </Pressable>
         </View>
@@ -115,74 +118,75 @@ export default function SignInScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    padding: 24,
-    gap: 16,
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#000',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 8,
-  },
-  errorBox: {
-    backgroundColor: '#FFEBEE',
-    padding: 12,
-    borderRadius: 12,
-    borderCurve: 'continuous',
-  },
-  errorText: {
-    color: '#C62828',
-    fontSize: 14,
-  },
-  input: {
-    backgroundColor: '#F5F5F5',
-    padding: 16,
-    borderRadius: 12,
-    borderCurve: 'continuous',
-    fontSize: 16,
-    color: '#000',
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    padding: 16,
-    borderRadius: 12,
-    borderCurve: 'continuous',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 17,
-    fontWeight: '600',
-  },
-  linkButton: {
-    alignItems: 'center',
-    padding: 12,
-  },
-  linkText: {
-    color: '#666',
-    fontSize: 15,
-  },
-  linkTextBold: {
-    color: '#007AFF',
-    fontWeight: '600',
-  },
-});
+const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').useTheme>['colors']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    keyboardView: {
+      flex: 1,
+    },
+    content: {
+      flex: 1,
+      padding: 24,
+      gap: 16,
+      justifyContent: 'center',
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    subtitle: {
+      fontSize: 16,
+      color: colors.textSecondary,
+      marginBottom: 8,
+    },
+    errorBox: {
+      backgroundColor: colors.errorBg,
+      padding: 12,
+      borderRadius: 12,
+      borderCurve: 'continuous',
+    },
+    errorText: {
+      color: colors.error,
+      fontSize: 14,
+    },
+    input: {
+      backgroundColor: colors.inputBg,
+      padding: 16,
+      borderRadius: 12,
+      borderCurve: 'continuous',
+      fontSize: 16,
+      color: colors.inputText,
+    },
+    button: {
+      backgroundColor: colors.tabActive,
+      padding: 16,
+      borderRadius: 12,
+      borderCurve: 'continuous',
+      alignItems: 'center',
+      marginTop: 8,
+    },
+    buttonDisabled: {
+      opacity: 0.6,
+    },
+    buttonText: {
+      color: colors.inverseText,
+      fontSize: 17,
+      fontWeight: '600',
+    },
+    linkButton: {
+      alignItems: 'center',
+      padding: 12,
+    },
+    linkText: {
+      color: colors.textSecondary,
+      fontSize: 15,
+    },
+    linkTextBold: {
+      color: colors.tabActive,
+      fontWeight: '600',
+    },
+  });

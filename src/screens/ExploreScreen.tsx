@@ -16,7 +16,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 const ExploreScreen = () => {
   const { navigate } = useNavigation<NavigationProp>();
   const { products } = useProducts();
-  const { colors } = useTheme();
+  const { colors, dark } = useTheme();
   const insets = useSafeAreaInsets();
 
   const [showFilter, setShowFilter] = useState(false);
@@ -55,24 +55,34 @@ const ExploreScreen = () => {
     return shuffledProducts.filter(p => selectedStores.includes(p.store));
   }, [shuffledProducts, selectedStores]);
 
+  const filterIconColor =
+    selectedStores.length > 0 ? colors.inverseText : dark ? colors.inverseText : colors.text;
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.filterWrap, { top: insets.top + 8 }]} pointerEvents="box-none">
         <Pressable
-          style={[styles.filterButton, selectedStores.length > 0 && styles.filterButtonActive]}
+          style={[
+            styles.filterButton,
+            {
+              backgroundColor: dark ? 'rgba(0,0,0,0.45)' : colors.surfaceRaised,
+              borderColor: dark ? 'rgba(255,255,255,0.35)' : colors.border,
+            },
+            selectedStores.length > 0 && { backgroundColor: colors.tabActive, borderColor: 'rgba(255,255,255,0.25)' },
+          ]}
           onPress={() => setShowFilter(true)}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Ionicons name="options-outline" size={24} color="#FFF" />
+          <Ionicons name="options-outline" size={24} color={filterIconColor} />
           {selectedStores.length > 0 && (
-            <View style={styles.filterBadge}>
-              <Text style={styles.filterBadgeText}>{selectedStores.length}</Text>
+            <View style={[styles.filterBadge, { backgroundColor: colors.error, borderColor: colors.surfaceRaised }]}>
+              <Text style={[styles.filterBadgeText, { color: colors.inverseText }]}>{selectedStores.length}</Text>
             </View>
           )}
         </Pressable>
       </View>
 
-      <View style={styles.feedContainer}>
+      <View style={[styles.feedContainer, { backgroundColor: colors.background }]}>
         <ProductFeed
           products={displayProducts}
           onProductPress={handleProductPress}
@@ -96,20 +106,27 @@ const ExploreScreen = () => {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   filterWrap: { position: 'absolute', right: 12, zIndex: 10 },
-  feedContainer: { flex: 1, backgroundColor: '#000' },
+  feedContainer: { flex: 1 },
   filterButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: 'rgba(0,0,0,0.45)',
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.35)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  filterButtonActive: { backgroundColor: '#007AFF', borderColor: 'rgba(255,255,255,0.25)' },
-  filterBadge: { position: 'absolute', top: -4, right: -4, backgroundColor: '#FF3B30', width: 18, height: 18, borderRadius: 9, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#FFF' },
-  filterBadgeText: { color: '#FFF', fontSize: 10, fontWeight: '700' },
+  filterBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+  },
+  filterBadgeText: { fontSize: 10, fontWeight: '700' },
 });
 
 export default ExploreScreen;
