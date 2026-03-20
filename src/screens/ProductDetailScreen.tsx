@@ -19,6 +19,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useUser } from '../context/UserContext';
+import { useTheme } from '../context/ThemeContext';
 import { RootStackParamList } from '../types';
 
 type ProductDetailRouteProp = RouteProp<RootStackParamList, 'ProductDetail'>;
@@ -27,6 +28,8 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ProductDetailScreen = () => {
   const route = useRoute<ProductDetailRouteProp>();
   const { product } = route.params;
+  const { colors } = useTheme();
+  const s = makeStyles(colors);
   const {
     isFavorite,
     toggleFavorite,
@@ -72,12 +75,12 @@ const ProductDetailScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={s.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
       >
-        <View style={styles.imageContainer}>
+        <View style={s.imageContainer}>
           <FlatList
             data={images}
             horizontal
@@ -88,92 +91,89 @@ const ProductDetailScreen = () => {
             renderItem={({ item: imageUrl }) => (
               <Image
                 source={{ uri: imageUrl }}
-                style={styles.image}
+                style={s.image}
                 contentFit="cover"
               />
             )}
           />
           {images.length > 1 ? (
-            <View style={styles.pagination}>
+            <View style={s.pagination}>
               {images.map((_, index) => (
                 <View
                   key={`image-dot-${index}`}
-                  style={[styles.dot, index === activeImageIndex ? styles.dotActive : null]}
+                  style={[s.dot, index === activeImageIndex ? s.dotActive : null]}
                 />
               ))}
             </View>
           ) : null}
           <LinearGradient
             colors={['transparent', 'rgba(0,0,0,0.7)']}
-            style={styles.gradient}
+            style={s.gradient}
           />
         </View>
 
-        <View style={styles.content}>
-          <View style={styles.headerSection}>
-            <View style={styles.storeContainer}>
-              <Text style={styles.storeName}>{product.store}</Text>
+        <View style={s.content}>
+          <View style={s.headerSection}>
+            <View style={s.storeContainer}>
+              <Text style={s.storeName}>{product.store}</Text>
               <Pressable
-                style={[
-                  styles.subscribeButton,
-                  isSubscribed && styles.subscribedButton,
-                ]}
+                style={[s.subscribeButton, isSubscribed && s.subscribedButton]}
                 onPress={() => toggleStoreSubscription(product.store)}
               >
                 <Ionicons
                   name={isSubscribed ? 'checkmark-circle' : 'add-circle-outline'}
                   size={16}
-                  color={isSubscribed ? '#FFF' : '#007AFF'}
+                  color={isSubscribed ? colors.inverseText : colors.tabActive}
                 />
               </Pressable>
             </View>
-            <Text style={styles.itemName}>{product.item_name}</Text>
-            <Text style={styles.price}>{product.price}</Text>
+            <Text style={s.itemName}>{product.item_name}</Text>
+            <Text style={s.price}>{product.price}</Text>
           </View>
 
-          <View style={styles.tagsSection}>
-            <View style={styles.tagsContainer}>
+          <View style={s.tagsSection}>
+            <View style={s.tagsContainer}>
               {product.tags.map((tag, index) => (
-                <View key={index} style={styles.tag}>
-                  <Text style={styles.tagText}>{tag}</Text>
+                <View key={index} style={s.tag}>
+                  <Text style={s.tagText}>{tag}</Text>
                 </View>
               ))}
             </View>
           </View>
 
-          <View style={styles.actionsSection}>
+          <View style={s.actionsSection}>
             <Pressable
-              style={styles.actionButton}
+              style={s.actionButton}
               onPress={() => toggleFavorite(product)}
             >
               <Ionicons
                 name={favorite ? 'heart' : 'heart-outline'}
                 size={24}
-                color={favorite ? '#FF3B30' : '#000'}
+                color={favorite ? colors.error : colors.text}
               />
             </Pressable>
 
             <Pressable
-              style={styles.actionButton}
+              style={s.actionButton}
               onPress={() => setShowListModal(true)}
             >
-              <Ionicons name="list-outline" size={24} color="#000" />
+              <Ionicons name="list-outline" size={24} color={colors.text} />
             </Pressable>
 
             <Pressable
-              style={styles.actionButton}
+              style={s.actionButton}
               onPress={handleOpenLink}
             >
-              <Ionicons name="open-outline" size={24} color="#000" />
+              <Ionicons name="open-outline" size={24} color={colors.text} />
             </Pressable>
           </View>
 
           <Pressable
-            style={styles.shopButton}
+            style={s.shopButton}
             onPress={handleOpenLink}
           >
-            <Text style={styles.shopButtonText}>Shop Now</Text>
-            <Ionicons name="arrow-forward" size={20} color="#FFF" />
+            <Text style={s.shopButtonText}>Shop Now</Text>
+            <Ionicons name="arrow-forward" size={20} color={colors.inverseText} />
           </Pressable>
         </View>
       </ScrollView>
@@ -184,27 +184,27 @@ const ProductDetailScreen = () => {
         animationType="slide"
         onRequestClose={() => setShowListModal(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Add to List</Text>
+        <View style={s.modalOverlay}>
+          <View style={s.modalContent}>
+            <View style={s.modalHeader}>
+              <Text style={s.modalTitle}>Add to List</Text>
               <Pressable onPress={() => setShowListModal(false)}>
-                <Ionicons name="close" size={28} color="#000" />
+                <Ionicons name="close" size={28} color={colors.text} />
               </Pressable>
             </View>
 
-            <ScrollView style={styles.listsList}>
+            <ScrollView style={s.listsList}>
               {lists.map(list => (
                 <Pressable
                   key={list.id}
-                  style={styles.listItem}
+                  style={s.listItem}
                   onPress={() => handleAddToList(list.id)}
                 >
-                  <View style={styles.listItemContent}>
-                    <Ionicons name="list" size={24} color="#007AFF" />
-                    <Text style={styles.listItemName}>{list.name}</Text>
+                  <View style={s.listItemContent}>
+                    <Ionicons name="list" size={24} color={colors.tabActive} />
+                    <Text style={s.listItemName}>{list.name}</Text>
                   </View>
-                  <Ionicons name="add-circle-outline" size={24} color="#007AFF" />
+                  <Ionicons name="add-circle-outline" size={24} color={colors.tabActive} />
                 </Pressable>
               ))}
             </ScrollView>
@@ -215,182 +215,183 @@ const ProductDetailScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF',
-  },
-  imageContainer: {
-    width: '100%',
-    height: 400,
-    position: 'relative',
-  },
-  image: {
-    width: SCREEN_WIDTH,
-    height: '100%',
-  },
-  pagination: {
-    position: 'absolute',
-    bottom: 16,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 12,
-    borderCurve: 'continuous',
-  },
-  dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: 'rgba(255,255,255,0.45)',
-  },
-  dotActive: { backgroundColor: '#FFF' },
-  gradient: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 100,
-  },
-  content: {
-    padding: 20,
-  },
-  headerSection: {
-    marginBottom: 24,
-  },
-  storeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  storeName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#666',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  subscribeButton: {
-    padding: 8,
-    borderRadius: 20,
-    borderCurve: 'continuous',
-  },
-  subscribedButton: {
-    backgroundColor: '#007AFF',
-  },
-  itemName: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#000',
-    marginBottom: 12,
-    lineHeight: 32,
-  },
-  price: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#007AFF',
-  },
-  tagsSection: {
-    marginBottom: 24,
-  },
-  tagsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  tag: {
-    backgroundColor: '#F0F0F0',
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 16,
-    borderCurve: 'continuous',
-  },
-  tagText: {
-    fontSize: 13,
-    color: '#666',
-    fontWeight: '500',
-  },
-  actionsSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 24,
-    paddingVertical: 16,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#F0F0F0',
-  },
-  actionButton: {
-    alignItems: 'center',
-    padding: 8,
-  },
-  shopButton: {
-    backgroundColor: '#007AFF',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 18,
-    borderRadius: 12,
-    borderCurve: 'continuous',
-    gap: 8,
-  },
-  shopButtonText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#FFF',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: '#FFF',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    borderCurve: 'continuous',
-    paddingTop: 20,
-    maxHeight: '70%',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#000',
-  },
-  listsList: {
-    padding: 20,
-  },
-  listItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  listItemContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  listItemName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
-});
+const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').useTheme>['colors']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    imageContainer: {
+      width: '100%',
+      height: 400,
+      position: 'relative',
+    },
+    image: {
+      width: SCREEN_WIDTH,
+      height: '100%',
+    },
+    pagination: {
+      position: 'absolute',
+      bottom: 16,
+      alignSelf: 'center',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      backgroundColor: 'rgba(0,0,0,0.3)',
+      paddingHorizontal: 10,
+      paddingVertical: 6,
+      borderRadius: 12,
+      borderCurve: 'continuous',
+    },
+    dot: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: 'rgba(255,255,255,0.45)',
+    },
+    dotActive: { backgroundColor: colors.inverseText },
+    gradient: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: 100,
+    },
+    content: {
+      padding: 20,
+    },
+    headerSection: {
+      marginBottom: 24,
+    },
+    storeContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 12,
+    },
+    storeName: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.textSecondary,
+      textTransform: 'uppercase',
+      letterSpacing: 1,
+    },
+    subscribeButton: {
+      padding: 8,
+      borderRadius: 20,
+      borderCurve: 'continuous',
+    },
+    subscribedButton: {
+      backgroundColor: colors.tabActive,
+    },
+    itemName: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: 12,
+      lineHeight: 32,
+    },
+    price: {
+      fontSize: 32,
+      fontWeight: '700',
+      color: colors.tabActive,
+    },
+    tagsSection: {
+      marginBottom: 24,
+    },
+    tagsContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    tag: {
+      backgroundColor: colors.surface,
+      paddingHorizontal: 14,
+      paddingVertical: 6,
+      borderRadius: 16,
+      borderCurve: 'continuous',
+    },
+    tagText: {
+      fontSize: 13,
+      color: colors.textSecondary,
+      fontWeight: '500',
+    },
+    actionsSection: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      marginBottom: 24,
+      paddingVertical: 16,
+      borderTopWidth: 1,
+      borderBottomWidth: 1,
+      borderColor: colors.border,
+    },
+    actionButton: {
+      alignItems: 'center',
+      padding: 8,
+    },
+    shopButton: {
+      backgroundColor: colors.tabActive,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 18,
+      borderRadius: 12,
+      borderCurve: 'continuous',
+      gap: 8,
+    },
+    shopButtonText: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.inverseText,
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'flex-end',
+    },
+    modalContent: {
+      backgroundColor: colors.surfaceRaised,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      borderCurve: 'continuous',
+      paddingTop: 20,
+      maxHeight: '70%',
+    },
+    modalHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      paddingBottom: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    modalTitle: {
+      fontSize: 20,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    listsList: {
+      padding: 20,
+    },
+    listItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    listItemContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
+    },
+    listItemName: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+  });
 
 export default ProductDetailScreen;

@@ -1,14 +1,19 @@
 // App.tsx
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Linking } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+  type Theme as NavigationTheme,
+} from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from './src/context/AuthContext';
 import { UserProvider } from './src/context/UserContext';
 import RootNavigator from './src/navigation/RootNavigator';
 import { setSessionFromUrl } from './src/lib/authRedirect';
-import { ThemeProvider } from './src/context/ThemeContext';
+import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 
 const AUTH_SCHEME = 'com.celestialdragonfly.malle';
 
@@ -30,6 +35,32 @@ function useAuthDeepLink() {
   }, []);
 }
 
+function ThemedNavigation() {
+  const { dark, colors } = useTheme();
+  const navigationTheme = useMemo((): NavigationTheme => {
+    const base = dark ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: {
+        ...base.colors,
+        primary: colors.tabActive,
+        background: colors.background,
+        card: colors.surfaceRaised,
+        text: colors.text,
+        border: colors.border,
+        notification: colors.tabActive,
+      },
+    };
+  }, [dark, colors]);
+
+  return (
+    <NavigationContainer theme={navigationTheme}>
+      <RootNavigator />
+      <StatusBar style="auto" />
+    </NavigationContainer>
+  );
+}
+
 export default function App() {
   useAuthDeepLink();
 
@@ -38,10 +69,7 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <UserProvider>
-            <NavigationContainer>
-              <RootNavigator />
-              <StatusBar style="auto" />
-            </NavigationContainer>
+            <ThemedNavigation />
           </UserProvider>
         </AuthProvider>
       </ThemeProvider>

@@ -4,6 +4,7 @@ import { FlatList, StyleSheet, View, Text } from 'react-native';
 import ProductCard from './ProductCard';
 import { ProductCardSkeleton } from './ProductCardSkeleton';
 import { Product } from '../types';
+import { useTheme } from '../context/ThemeContext';
 
 const SKELETON_PLACEHOLDERS = [0, 1, 2, 3, 4, 5] as const;
 
@@ -26,6 +27,9 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   onRefresh,
   emptyMessage = 'No products found',
 }) => {
+  const { colors } = useTheme();
+  const s = makeStyles(colors);
+
   if (loading) {
     return (
       <FlatList
@@ -33,8 +37,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({
         renderItem={() => <ProductCardSkeleton />}
         keyExtractor={item => `skeleton-${item}`}
         numColumns={2}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={styles.container}
+        columnWrapperStyle={s.row}
+        contentContainerStyle={s.container}
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
         onRefresh={onRefresh}
@@ -44,8 +48,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 
   if (products.length === 0) {
     return (
-      <View style={styles.centerContainer}>
-        <Text style={styles.emptyText}>{emptyMessage}</Text>
+      <View style={s.centerContainer}>
+        <Text style={s.emptyText}>{emptyMessage}</Text>
       </View>
     );
   }
@@ -62,8 +66,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({
       )}
       keyExtractor={(item, index) => `${item.item_link}-${index}`}
       numColumns={2}
-      columnWrapperStyle={styles.row}
-      contentContainerStyle={styles.container}
+      columnWrapperStyle={s.row}
+      contentContainerStyle={s.container}
       showsVerticalScrollIndicator={false}
       refreshing={refreshing}
       onRefresh={onRefresh}
@@ -71,24 +75,25 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
-  row: {
-    justifyContent: 'space-between',
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-  },
-});
+const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').useTheme>['colors']) =>
+  StyleSheet.create({
+    container: {
+      padding: 16,
+    },
+    row: {
+      justifyContent: 'space-between',
+    },
+    centerContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 32,
+    },
+    emptyText: {
+      fontSize: 16,
+      color: colors.textSecondary,
+      textAlign: 'center',
+    },
+  });
 
 export default ProductGrid;

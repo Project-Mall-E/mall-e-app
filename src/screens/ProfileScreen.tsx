@@ -7,10 +7,8 @@ import {
   Pressable,
   TextInput,
   ActivityIndicator,
-  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { supabase } from '../lib/supabase';
@@ -20,7 +18,7 @@ const MAX_NAME_LENGTH = 100;
 
 export default function ProfileScreen() {
   const { user, profile, signOut, refreshProfile } = useAuth();
-  const { dark, toggleDark, colors } = useTheme();
+  const { colors } = useTheme();
 
   const [editing, setEditing] = useState(false);
   const [username, setUsername] = useState(profile?.username ?? '');
@@ -113,7 +111,7 @@ export default function ProfileScreen() {
               onPress={handleSave}
               disabled={saving}
             >
-              {saving ? <ActivityIndicator color="#FFF" /> : <Text style={s.buttonText}>Save</Text>}
+              {saving ? <ActivityIndicator color={colors.inverseText} /> : <Text style={s.buttonText}>Save</Text>}
             </Pressable>
             <Pressable style={s.secondaryButton} onPress={() => setEditing(false)} disabled={saving}>
               <Text style={s.secondaryButtonText}>Cancel</Text>
@@ -124,25 +122,6 @@ export default function ProfileScreen() {
             <Text style={s.buttonText}>Edit profile</Text>
           </Pressable>
         )}
-
-        {/* ── Appearance section ── */}
-        <View style={s.section}>
-          <Text style={s.sectionTitle}>Appearance</Text>
-          <View style={s.row}>
-            <View style={s.rowLeft}>
-              <View style={[s.rowIcon, { backgroundColor: dark ? '#2C2C2E' : '#F2F2F7' }]}>
-                <Ionicons name={dark ? 'moon' : 'sunny'} size={20} color={dark ? '#0A84FF' : '#FF9F0A'} />
-              </View>
-              <Text style={s.rowLabel}>Dark mode</Text>
-            </View>
-            <Switch
-              value={dark}
-              onValueChange={toggleDark}
-              trackColor={{ false: '#E5E5EA', true: '#0A84FF' }}
-              thumbColor="#FFF"
-            />
-          </View>
-        </View>
 
         <Pressable style={s.signOutButton} onPress={() => signOut()}>
           <Text style={s.signOutText}>Sign out</Text>
@@ -199,58 +178,16 @@ const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').
       color: colors.inputText,
     },
     button: {
-      backgroundColor: '#007AFF',
+      backgroundColor: colors.tabActive,
       padding: 16,
       borderRadius: 12,
       alignItems: 'center',
       marginTop: 8,
     },
     buttonDisabled: { opacity: 0.6 },
-    buttonText: { color: '#FFF', fontSize: 17, fontWeight: '600' },
+    buttonText: { color: colors.inverseText, fontSize: 17, fontWeight: '600' },
     secondaryButton: { padding: 16, alignItems: 'center' },
-    secondaryButtonText: { color: '#007AFF', fontSize: 17 },
-
-    // Appearance section
-    section: {
-      marginTop: 8,
-      backgroundColor: colors.surface,
-      borderRadius: 16,
-      overflow: 'hidden',
-    },
-    sectionTitle: {
-      fontSize: 13,
-      fontWeight: '600',
-      color: colors.textTertiary,
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-      paddingHorizontal: 16,
-      paddingTop: 16,
-      paddingBottom: 8,
-    },
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: 16,
-      paddingVertical: 12,
-    },
-    rowLeft: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 12,
-    },
-    rowIcon: {
-      width: 36,
-      height: 36,
-      borderRadius: 10,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    rowLabel: {
-      fontSize: 16,
-      color: colors.text,
-      fontWeight: '500',
-    },
+    secondaryButtonText: { color: colors.tabActive, fontSize: 17 },
     signOutButton: {
       marginTop: 'auto',
       padding: 16,

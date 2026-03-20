@@ -17,6 +17,7 @@ import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Product } from '../types';
+import { useTheme } from '../context/ThemeContext';
 
 const SLIDE_DOT_MAX = 6;
 
@@ -152,6 +153,7 @@ const ProductFeed: React.FC<ProductFeedProps> = ({
   onRefresh,
   refreshing,
 }) => {
+  const { dark, colors } = useTheme();
   const insets = useSafeAreaInsets();
   const { width: winW, height: winH } = useWindowDimensions();
   const [viewport, setViewport] = useState<{ width: number; height: number } | null>(null);
@@ -193,15 +195,16 @@ const ProductFeed: React.FC<ProductFeedProps> = ({
 
   const keyExtractor = useCallback((item: Product) => item.item_link, []);
 
+  const refreshTint = dark ? colors.inverseText : colors.text;
   const refreshControl = useMemo(() => {
     if (!onRefresh || refreshing === undefined) return undefined;
     return (
-      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#fff" />
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={refreshTint} />
     );
-  }, [onRefresh, refreshing]);
+  }, [onRefresh, refreshing, refreshTint]);
 
   return (
-    <View style={styles.container} onLayout={onLayoutContainer}>
+    <View style={[styles.container, { backgroundColor: colors.background }]} onLayout={onLayoutContainer}>
       <FlatList
         ref={flatListRef}
         data={products}
@@ -229,7 +232,7 @@ const ProductFeed: React.FC<ProductFeedProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
+  container: { flex: 1 },
   slide: { position: 'relative' },
   imageContainer: { flex: 1, position: 'relative' },
   productImage: { width: '100%', height: '100%' },

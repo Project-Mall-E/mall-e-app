@@ -1,12 +1,9 @@
 // src/context/ThemeContext.tsx
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const STORAGE_KEY = '@mall_e_dark_mode';
+import React, { createContext, useContext, ReactNode } from 'react';
+import { useColorScheme } from 'react-native';
 
 interface ThemeContextType {
   dark: boolean;
-  toggleDark: () => void;
   colors: typeof lightColors;
 }
 
@@ -28,6 +25,8 @@ export const lightColors = {
   errorBg:        '#FFEBEE',
   headerBg:       '#FFFFFF',
   headerText:     '#000000',
+  accentMuted:    '#E3F2FD',
+  inverseText:    '#FFFFFF',
 };
 
 export const darkColors: typeof lightColors = {
@@ -48,32 +47,19 @@ export const darkColors: typeof lightColors = {
   errorBg:        '#3A1A1A',
   headerBg:       '#1C1C1E',
   headerText:     '#FFFFFF',
+  accentMuted:    '#1A2744',
+  inverseText:    '#FFFFFF',
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [dark, setDark] = useState(false);
-
-  // Load saved preference on mount
-  useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY).then(value => {
-      if (value !== null) setDark(value === 'true');
-    });
-  }, []);
-
-  const toggleDark = () => {
-    setDark(prev => {
-      const next = !prev;
-      AsyncStorage.setItem(STORAGE_KEY, String(next));
-      return next;
-    });
-  };
-
+  const scheme = useColorScheme();
+  const dark = scheme === 'dark';
   const colors = dark ? darkColors : lightColors;
 
   return (
-    <ThemeContext.Provider value={{ dark, toggleDark, colors }}>
+    <ThemeContext.Provider value={{ dark, colors }}>
       {children}
     </ThemeContext.Provider>
   );

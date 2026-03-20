@@ -47,14 +47,20 @@ const HomeScreen = () => {
             style={[
               styles.iconButton,
               { backgroundColor: colors.surface },
-              selectedStores.length > 0 && styles.iconButtonActive,
+              selectedStores.length > 0 && { backgroundColor: colors.tabActive },
             ]}
             onPress={() => setShowFilter(true)}
           >
-            <Ionicons name="filter" size={24} color={selectedStores.length > 0 ? '#FFF' : colors.text} />
+            <Ionicons
+              name="filter"
+              size={24}
+              color={selectedStores.length > 0 ? colors.inverseText : colors.text}
+            />
             {selectedStores.length > 0 && (
-              <View style={styles.filterBadge}>
-                <Text style={styles.filterBadgeText}>{selectedStores.length}</Text>
+              <View style={[styles.filterBadge, { backgroundColor: colors.error, borderColor: colors.background }]}>
+                <Text style={[styles.filterBadgeText, { color: colors.inverseText }]}>
+                  {selectedStores.length}
+                </Text>
               </View>
             )}
           </Pressable>
@@ -102,21 +108,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
   },
-  iconButtonActive: { backgroundColor: '#007AFF' },
   filterBadge: {
     position: 'absolute',
     top: -4,
     right: -4,
-    backgroundColor: '#FF3B30',
     width: 18,
     height: 18,
     borderRadius: 9,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FFF',
   },
-  filterBadgeText: { color: '#FFF', fontSize: 10, fontWeight: '700' },
+  filterBadgeText: { fontSize: 10, fontWeight: '700' },
 });
 
 export default HomeScreen;

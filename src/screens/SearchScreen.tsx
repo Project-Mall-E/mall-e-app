@@ -102,18 +102,27 @@ const SearchScreen = () => {
           {(['all', 'stores', 'products', 'users'] as FilterType[]).map(f => (
             <Pressable
               key={f}
-              style={[styles.filterPill, { backgroundColor: colors.surface }, activeFilter === f && styles.filterPillActive]}
+              style={[
+                styles.filterPill,
+                { backgroundColor: colors.surface },
+                activeFilter === f && { backgroundColor: colors.tabActive },
+              ]}
               onPress={() => setActiveFilter(f)}
             >
               {f !== 'all' && (
                 <Ionicons
                   name={f === 'stores' ? 'storefront' : f === 'products' ? 'grid' : 'people'}
                   size={16}
-                  color={activeFilter === f ? '#FFF' : colors.textTertiary}
+                  color={activeFilter === f ? colors.inverseText : colors.textTertiary}
                   style={styles.filterPillIcon}
                 />
               )}
-              <Text style={[styles.filterPillText, { color: colors.textTertiary }, activeFilter === f && styles.filterPillTextActive]}>
+              <Text
+                style={[
+                  styles.filterPillText,
+                  activeFilter === f ? { color: colors.inverseText } : { color: colors.textTertiary },
+                ]}
+              >
                 {f.charAt(0).toUpperCase() + f.slice(1)}
               </Text>
             </Pressable>
@@ -148,13 +157,27 @@ const SearchScreen = () => {
                     return (
                       <View key={store} style={[styles.storeItem, { borderBottomColor: colors.surface }, index === filteredStores.length - 1 && styles.storeItemLast]}>
                         <View style={styles.storeInfo}>
-                          <View style={[styles.storeIconContainer, { backgroundColor: colors.surface }, isSubscribed && styles.storeIconActive]}>
-                            <Ionicons name={isSubscribed ? 'storefront' : 'storefront-outline'} size={20} color={isSubscribed ? '#007AFF' : colors.textTertiary} />
+                          <View
+                            style={[
+                              styles.storeIconContainer,
+                              { backgroundColor: colors.surface },
+                              isSubscribed && { backgroundColor: colors.accentMuted },
+                            ]}
+                          >
+                            <Ionicons
+                              name={isSubscribed ? 'storefront' : 'storefront-outline'}
+                              size={20}
+                              color={isSubscribed ? colors.tabActive : colors.textTertiary}
+                            />
                           </View>
                           <Text style={[styles.storeName, { color: colors.text }]}>{store}</Text>
                         </View>
                         <Pressable style={styles.subscribeButton} onPress={() => toggleStoreSubscription(store)} hitSlop={8}>
-                          <Ionicons name={isSubscribed ? 'checkmark-circle' : 'add-circle-outline'} size={26} color="#007AFF" />
+                          <Ionicons
+                            name={isSubscribed ? 'checkmark-circle' : 'add-circle-outline'}
+                            size={26}
+                            color={colors.tabActive}
+                          />
                         </Pressable>
                       </View>
                     );
@@ -174,7 +197,7 @@ const SearchScreen = () => {
                       <Image source={{ uri: product.item_image_link }} style={styles.productImage} resizeMode="cover" />
                       <View style={styles.productInfo}>
                         <Text style={[styles.productName, { color: colors.text }]} numberOfLines={2}>{product.item_name}</Text>
-                        <Text style={styles.productPrice}>{product.price}</Text>
+                        <Text style={[styles.productPrice, { color: colors.tabActive }]}>{product.price}</Text>
                         <Text style={[styles.productStore, { color: colors.textTertiary }]}>{product.store}</Text>
                       </View>
                     </Pressable>
@@ -192,8 +215,8 @@ const SearchScreen = () => {
                       <View key={profile.id} style={[styles.userItem, { borderBottomColor: colors.surface }, index === filteredUsers.length - 1 && styles.userItemLast]}>
                         <Pressable style={styles.userPressable} onPress={() => handleUserPress(profile.id)}>
                           <View style={styles.avatarContainer}>
-                            <View style={styles.avatar}>
-                              <Text style={styles.avatarText}>
+                            <View style={[styles.avatar, { backgroundColor: colors.tabActive }]}>
+                              <Text style={[styles.avatarText, { color: colors.inverseText }]}>
                                 {(profile.username?.[0] || profile.first_name?.[0] || 'U').toUpperCase()}
                               </Text>
                             </View>
@@ -209,11 +232,21 @@ const SearchScreen = () => {
                         </Pressable>
                         {!isCurrentUser && (
                           <Pressable
-                            style={[styles.followButton, following && { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border }]}
+                            style={[
+                              styles.followButton,
+                              { backgroundColor: colors.tabActive },
+                              following && { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
+                            ]}
                             onPress={() => following ? unfollowUser(profile.id) : followUser(profile.id)}
                             hitSlop={8}
                           >
-                            <Text style={[styles.followButtonText, following && { color: colors.text }]}>
+                            <Text
+                              style={[
+                                styles.followButtonText,
+                                { color: colors.inverseText },
+                                following && { color: colors.text },
+                              ]}
+                            >
                               {following ? 'Following' : 'Follow'}
                             </Text>
                           </Pressable>
@@ -242,10 +275,8 @@ const styles = StyleSheet.create({
   filterContainer: { paddingBottom: 12, borderBottomWidth: 1 },
   filterScrollContent: { paddingHorizontal: 16, gap: 8 },
   filterPill: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 },
-  filterPillActive: { backgroundColor: '#007AFF' },
   filterPillIcon: { marginRight: 4 },
   filterPillText: { fontSize: 15, fontWeight: '600' },
-  filterPillTextActive: { color: '#FFF' },
   content: { flex: 1 },
   emptyState: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 100, paddingHorizontal: 40 },
   emptyIconContainer: { width: 96, height: 96, borderRadius: 48, justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
@@ -258,7 +289,6 @@ const styles = StyleSheet.create({
   storeItemLast: { borderBottomWidth: 0 },
   storeInfo: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 },
   storeIconContainer: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
-  storeIconActive: { backgroundColor: '#E3F2FD' },
   storeName: { fontSize: 17, fontWeight: '600' },
   subscribeButton: { padding: 4 },
   productsGrid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 12 },
@@ -266,20 +296,20 @@ const styles = StyleSheet.create({
   productImage: { width: '100%', aspectRatio: 1 },
   productInfo: { padding: 12 },
   productName: { fontSize: 14, fontWeight: '600', marginBottom: 4, lineHeight: 18 },
-  productPrice: { fontSize: 15, fontWeight: '700', color: '#007AFF', marginBottom: 4 },
+  productPrice: { fontSize: 15, fontWeight: '700', marginBottom: 4 },
   productStore: { fontSize: 12 },
   usersList: { marginHorizontal: 16, borderRadius: 12, overflow: 'hidden' },
   userItem: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, borderBottomWidth: 1 },
   userItemLast: { borderBottomWidth: 0 },
   userPressable: { flexDirection: 'row', alignItems: 'center', flex: 1 },
   avatarContainer: { marginRight: 12 },
-  avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#007AFF', justifyContent: 'center', alignItems: 'center' },
-  avatarText: { fontSize: 20, fontWeight: '700', color: '#FFF' },
+  avatar: { width: 48, height: 48, borderRadius: 24, justifyContent: 'center', alignItems: 'center' },
+  avatarText: { fontSize: 20, fontWeight: '700' },
   userInfo: { flex: 1 },
   userName: { fontSize: 17, fontWeight: '600', marginBottom: 2 },
   userSubtext: { fontSize: 14 },
-  followButton: { paddingHorizontal: 16, paddingVertical: 6, borderRadius: 16, backgroundColor: '#007AFF', marginLeft: 12 },
-  followButtonText: { fontSize: 14, fontWeight: '600', color: '#FFF' },
+  followButton: { paddingHorizontal: 16, paddingVertical: 6, borderRadius: 16, marginLeft: 12 },
+  followButtonText: { fontSize: 14, fontWeight: '600' },
 });
 
 export default SearchScreen;
