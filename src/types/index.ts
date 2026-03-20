@@ -3,6 +3,7 @@ export interface Product {
   store: string;
   item_name: string;
   item_image_link: string;
+  item_image_links?: string[];
   item_link: string;
   price: string;
   tags: string[];

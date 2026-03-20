@@ -21,7 +21,6 @@ Before you begin, make sure you have these installed:
 ### Required for Everyone:
 - **Node.js** (v18 or higher): [Download here](https://nodejs.org/)
 - **Git**: [Download here](https://git-scm.com/)
-- **Python 3.8+**: [Download here](https://www.python.org/downloads/)
 
 ### For native iOS/Android (Expo Developer Builds):
 This app uses **Expo Developer Builds** (a custom dev client), not Expo Go. You need native tooling to build and run on device or simulator:
@@ -40,7 +39,7 @@ npx expo run:ios     # Build and run on iOS simulator (Mac only)
 npx expo run:android # Build and run on Android emulator
 ```
 
-See [Setup Instructions](#setup-instructions) and [Step 4: Run the App](#step-4-run-the-app) for full steps (including mock data and physical devices).
+See [Setup Instructions](#setup-instructions) and [Step 3: Run the App](#step-3-run-the-app) for full steps (including physical devices).
 
 ## Authentication & Supabase environment
 
@@ -88,7 +87,7 @@ mall-e/
    │       ├── src/
    │       │   ├── components/      # Reusable UI components
    │       │   ├── context/         # React Context (state management)
-   │       │   ├── data/            # Mock data (generated from scraper)
+   │       │   ├── data/            # Local app data assets
    │       │   ├── hooks/           # Custom React hooks
    │       │   ├── navigation/      # Navigation configuration
    │       │   ├── screens/         # App screens
@@ -97,13 +96,7 @@ mall-e/
    │       ├── App.tsx              # Root component
    │       └── package.json
    └── scripts/
-          ├── get_store_url_and_tags/   # Python scraper (backend)
-          │   ├── venv/                 # Python virtual environment
-          │   ├── config/
-          │   ├── models/
-          │   └── ...
-          ├── generate_mock_data.ps1    # Windows script
-          └── generate_mock_data.sh     # Mac/Linux script
+          └── ...                        # Project automation scripts
 ```
 
 ## Agent skills (AI-assisted development)
@@ -142,75 +135,7 @@ git clone https://github.com/Project-Mall-E/scripts.git
 
 **Note:** The actual structure depends on how the repos are organized. Adjust paths accordingly.
 
-### Step 2: Generate Mock Data
-
-The app needs product data to display. We generate this using the Python scraper.
-
-#### Windows (PowerShell):
-
-```powershell
-# Navigate to project root (where mall-e-app and scripts folders are)
-cd C:\path\to\mall-e
-
-# Run the mock data generator
-.\scripts\generate_mock_data.ps1
-```
-
-**First time setup (if `venv` doesn't exist):**
-- The script will automatically create a Python virtual environment
-- Install dependencies (takes 5-10 minutes)
-- Install Playwright Chromium browser
-- Then scrape products
-
-**Subsequent runs:**
-- Much faster (2-5 minutes)
-- Just scrapes fresh product data
-
-#### Mac/Linux:
-
-```bash
-# Navigate to project root
-cd /path/to/mall-e
-
-# Make script executable (first time only)
-chmod +x scripts/generate_mock_data.sh
-
-# Run the script
-bash scripts/generate_mock_data.sh
-```
-
-#### Manual Alternative (if scripts don't work):
-
-```powershell
-# Windows
-cd scripts\get_store_url_and_tags
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-playwright install chromium
-cd ..\..
-$env:PYTHONPATH = "scripts"
-python -m get_store_url_and_tags --stores "AmericanEagle,Abercrombie" --max-urls-per-shop 3 --json > mall-e-app\src\data\mock-data.json
-```
-
-```bash
-# Mac/Linux
-cd scripts/get_store_url_and_tags
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-playwright install chromium
-cd ../..
-export PYTHONPATH=scripts
-python -m get_store_url_and_tags --stores "AmericanEagle,Abercrombie" --max-urls-per-shop 3 --json > mall-e-app/src/data/mock-data.json
-```
-
-**Expected output:**
-- Creates `mall-e-app/src/data/mock-data.json`
-- File should contain an array of product objects
-- Should see "Found X products in the mock data"
-
-### Step 3: Install App Dependencies
+### Step 2: Install App Dependencies
 
 ```bash
 cd mall-e-app
@@ -232,7 +157,7 @@ Pre-commit hooks run checks before each commit so broken code is not committed. 
 
 If a commit is blocked by the hook, fix the reported errors and try again. To skip hooks for a single commit (not recommended): `git commit --no-verify`.
 
-### Step 4: Run the App
+### Step 3: Run the App
 
 This project uses **Expo Developer Builds** (custom dev client with `expo-dev-client`), not Expo Go. You run a native build that connects to the Metro bundler for fast refresh and dev tools.
 
@@ -378,45 +303,15 @@ npx expo start --clear
 
 ## Troubleshooting
 
-### Mock data is empty or missing
+### Product data not loading
 
-**Symptom:** App loads but shows "No products found"
+**Symptom:** App loads but product feeds are empty
 
 **Fix:**
-```bash
-# Check if mock-data.json exists and has content
-cat mall-e-app/src/data/mock-data.json  # Mac/Linux
-type mall-e-app\src\data\mock-data.json  # Windows
-
-# If empty or missing, re-run the generator
-.\scripts\generate_mock_data.ps1  # Windows
-bash scripts/generate_mock_data.sh  # Mac/Linux
-```
-
-### Python scraper fails
-
-**Common issues:**
-
-1. **Python not found:**
-    - Install Python 3.8+ from [python.org](https://www.python.org/downloads/)
-    - Make sure "Add to PATH" is checked during installation
-
-2. **playwright install fails:**
-   ```bash
-   # Windows - Run PowerShell as Administrator
-   playwright install chromium
-   
-   # Mac/Linux - Install system dependencies
-   playwright install --with-deps chromium
-   ```
-
-3. **Module not found errors:**
-   ```bash
-   cd scripts/get_store_url_and_tags
-   source venv/bin/activate  # Mac/Linux
-   .\venv\Scripts\Activate.ps1  # Windows
-   pip install -r requirements.txt
-   ```
+- Confirm you are signed in (product reads require `authenticated` in Supabase RLS).
+- Verify `.env` has valid `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+- Verify your Supabase tables/views (`products`, `products_with_tags`) contain rows.
+- Restart Metro after any `.env` changes: `npm start -- --clear`.
 
 ### npm install fails
 
@@ -450,7 +345,7 @@ npm start -- --port 8082
 ### Images not loading
 
 - Check internet connection
-- Verify `mock-data.json` has valid image URLs
+- Verify image URLs in Supabase product rows are valid
 - Some stores may block external image requests (normal)
 
 ### SDK version mismatch (developer build)
@@ -515,10 +410,9 @@ npm start -- --clear
 
 ### Current Limitations:
 
-1. **Static data**: Uses mock data from one-time scrape. No live updates.
-2. **Developer builds required**: The app uses Expo Developer Builds (custom dev client), not Expo Go; you need Xcode (iOS) or Android Studio (Android) to run on device or simulator.
-3. **Web for quickest start**: For the fastest run without native tooling, use `npm run web`; iOS/Android require native setup.
-4. **Auth requires Supabase**: Sign-up/sign-in and profiles depend on a configured Supabase project and a local `.env` with `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Favorites and lists are still stored locally (AsyncStorage).
+1. **Developer builds required**: The app uses Expo Developer Builds (custom dev client), not Expo Go; you need Xcode (iOS) or Android Studio (Android) to run on device or simulator.
+2. **Web for quickest start**: For the fastest run without native tooling, use `npm run web`; iOS/Android require native setup.
+3. **Supabase required**: Product reads, auth, and profiles depend on a configured Supabase project and a local `.env` with `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Favorites and lists are still stored locally (AsyncStorage).
 
 ### Planned Improvements:
 
@@ -539,36 +433,19 @@ npm start -- --clear
 - **ThemeContext**: App-wide light/dark mode (persisted via AsyncStorage)
 - **Supabase**: Authentication and user profiles (email/password, RLS)
 - **AsyncStorage**: Local data persistence (session, favorites, lists, dark mode preference)
-- **Python**: Backend scraper for product data
 
 ---
 
 ## Project Context
 
-This is a two-part system:
+This project is a React Native frontend backed by Supabase:
 
-1. **Backend (Python)**: Scrapes product data from clothing stores
-    - Located in `scripts/get_store_url_and_tags/`
-    - Discovers category URLs, scrapes products
-    - Outputs JSON data
+1. **Frontend (React Native)**: Mobile app interface
+   - Located in `mall-e-app/`
+   - Handles browsing, search, favorites, lists, and profile UX
 
-2. **Frontend (React Native)**: Mobile app interface
-    - Located in `mall-e-app/`
-    - Consumes JSON from backend
-    - Provides shopping/browsing experience
-
-Currently uses **mock data workflow** (one-time scrape → JSON file). Future: REST API for live data.
+2. **Backend (Supabase)**: Data and auth platform
+   - Provides product catalog data (including product image arrays)
+   - Handles authentication, profiles, and RLS policies
 
 ---
-
-
-### If Mock Data Changed:
-
-```bash
-# Re-generate mock data
-.\scripts\generate_mock_data.ps1  # Windows
-bash scripts/generate_mock_data.sh  # Mac/Linux
-
-# Restart the app
-npm start
-```
