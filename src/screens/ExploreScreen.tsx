@@ -1,7 +1,7 @@
 // src/screens/ExploreScreen.tsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, StyleSheet, Pressable, Text } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,6 +17,7 @@ const ExploreScreen = () => {
   const navigation = useNavigation<NavigationProp>();
   const { products } = useProducts();
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
 
   const [showFilter, setShowFilter] = useState(false);
   const [selectedStores, setSelectedStores] = useState<string[]>([]);
@@ -56,24 +57,20 @@ const ExploreScreen = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
-      <View style={[styles.header, styles.headerTransparent]}>
-        <View style={styles.headerLeft} />
-        <Text style={[styles.headerTitle, { color: '#FFF' }]}>Explore</Text>
-        <View style={styles.headerRight}>
-          <Pressable
-            style={[styles.filterButton, selectedStores.length > 0 && styles.filterButtonActive]}
-            onPress={() => setShowFilter(true)}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <Ionicons name="options-outline" size={24} color="#FFF" />
-            {selectedStores.length > 0 && (
-              <View style={styles.filterBadge}>
-                <Text style={styles.filterBadgeText}>{selectedStores.length}</Text>
-              </View>
-            )}
-          </Pressable>
-        </View>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.filterWrap, { top: insets.top + 8 }]} pointerEvents="box-none">
+        <Pressable
+          style={[styles.filterButton, selectedStores.length > 0 && styles.filterButtonActive]}
+          onPress={() => setShowFilter(true)}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <Ionicons name="options-outline" size={24} color="#FFF" />
+          {selectedStores.length > 0 && (
+            <View style={styles.filterBadge}>
+              <Text style={styles.filterBadgeText}>{selectedStores.length}</Text>
+            </View>
+          )}
+        </Pressable>
       </View>
 
       <View style={styles.feedContainer}>
@@ -93,20 +90,25 @@ const ExploreScreen = () => {
         onStoresChange={setSelectedStores}
         showSubscribedOnly={false}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 12 },
-  headerTransparent: { position: 'absolute', top: 0, left: 0, right: 0, backgroundColor: 'transparent', borderBottomWidth: 0, zIndex: 10 },
-  headerLeft: { minWidth: 80 },
-  headerTitle: { fontSize: 20, fontWeight: '700', flex: 1, textAlign: 'center' },
-  headerRight: { minWidth: 80, alignItems: 'flex-end' },
+  filterWrap: { position: 'absolute', right: 12, zIndex: 10 },
   feedContainer: { flex: 1, backgroundColor: '#000' },
-  filterButton: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255,255,255,0.2)', justifyContent: 'center', alignItems: 'center' },
-  filterButtonActive: { backgroundColor: '#007AFF' },
+  filterButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.35)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  filterButtonActive: { backgroundColor: '#007AFF', borderColor: 'rgba(255,255,255,0.25)' },
   filterBadge: { position: 'absolute', top: -4, right: -4, backgroundColor: '#FF3B30', width: 18, height: 18, borderRadius: 9, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: '#FFF' },
   filterBadgeText: { color: '#FFF', fontSize: 10, fontWeight: '700' },
 });

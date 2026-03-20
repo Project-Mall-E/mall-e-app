@@ -5,18 +5,17 @@ import {
   Text,
   StyleSheet,
   Pressable,
-  Dimensions,
   FlatList,
   NativeScrollEvent,
   NativeSyntheticEvent,
   ViewToken,
+  useWindowDimensions,
 } from 'react-native';
 import { Image } from 'expo-image';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Product } from '../types';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const SLIDE_DOT_MAX = 6;
 
 const getProductImages = (item: Product) => {
@@ -36,22 +35,26 @@ interface ProductFeedProps {
 
 const ProductCard: React.FC<{
   item: Product;
-  bottomOffset: number;
+  slideWidth: number;
+  slideHeight: number;
+  bottomInset: number;
   onProductPress: (product: Product) => void;
   onTagPress: (tag: string) => void;
-}> = ({ item, bottomOffset, onProductPress, onTagPress }) => {
+}> = ({ item, slideWidth, slideHeight, bottomInset, onProductPress, onTagPress }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const images = getProductImages(item);
 
   const handleImageScroll = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = event.nativeEvent.contentOffset.x;
     const maxIndex = Math.max(images.length - 1, 0);
-    const nextIndex = Math.max(0, Math.min(Math.round(offsetX / SCREEN_WIDTH), maxIndex));
+    const nextIndex = Math.max(0, Math.min(Math.round(offsetX / slideWidth), maxIndex));
     setActiveImageIndex(prev => (prev === nextIndex ? prev : nextIndex));
-  }, [images.length]);
+  }, [images.length, slideWidth]);
+
+  const pageStyle = { width: slideWidth, height: slideHeight };
 
   return (
-    <View style={[styles.slide, { height: SCREEN_HEIGHT }]}>
+    <View style={[styles.slide, { width: slideWidth, height: slideHeight }]}>
       <View style={styles.imageContainer}>
         <FlatList
           data={images}
@@ -60,8 +63,13 @@ const ProductCard: React.FC<{
           showsHorizontalScrollIndicator={false}
           keyExtractor={(imageUrl, index) => `${imageUrl}-${index}`}
           onMomentumScrollEnd={handleImageScroll}
+          getItemLayout={(_, index) => ({
+            length: slideWidth,
+            offset: slideWidth * index,
+            index,
+          })}
           renderItem={({ item: imageUrl }) => (
-            <Pressable style={styles.imagePage} onPress={() => onProductPress(item)}>
+            <Pressable style={pageStyle} onPress={() => onProductPress(item)}>
               <Image
                 source={{ uri: imageUrl }}
                 style={styles.productImage}
@@ -74,25 +82,7 @@ const ProductCard: React.FC<{
           colors={['transparent', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.88)']}
           style={styles.gradient}
         />
-        {images.length > 1 ? (
-          <View style={styles.pagination}>
-            {images.slice(0, SLIDE_DOT_MAX).map((_, index) => (
-              <View
-                key={`${item.item_link}-dot-${index}`}
-                style={[
-                  styles.dot,
-                  index === activeImageIndex ? styles.dotActive : null,
-                ]}
-              />
-            ))}
-            {images.length > SLIDE_DOT_MAX ? (
-              <Text style={styles.paginationText}>
-                {activeImageIndex + 1}/{images.length}
-              </Text>
-            ) : null}
-          </View>
-        ) : null}
-        <View style={[styles.productInfo, { paddingBottom: bottomOffset }]}>
+        <View style={[styles.productInfo, { paddingBottom: bottomInset }]}>
           <Text style={styles.storeName}>{item.store}</Text>
           <Text style={styles.productName} numberOfLines={2}>{item.item_name}</Text>
           <Text style={styles.productPrice}>{item.price}</Text>
@@ -103,6 +93,24 @@ const ProductCard: React.FC<{
                 </Pressable>
               ))}
             </View> : null}
+          {images.length > 1 ? (
+            <View style={styles.pagination}>
+              {images.slice(0, SLIDE_DOT_MAX).map((_, index) => (
+                <View
+                  key={`${item.item_link}-dot-${index}`}
+                  style={[
+                    styles.dot,
+                    index === activeImageIndex ? styles.dotActive : null,
+                  ]}
+                />
+              ))}
+              {images.length > SLIDE_DOT_MAX ? (
+                <Text style={styles.paginationText}>
+                  {activeImageIndex + 1}/{images.length}
+                </Text>
+              ) : null}
+            </View>
+          ) : null}
         </View>
       </View>
     </View>
@@ -114,10 +122,16 @@ const ProductFeed: React.FC<ProductFeedProps> = ({
   onProductPress,
   onTagPress,
 }) => {
-  const tabBarHeight = useBottomTabBarHeight();
-  const bottomOffset = tabBarHeight + 24;
+  const insets = useSafeAreaInsets();
+  const { width: winW, height: winH } = useWindowDimensions();
+  const [viewport, setViewport] = useState<{ width: number; height: number } | null>(null);
+
+  const slideW = viewport?.width ?? winW;
+  const slideH = viewport?.height ?? winH;
+  /** Keep tags above home indicator / gesture area without a layout-level safe-area strip (avoids black gap above tab bar). */
+  const bottomInset = 20 + insets.bottom;
+
   const flatListRef = useRef<FlatList>(null);
-  // prefixed with _ to satisfy no-unused-vars rule
   const [_currentIndex, setCurrentIndex] = useState(0);
 
   const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -126,15 +140,24 @@ const ProductFeed: React.FC<ProductFeedProps> = ({
 
   const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 50 }).current;
 
+  const onLayoutContainer = useCallback((e: { nativeEvent: { layout: { width: number; height: number } } }) => {
+    const { width, height } = e.nativeEvent.layout;
+    if (width > 0 && height > 0) {
+      setViewport(prev => (prev?.width === width && prev?.height === height ? prev : { width, height }));
+    }
+  }, []);
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={onLayoutContainer}>
       <FlatList
         ref={flatListRef}
         data={products}
         renderItem={({ item }) => (
           <ProductCard
             item={item}
-            bottomOffset={bottomOffset}
+            slideWidth={slideW}
+            slideHeight={slideH}
+            bottomInset={bottomInset}
             onProductPress={onProductPress}
             onTagPress={onTagPress}
           />
@@ -142,7 +165,7 @@ const ProductFeed: React.FC<ProductFeedProps> = ({
         keyExtractor={(item, index) => `${item.store}-${item.item_name}-${index}`}
         pagingEnabled
         showsVerticalScrollIndicator={false}
-        snapToInterval={SCREEN_HEIGHT}
+        snapToInterval={slideH}
         snapToAlignment="start"
         decelerationRate="fast"
         onViewableItemsChanged={onViewableItemsChanged}
@@ -150,6 +173,11 @@ const ProductFeed: React.FC<ProductFeedProps> = ({
         removeClippedSubviews={true}
         maxToRenderPerBatch={3}
         windowSize={3}
+        getItemLayout={(_, index) => ({
+          length: slideH,
+          offset: slideH * index,
+          index,
+        })}
       />
     </View>
   );
@@ -157,18 +185,16 @@ const ProductFeed: React.FC<ProductFeedProps> = ({
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000' },
-  slide: { width: SCREEN_WIDTH },
+  slide: { position: 'relative' },
   imageContainer: { flex: 1, position: 'relative' },
-  imagePage: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT },
   productImage: { width: '100%', height: '100%' },
   gradient: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '65%' },
   pagination: {
-    position: 'absolute',
-    top: 56,
-    alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'center',
     gap: 6,
+    marginTop: 12,
     backgroundColor: 'rgba(0,0,0,0.25)',
     paddingHorizontal: 10,
     paddingVertical: 6,
@@ -187,7 +213,7 @@ const styles = StyleSheet.create({
   storeName: { fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.8)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 1 },
   productName: { fontSize: 22, fontWeight: '700', color: '#FFF', marginBottom: 6, lineHeight: 26 },
   productPrice: { fontSize: 18, fontWeight: '700', color: '#FFF', marginBottom: 10 },
-  tagsContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
+  tagsContainer: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   tag: { backgroundColor: 'rgba(255,255,255,0.2)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16 },
   tagText: { fontSize: 13, fontWeight: '600', color: '#FFF' },
 });

@@ -1,0 +1,13 @@
+diff --git a/node_modules/expo-constants/src/Constants.ts b/node_modules/expo-constants/src/Constants.ts
+index 368a35d..e26dd5c 100644
+--- a/node_modules/expo-constants/src/Constants.ts
++++ b/node_modules/expo-constants/src/Constants.ts
+@@ -76,7 +76,7 @@ if (NativeModules.EXDevLauncher) {
+ // Fall back to ExponentConstants.manifest if we don't have one from Updates
+ let rawAppConfig: ExpoConfig | null = null;
+ if (ExponentConstants && ExponentConstants.manifest) {
+-  const appConfig: object | string = ExponentConstants.manifest;
++  const appConfig = ExponentConstants.manifest as object | string;
+ 
+   // On Android we pass the manifest in JSON form so this step is necessary
+   if (typeof appConfig === 'string') {
