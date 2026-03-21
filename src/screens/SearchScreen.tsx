@@ -147,13 +147,13 @@ const SearchScreen = () => {
   );
 
   const newItemsRow = useMemo(() => {
-    return shufflePick(filteredForTags, DISCOVERY_ROW_LIMIT);
+    return shufflePick(filteredForTags, DISCOVERY_ROW_LIMIT, discoveryShuffleKey);
   }, [filteredForTags, discoveryShuffleKey]);
 
   const discoverShopsRow = useMemo(() => {
     const pool = products.filter(p => !subscribedStores.includes(p.store));
     const tagged = applyTagFilter(pool, DISCOVERY_DEFAULT_TAGS);
-    return shufflePick(tagged, DISCOVERY_ROW_LIMIT);
+    return shufflePick(tagged, DISCOVERY_ROW_LIMIT, discoveryShuffleKey);
   }, [products, subscribedStores, discoveryShuffleKey]);
 
   const getFilteredStores = () =>
