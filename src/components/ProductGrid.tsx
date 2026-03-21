@@ -1,5 +1,5 @@
 // src/components/ProductGrid.tsx
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { FlatList, StyleSheet, View, Text } from 'react-native';
 import ProductCard from './ProductCard';
 import { ProductCardSkeleton } from './ProductCardSkeleton';
@@ -16,6 +16,9 @@ interface ProductGridProps {
   refreshing?: boolean;
   onRefresh?: () => void;
   emptyMessage?: string;
+  /** Shown above grid / skeleton / empty (single scroll, avoids nested ScrollViews). */
+  listHeaderComponent?: ReactElement | null;
+  listFooterComponent?: ReactElement | null;
 }
 
 const ProductGrid: React.FC<ProductGridProps> = ({
@@ -26,9 +29,18 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   refreshing = false,
   onRefresh,
   emptyMessage = 'No products found',
+  listHeaderComponent = null,
+  listFooterComponent = null,
 }) => {
   const { colors } = useTheme();
   const s = makeStyles(colors);
+
+  const emptyComp =
+    products.length === 0 && !loading ? (
+      <View style={s.emptyWrap}>
+        <Text style={s.emptyText}>{emptyMessage}</Text>
+      </View>
+    ) : null;
 
   if (loading) {
     return (
@@ -42,15 +54,9 @@ const ProductGrid: React.FC<ProductGridProps> = ({
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
         onRefresh={onRefresh}
+        ListHeaderComponent={listHeaderComponent ?? undefined}
+        ListFooterComponent={listFooterComponent ?? undefined}
       />
-    );
-  }
-
-  if (products.length === 0) {
-    return (
-      <View style={s.centerContainer}>
-        <Text style={s.emptyText}>{emptyMessage}</Text>
-      </View>
     );
   }
 
@@ -58,19 +64,18 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     <FlatList
       data={products}
       renderItem={({ item }) => (
-        <ProductCard 
-          product={item} 
-          onPress={onProductPress}
-          onTagPress={onTagPress}
-        />
+        <ProductCard product={item} onPress={onProductPress} onTagPress={onTagPress} />
       )}
       keyExtractor={(item, index) => `${item.item_link}-${index}`}
       numColumns={2}
       columnWrapperStyle={s.row}
-      contentContainerStyle={s.container}
+      contentContainerStyle={[s.container, products.length === 0 ? s.containerGrow : null]}
       showsVerticalScrollIndicator={false}
       refreshing={refreshing}
       onRefresh={onRefresh}
+      ListHeaderComponent={listHeaderComponent ?? undefined}
+      ListFooterComponent={listFooterComponent ?? undefined}
+      ListEmptyComponent={emptyComp}
     />
   );
 };
@@ -80,14 +85,16 @@ const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').
     container: {
       padding: 16,
     },
+    containerGrow: {
+      flexGrow: 1,
+    },
     row: {
       justifyContent: 'space-between',
     },
-    centerContainer: {
-      flex: 1,
-      justifyContent: 'center',
+    emptyWrap: {
+      paddingVertical: 48,
+      paddingHorizontal: 24,
       alignItems: 'center',
-      padding: 32,
     },
     emptyText: {
       fontSize: 16,

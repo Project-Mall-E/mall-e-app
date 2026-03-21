@@ -1,5 +1,5 @@
 // src/screens/SearchScreen.tsx
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, memo } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   Pressable,
   TextInput,
   ScrollView,
-  Image,
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
@@ -16,59 +15,131 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { useProducts } from '../hooks/useProducts';
+import { useSupabaseProductSearch } from '../hooks/useSupabaseProductSearch';
 import { useUser } from '../context/UserContext';
-import { useTheme } from '../context/ThemeContext';
-import { supabase } from '../lib/supabase';
+import { useTheme, lightColors } from '../context/ThemeContext';
 import DiscoverySection from '../components/DiscoverySection';
+import ProductGrid from '../components/ProductGrid';
 import {
   applyTagFilter,
   shufflePick,
   DISCOVERY_ROW_LIMIT,
 } from '../utils/discoveryFeed';
-import { RootStackParamList, Product, Profile } from '../types';
+import { RootStackParamList, Product } from '../types';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-type FilterType = 'all' | 'stores' | 'products' | 'users';
+type FilterType = 'all' | 'stores' | 'products';
 
 /** Future: load from UserContext / profile when default tags are supported. */
 const DISCOVERY_DEFAULT_TAGS: string[] = [];
 
+type SearchStoresHeaderProps = {
+  colors: typeof lightColors;
+  filteredStores: string[];
+  subscribedStores: string[];
+  toggleStoreSubscription: (s: string) => void;
+};
+
+const SearchStoresHeader = memo(function SearchStoresHeader({
+  colors,
+  filteredStores,
+  subscribedStores,
+  toggleStoreSubscription,
+}: SearchStoresHeaderProps) {
+  return (
+    <View style={headerStyles.headerRoot}>
+      {filteredStores.length > 0 ? (
+        <View style={headerStyles.block}>
+          <Text style={[headerStyles.sectionTitle, { color: colors.text }]}>
+            Stores ({filteredStores.length})
+          </Text>
+          <View style={[headerStyles.storesList, { backgroundColor: colors.surfaceRaised }]}>
+            {filteredStores.map((store, index) => {
+              const isSubscribed = subscribedStores.includes(store);
+              return (
+                <View
+                  key={store}
+                  style={[
+                    headerStyles.storeItem,
+                    { borderBottomColor: colors.surface },
+                    index === filteredStores.length - 1 && headerStyles.storeItemLast,
+                  ]}
+                >
+                  <View style={headerStyles.storeInfo}>
+                    <View
+                      style={[
+                        headerStyles.storeIconContainer,
+                        { backgroundColor: colors.surface },
+                        isSubscribed && { backgroundColor: colors.accentMuted },
+                      ]}
+                    >
+                      <Ionicons
+                        name={isSubscribed ? 'storefront' : 'storefront-outline'}
+                        size={20}
+                        color={isSubscribed ? colors.tabActive : colors.textTertiary}
+                      />
+                    </View>
+                    <Text style={[headerStyles.storeName, { color: colors.text }]}>{store}</Text>
+                  </View>
+                  <Pressable
+                    style={headerStyles.subscribeButton}
+                    onPress={() => toggleStoreSubscription(store)}
+                    hitSlop={8}
+                  >
+                    <Ionicons
+                      name={isSubscribed ? 'checkmark-circle' : 'add-circle-outline'}
+                      size={26}
+                      color={colors.tabActive}
+                    />
+                  </Pressable>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      ) : null}
+
+      {filteredStores.length > 0 ? (
+        <Text style={[headerStyles.productsHeading, { color: colors.text }]}>Products</Text>
+      ) : null}
+    </View>
+  );
+});
+
+const headerStyles = StyleSheet.create({
+  headerRoot: { paddingBottom: 8 },
+  block: { marginBottom: 16 },
+  sectionTitle: { fontSize: 20, fontWeight: '700', paddingHorizontal: 4, marginBottom: 12 },
+  productsHeading: { fontSize: 20, fontWeight: '700', paddingHorizontal: 4, marginBottom: 4, marginTop: 8 },
+  storesList: { borderRadius: 12, overflow: 'hidden' },
+  storeItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  storeItemLast: { borderBottomWidth: 0 },
+  storeInfo: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 },
+  storeIconContainer: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
+  storeName: { fontSize: 17, fontWeight: '600' },
+  subscribeButton: { padding: 4 },
+});
+
 const SearchScreen = () => {
   const navigation = useNavigation<NavigationProp>();
-  const {
-    subscribedStores,
-    toggleStoreSubscription,
-    followUser,
-    unfollowUser,
-    isFollowing,
-    currentUserId,
-  } = useUser();
-  const { products, getAllStores, searchProducts, loading, refreshProducts } = useProducts();
+  const { subscribedStores, toggleStoreSubscription } = useUser();
+  const { products, getAllStores, loading, refreshProducts } = useProducts();
   const { colors, dark } = useTheme();
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [profiles, setProfiles] = useState<Profile[]>([]);
   const [discoveryShuffleKey, setDiscoveryShuffleKey] = useState(0);
   const [discoveryRefreshing, setDiscoveryRefreshing] = useState(false);
 
+  const { data: rpcProducts, loading: searchLoading, error: searchError } = useSupabaseProductSearch(searchQuery);
+
   const allStores = getAllStores();
-
-  useEffect(() => {
-    fetchProfiles();
-  }, []);
-
-  const fetchProfiles = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      setProfiles(data || []);
-    } catch (error) {
-      console.error('Error fetching profiles:', error);
-    }
-  };
 
   const filteredForTags = useMemo(
     () => applyTagFilter(products, DISCOVERY_DEFAULT_TAGS),
@@ -87,21 +158,8 @@ const SearchScreen = () => {
 
   const getFilteredStores = () =>
     !searchQuery.trim() ? [] : allStores.filter(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
-  const getSearchedProducts = () => (!searchQuery.trim() ? [] : searchProducts(searchQuery));
-  const getFilteredUsers = () => {
-    if (!searchQuery.trim()) return [];
-    const q = searchQuery.toLowerCase();
-    return profiles.filter(
-      p =>
-        (p.username?.toLowerCase() || '').includes(q) ||
-        (p.first_name?.toLowerCase() || '').includes(q) ||
-        (p.last_name?.toLowerCase() || '').includes(q)
-    );
-  };
 
   const filteredStores = getFilteredStores();
-  const searchedProducts = getSearchedProducts();
-  const filteredUsers = getFilteredUsers();
 
   const handleProductPress = useCallback(
     (product: Product) => {
@@ -110,9 +168,13 @@ const SearchScreen = () => {
     [navigation]
   );
 
-  const handleUserPress = useCallback((userId: string) => {
-    console.log('Navigate to user:', userId);
-  }, []);
+  const handleTagPress = useCallback(
+    (tag: string) => {
+      setSearchQuery(tag);
+      setActiveFilter('products');
+    },
+    []
+  );
 
   const handleDiscoveryRefresh = useCallback(async () => {
     setDiscoveryRefreshing(true);
@@ -126,14 +188,129 @@ const SearchScreen = () => {
 
   const showStores = activeFilter === 'all' || activeFilter === 'stores';
   const showProducts = activeFilter === 'all' || activeFilter === 'products';
-  const showUsers = activeFilter === 'all' || activeFilter === 'users';
-  const hasResults =
-    (showStores && filteredStores.length > 0) ||
-    (showProducts && searchedProducts.length > 0) ||
-    (showUsers && filteredUsers.length > 0);
+
+  const productsHitOrLoading = searchLoading || rpcProducts.length > 0;
+  const productSearchFailed = searchError != null;
+
+  const hasResults = useMemo(() => {
+    if (!searchQuery.trim()) return false;
+    if (activeFilter === 'stores') return filteredStores.length > 0;
+    if (activeFilter === 'products') return productsHitOrLoading || productSearchFailed;
+    return (showStores && filteredStores.length > 0) || productsHitOrLoading || productSearchFailed;
+  }, [
+    searchQuery,
+    activeFilter,
+    filteredStores.length,
+    productsHitOrLoading,
+    productSearchFailed,
+    showStores,
+  ]);
 
   const queryActive = searchQuery.trim() !== '';
   const searchPillBg = dark ? colors.surfaceRaised : colors.inputBg;
+
+  const listHeader = useMemo(() => {
+    if (activeFilter !== 'all') return null;
+    if (filteredStores.length === 0) return null;
+    return (
+      <SearchStoresHeader
+        colors={colors}
+        filteredStores={filteredStores}
+        subscribedStores={subscribedStores}
+        toggleStoreSubscription={toggleStoreSubscription}
+      />
+    );
+  }, [activeFilter, filteredStores, colors, subscribedStores, toggleStoreSubscription]);
+
+  const productEmptyMessage = searchError
+    ? 'Search could not load results. Check your connection and try again.'
+    : 'No products found';
+
+  const renderSearchResults = () => {
+    if (!hasResults) {
+      return (
+        <View style={styles.emptyState}>
+          <View style={[styles.emptyIconContainer, { backgroundColor: colors.surfaceRaised }]}>
+            <Ionicons name="sad-outline" size={48} color={colors.textTertiary} />
+          </View>
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>No results found</Text>
+          <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
+            {searchError ? productEmptyMessage : 'Try a different search term'}
+          </Text>
+        </View>
+      );
+    }
+
+    if (activeFilter === 'stores') {
+      return (
+        <ScrollView style={styles.flex} showsVerticalScrollIndicator={false}>
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Stores ({filteredStores.length})</Text>
+            <View style={[styles.storesList, { backgroundColor: colors.surfaceRaised }]}>
+              {filteredStores.map((store, index) => {
+                const isSubscribed = subscribedStores.includes(store);
+                return (
+                  <View
+                    key={store}
+                    style={[
+                      styles.storeItem,
+                      { borderBottomColor: colors.surface },
+                      index === filteredStores.length - 1 && styles.storeItemLast,
+                    ]}
+                  >
+                    <View style={styles.storeInfo}>
+                      <View
+                        style={[
+                          styles.storeIconContainer,
+                          { backgroundColor: colors.surface },
+                          isSubscribed && { backgroundColor: colors.accentMuted },
+                        ]}
+                      >
+                        <Ionicons
+                          name={isSubscribed ? 'storefront' : 'storefront-outline'}
+                          size={20}
+                          color={isSubscribed ? colors.tabActive : colors.textTertiary}
+                        />
+                      </View>
+                      <Text style={[styles.storeName, { color: colors.text }]}>{store}</Text>
+                    </View>
+                    <Pressable
+                      style={styles.subscribeButton}
+                      onPress={() => toggleStoreSubscription(store)}
+                      hitSlop={8}
+                    >
+                      <Ionicons
+                        name={isSubscribed ? 'checkmark-circle' : 'add-circle-outline'}
+                        size={26}
+                        color={colors.tabActive}
+                      />
+                    </Pressable>
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+        </ScrollView>
+      );
+    }
+
+    if (showProducts) {
+      return (
+        <View style={styles.flex}>
+          <ProductGrid
+            products={rpcProducts}
+            onProductPress={handleProductPress}
+            onTagPress={handleTagPress}
+            loading={searchLoading}
+            listHeaderComponent={listHeader}
+            emptyMessage={productEmptyMessage}
+          />
+        </View>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
@@ -167,7 +344,7 @@ const SearchScreen = () => {
       {queryActive ? (
         <View style={[styles.filterContainer, { backgroundColor: colors.background, borderBottomColor: colors.border }]}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterScrollContent}>
-            {(['all', 'stores', 'products', 'users'] as FilterType[]).map(f => (
+            {(['all', 'stores', 'products'] as FilterType[]).map(f => (
               <Pressable
                 key={f}
                 style={[
@@ -179,7 +356,7 @@ const SearchScreen = () => {
               >
                 {f !== 'all' && (
                   <Ionicons
-                    name={f === 'stores' ? 'storefront' : f === 'products' ? 'grid' : 'people'}
+                    name={f === 'stores' ? 'storefront' : 'grid'}
                     size={16}
                     color={activeFilter === f ? colors.inverseText : colors.textTertiary}
                     style={styles.filterPillIcon}
@@ -199,22 +376,20 @@ const SearchScreen = () => {
         </View>
       ) : null}
 
-      <ScrollView
-        style={styles.content}
-        contentContainerStyle={!queryActive ? styles.discoveryScrollContent : undefined}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          !queryActive ? (
+      {!queryActive ? (
+        <ScrollView
+          style={styles.content}
+          contentContainerStyle={styles.discoveryScrollContent}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
             <RefreshControl
               refreshing={discoveryRefreshing}
               onRefresh={handleDiscoveryRefresh}
               tintColor={colors.tabActive}
             />
-          ) : undefined
-        }
-      >
-        {!queryActive ? (
-          loading && products.length === 0 ? (
+          }
+        >
+          {loading && products.length === 0 ? (
             <View style={styles.discoveryLoading}>
               <ActivityIndicator size="large" color={colors.tabActive} />
               <Text style={[styles.discoveryLoadingText, { color: colors.textSecondary }]}>Loading picks…</Text>
@@ -238,165 +413,18 @@ const SearchScreen = () => {
                 />
               ) : null}
             </View>
-          )
-        ) : !hasResults ? (
-          <View style={styles.emptyState}>
-            <View style={[styles.emptyIconContainer, { backgroundColor: colors.surfaceRaised }]}>
-              <Ionicons name="sad-outline" size={48} color={colors.textTertiary} />
-            </View>
-            <Text style={[styles.emptyTitle, { color: colors.text }]}>No results found</Text>
-            <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>
-              Try a different search term
-            </Text>
-          </View>
-        ) : (
-          <>
-            {showStores && filteredStores.length > 0 ? (
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>Stores ({filteredStores.length})</Text>
-                <View style={[styles.storesList, { backgroundColor: colors.surfaceRaised }]}>
-                  {filteredStores.map((store, index) => {
-                    const isSubscribed = subscribedStores.includes(store);
-                    return (
-                      <View
-                        key={store}
-                        style={[
-                          styles.storeItem,
-                          { borderBottomColor: colors.surface },
-                          index === filteredStores.length - 1 && styles.storeItemLast,
-                        ]}
-                      >
-                        <View style={styles.storeInfo}>
-                          <View
-                            style={[
-                              styles.storeIconContainer,
-                              { backgroundColor: colors.surface },
-                              isSubscribed && { backgroundColor: colors.accentMuted },
-                            ]}
-                          >
-                            <Ionicons
-                              name={isSubscribed ? 'storefront' : 'storefront-outline'}
-                              size={20}
-                              color={isSubscribed ? colors.tabActive : colors.textTertiary}
-                            />
-                          </View>
-                          <Text style={[styles.storeName, { color: colors.text }]}>{store}</Text>
-                        </View>
-                        <Pressable style={styles.subscribeButton} onPress={() => toggleStoreSubscription(store)} hitSlop={8}>
-                          <Ionicons
-                            name={isSubscribed ? 'checkmark-circle' : 'add-circle-outline'}
-                            size={26}
-                            color={colors.tabActive}
-                          />
-                        </Pressable>
-                      </View>
-                    );
-                  })}
-                </View>
-              </View>
-            ) : null}
-
-            {showProducts && searchedProducts.length > 0 ? (
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>Products ({searchedProducts.length})</Text>
-                <View style={styles.productsGrid}>
-                  {searchedProducts.slice(0, 20).map((product, index) => (
-                    <Pressable
-                      key={`${product.store}-${product.item_name}-${index}`}
-                      style={[styles.productCard, { backgroundColor: colors.surfaceRaised }]}
-                      onPress={() => handleProductPress(product)}
-                    >
-                      <Image source={{ uri: product.item_image_link }} style={styles.productImage} resizeMode="cover" />
-                      <View style={styles.productInfo}>
-                        <Text style={[styles.productName, { color: colors.text }]} numberOfLines={2}>
-                          {product.item_name}
-                        </Text>
-                        <Text style={[styles.productPrice, { color: colors.tabActive }]}>{product.price}</Text>
-                        <Text style={[styles.productStore, { color: colors.textTertiary }]}>{product.store}</Text>
-                      </View>
-                    </Pressable>
-                  ))}
-                </View>
-              </View>
-            ) : null}
-
-            {showUsers && filteredUsers.length > 0 ? (
-              <View style={styles.section}>
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>Users ({filteredUsers.length})</Text>
-                <View style={[styles.usersList, { backgroundColor: colors.surfaceRaised }]}>
-                  {filteredUsers.map((profile, index) => {
-                    const isCurrentUser = profile.id === currentUserId;
-                    const following = isFollowing(profile.id);
-                    return (
-                      <View
-                        key={profile.id}
-                        style={[
-                          styles.userItem,
-                          { borderBottomColor: colors.surface },
-                          index === filteredUsers.length - 1 && styles.userItemLast,
-                        ]}
-                      >
-                        <Pressable style={styles.userPressable} onPress={() => handleUserPress(profile.id)}>
-                          <View style={styles.avatarContainer}>
-                            <View style={[styles.avatar, { backgroundColor: colors.tabActive }]}>
-                              <Text style={[styles.avatarText, { color: colors.inverseText }]}>
-                                {(profile.username?.[0] || profile.first_name?.[0] || 'U').toUpperCase()}
-                              </Text>
-                            </View>
-                          </View>
-                          <View style={styles.userInfo}>
-                            <Text style={[styles.userName, { color: colors.text }]}>
-                              {profile.username ||
-                                `${profile.first_name || ''} ${profile.last_name || ''}`.trim() ||
-                                'Anonymous'}
-                            </Text>
-                            {profile.username && (profile.first_name || profile.last_name) ? (
-                              <Text style={[styles.userSubtext, { color: colors.textSecondary }]}>
-                                {`${profile.first_name || ''} ${profile.last_name || ''}`.trim()}
-                              </Text>
-                            ) : null}
-                          </View>
-                        </Pressable>
-                        {!isCurrentUser && (
-                          <Pressable
-                            style={[
-                              styles.followButton,
-                              { backgroundColor: colors.tabActive },
-                              following && {
-                                backgroundColor: colors.surface,
-                                borderWidth: 1,
-                                borderColor: colors.border,
-                              },
-                            ]}
-                            onPress={() => (following ? unfollowUser(profile.id) : followUser(profile.id))}
-                            hitSlop={8}
-                          >
-                            <Text
-                              style={[
-                                styles.followButtonText,
-                                { color: colors.inverseText },
-                                following && { color: colors.text },
-                              ]}
-                            >
-                              {following ? 'Following' : 'Follow'}
-                            </Text>
-                          </Pressable>
-                        )}
-                      </View>
-                    );
-                  })}
-                </View>
-              </View>
-            ) : null}
-          </>
-        )}
-      </ScrollView>
+          )}
+        </ScrollView>
+      ) : (
+        <View style={styles.content}>{renderSearchResults()}</View>
+      )}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  flex: { flex: 1 },
   header: { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8 },
   title: { fontSize: 28, fontWeight: '700', letterSpacing: 0.3 },
   searchWrapper: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 12 },
@@ -410,9 +438,6 @@ const styles = StyleSheet.create({
   searchIcon: { marginRight: 10 },
   searchInput: { flex: 1, fontSize: 13, minHeight: 24 },
   clearButton: { padding: 4 },
-  searchTrailing: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  trailingIcon: { padding: 4 },
-  trailingIconDim: { opacity: 0.85 },
   filterContainer: { paddingBottom: 12, borderBottomWidth: StyleSheet.hairlineWidth },
   filterScrollContent: { paddingHorizontal: 16, gap: 8 },
   filterPill: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 },
@@ -430,7 +455,7 @@ const styles = StyleSheet.create({
   },
   discoveryLoadingText: { fontSize: 15 },
   emptyState: {
-    flexGrow: 1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 100,
@@ -446,7 +471,7 @@ const styles = StyleSheet.create({
   },
   emptyTitle: { fontSize: 22, fontWeight: '700', marginBottom: 8, textAlign: 'center' },
   emptySubtitle: { fontSize: 15, textAlign: 'center', lineHeight: 20 },
-  section: { marginTop: 24, marginBottom: 8 },
+  section: { marginTop: 8, marginBottom: 8 },
   sectionTitle: { fontSize: 20, fontWeight: '700', paddingHorizontal: 20, marginBottom: 12 },
   storesList: { marginHorizontal: 16, borderRadius: 12, overflow: 'hidden' },
   storeItem: {
@@ -462,42 +487,6 @@ const styles = StyleSheet.create({
   storeIconContainer: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
   storeName: { fontSize: 17, fontWeight: '600' },
   subscribeButton: { padding: 4 },
-  productsGrid: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 12 },
-  productCard: {
-    width: '48%',
-    marginHorizontal: '1%',
-    marginBottom: 16,
-    borderRadius: 12,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  productImage: { width: '100%', aspectRatio: 1 },
-  productInfo: { padding: 12 },
-  productName: { fontSize: 14, fontWeight: '600', marginBottom: 4, lineHeight: 18 },
-  productPrice: { fontSize: 15, fontWeight: '700', marginBottom: 4 },
-  productStore: { fontSize: 12 },
-  usersList: { marginHorizontal: 16, borderRadius: 12, overflow: 'hidden' },
-  userItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  userItemLast: { borderBottomWidth: 0 },
-  userPressable: { flexDirection: 'row', alignItems: 'center', flex: 1 },
-  avatarContainer: { marginRight: 12 },
-  avatar: { width: 48, height: 48, borderRadius: 24, justifyContent: 'center', alignItems: 'center' },
-  avatarText: { fontSize: 20, fontWeight: '700' },
-  userInfo: { flex: 1 },
-  userName: { fontSize: 17, fontWeight: '600', marginBottom: 2 },
-  userSubtext: { fontSize: 14 },
-  followButton: { paddingHorizontal: 16, paddingVertical: 6, borderRadius: 16, marginLeft: 12 },
-  followButtonText: { fontSize: 14, fontWeight: '600' },
 });
 
 export default SearchScreen;
