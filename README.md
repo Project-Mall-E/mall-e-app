@@ -8,7 +8,7 @@ A React Native mobile shopping app that displays products from multiple clothing
 - **Authentication**: Email/password sign-up and sign-in via Supabase; email confirmation; profile (username, first name, last name) stored in a secure `profiles` table
 - **Home Screen**: View products from stores you're subscribed to
 - **Explore Screen**: Discover products with a selector to browse by stores or by curated public lists; snap-up layout and refreshed product grid
-- **Search Tab**: Search across **stores**, **products**, and **users** with filter chips (All, Stores, Products, Users); subscribe to stores or follow users from results
+- **Search Tab**: Search across **stores** and **products** with filter chips (All, Stores, Products); subscribe to stores from results
 - **Favorites**: Save products and organize them into custom lists
 - **Profile**: View and edit your profile; sign out
 - **Product Details**: View detailed product information and open store links
@@ -313,6 +313,15 @@ npx expo start --clear
 - Verify your Supabase tables/views (`products`, `products_with_tags`) contain rows.
 - Restart Metro after any `.env` changes: `npm start -- --clear`.
 
+### Search tab shows no product hits (RPC missing)
+
+**Symptom:** Search always shows “No products found” or a search error for signed-in users.
+
+**Fix:**
+- Apply migrations that define/update `public.search_products` (see `supabase/migrations/20260320120000_search_products.sql`, `20260321120000_search_products_fts_relax.sql`, and `20260321140000_search_products_or_rank.sql`) via Supabase CLI or the SQL editor.
+- Grant `EXECUTE` on `search_products` to `authenticated` (included in those migrations).
+- Search includes a row if **any** query word matches (substring on name, descriptions, store, tags, plus per-word English FTS on `search_vector`). Results are ordered by **how many words matched** (all words first), then **full-query FTS rank**, then **single-word rows in query order** (e.g. for `white jeans`, “white-only” before “jeans-only”), then overlap score.
+
 ### npm install fails
 
 **Error: "Cannot find module" or dependency conflicts**
@@ -393,7 +402,7 @@ npm start -- --clear
 
 - [ ] **Home Screen**: Shows products from subscribed stores (default: AmericanEagle)
 - [ ] **Explore tab**: Select "Stores" or "Lists" to browse; store chips and product grid
-- [ ] **Search tab**: Type to search; filter by All / Stores / Products / Users; subscribe or follow from results
+- [ ] **Search tab**: Type to search; filter by All / Stores / Products; subscribe to stores from results
 - [ ] **Tap product**: Opens Product Detail screen
 - [ ] **Heart icon**: Adds/removes from favorites
 - [ ] **Store chips**: Tap to filter by store

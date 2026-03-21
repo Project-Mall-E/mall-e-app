@@ -7,6 +7,8 @@ export interface Product {
   item_link: string;
   price: string;
   tags: string[];
+  /** Optional: from Supabase `item_descriptions` */
+  item_descriptions?: string[];
 }
 
 export interface List {
