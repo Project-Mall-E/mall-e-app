@@ -13,6 +13,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ProductGrid from './ProductGrid';
 import { useUser } from '../context/UserContext';
 import { useTheme } from '../context/ThemeContext';
@@ -26,17 +27,23 @@ type Props = {
   contentTab: ProfileSavedContentTab;
 };
 
+/** Space so last grid rows stay above the floating Done pill. */
+const FAVORITES_DONE_SCROLL_INSET = 88;
+
 export default function ProfileSavedSection({ contentTab }: Props) {
   const navigation = useNavigation<NavigationProp>();
   const { favorites, lists, createList, deleteList } = useUser();
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
   const s = makeStyles(colors);
   const [selectedList, setSelectedList] = useState<string | null>(null);
   const [showNewListModal, setShowNewListModal] = useState(false);
   const [newListName, setNewListName] = useState('');
+  const [favoriteRemoveEditMode, setFavoriteRemoveEditMode] = useState(false);
 
   useEffect(() => {
     setSelectedList(null);
+    setFavoriteRemoveEditMode(false);
   }, [contentTab]);
 
   const handleProductPress = useCallback(
@@ -69,14 +76,43 @@ export default function ProfileSavedSection({ contentTab }: Props) {
   };
 
   if (contentTab === 'favorites') {
+    const fabBottom = Math.max(insets.bottom, 12) + 8;
+
     return (
-      <ProductGrid
-        products={favorites}
-        onProductPress={handleProductPress}
-        numColumns={3}
-        cardVariant="imageOnly"
-        emptyMessage="No favorites yet. Tap the heart icon on products to add them here."
-      />
+      <View style={s.favoritesScreen}>
+        <ProductGrid
+          products={favorites}
+          onProductPress={handleProductPress}
+          numColumns={3}
+          cardVariant="imageOnly"
+          favoriteRemoveEditMode={favoriteRemoveEditMode}
+          onFavoriteRemoveEditModeChange={setFavoriteRemoveEditMode}
+          contentPaddingBottom={
+            favoriteRemoveEditMode && favorites.length > 0 ? FAVORITES_DONE_SCROLL_INSET : undefined
+          }
+          emptyMessage="No favorites yet. Tap the heart icon on products to add them here."
+        />
+        {favoriteRemoveEditMode ? (
+          <View
+            pointerEvents="box-none"
+            style={[s.favoritesDoneFabWrap, { bottom: fabBottom }]}
+          >
+            <Pressable
+              onPress={() => setFavoriteRemoveEditMode(false)}
+              style={({ pressed }) => [
+                s.favoritesDoneFab,
+                {
+                  backgroundColor: colors.tabActive,
+                  opacity: pressed ? 0.88 : 1,
+                },
+              ]}
+              accessibilityLabel="Done editing favorites"
+            >
+              <Text style={[s.favoritesDoneFabLabel, { color: colors.inverseText }]}>Done</Text>
+            </Pressable>
+          </View>
+        ) : null}
+      </View>
     );
   }
 
@@ -198,6 +234,29 @@ export default function ProfileSavedSection({ contentTab }: Props) {
 
 const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').useTheme>['colors']) =>
   StyleSheet.create({
+    favoritesScreen: { flex: 1 },
+    favoritesDoneFabWrap: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      alignItems: 'center',
+      pointerEvents: 'box-none',
+    },
+    favoritesDoneFab: {
+      paddingVertical: 14,
+      paddingHorizontal: 32,
+      borderRadius: 24,
+      borderCurve: 'continuous',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minWidth: 120,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.18,
+      shadowRadius: 8,
+      elevation: 6,
+    },
+    favoritesDoneFabLabel: { fontSize: 17, fontWeight: '600' },
     listView: { flex: 1 },
     listHeader: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingBottom: 12 },
     backButton: { padding: 4, marginRight: 12 },

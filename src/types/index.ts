@@ -30,6 +30,8 @@ export interface UserData {
   subscribedStores: string[];
   favorites: Product[];
   lists: List[];
+  /** When true, `favorites` is stored/displayed with most recently favorited first. */
+  favoritesNewestFirst?: boolean;
 }
 
 export interface Profile {

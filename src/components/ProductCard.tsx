@@ -6,6 +6,9 @@ import { Product } from '../types';
 import { useUser } from '../context/UserContext';
 import { useTheme } from '../context/ThemeContext';
 
+/** Platform-typical long-press delay (matches RN `Pressable` default; ~400–500ms is common on iOS/Android). */
+const LONG_PRESS_REMOVE_MS = 500;
+
 interface ProductCardProps {
   product: Product;
   onPress: (product: Product) => void;
@@ -14,6 +17,9 @@ interface ProductCardProps {
   numColumns?: 2 | 3;
   /** Image-only tile: no heart, store line, title, price, or tags (e.g. profile favorites grid). */
   variant?: 'default' | 'imageOnly';
+  /** With `imageOnly` + `onFavoriteRemoveEditModeChange`, long-press enters edit mode (all tiles show remove). */
+  favoriteRemoveEditMode?: boolean;
+  onFavoriteRemoveEditModeChange?: (editing: boolean) => void;
 }
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -28,6 +34,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onTagPress,
   numColumns = 2,
   variant = 'default',
+  favoriteRemoveEditMode = false,
+  onFavoriteRemoveEditModeChange,
 }) => {
   const { isFavorite, toggleFavorite } = useUser();
   const { colors } = useTheme();
@@ -39,14 +47,40 @@ const ProductCard: React.FC<ProductCardProps> = ({
     [s.card, pressed ? { opacity: 0.7 } : null];
 
   if (variant === 'imageOnly') {
+    const longPressEntersEdit = Boolean(onFavoriteRemoveEditModeChange);
+    const showRemoveChrome = favoriteRemoveEditMode;
+
     return (
-      <Pressable style={cardStyle} onPress={() => onPress(product)}>
+      <Pressable
+        style={cardStyle}
+        delayLongPress={LONG_PRESS_REMOVE_MS}
+        onLongPress={
+          longPressEntersEdit && !favoriteRemoveEditMode
+            ? () => onFavoriteRemoveEditModeChange?.(true)
+            : undefined
+        }
+        onPress={() => {
+          if (favoriteRemoveEditMode) {
+            return;
+          }
+          onPress(product);
+        }}
+      >
         <Image
           source={{ uri: product.item_image_link }}
           style={s.imageOnlyImage}
           contentFit="cover"
           cachePolicy="memory-disk"
         />
+        {showRemoveChrome ? (
+          <Pressable
+            accessibilityLabel="Remove from favorites"
+            style={s.removeFavoriteButton}
+            onPress={() => toggleFavorite(product)}
+          >
+            <Ionicons name="remove-circle-outline" size={26} color={colors.textSecondary} />
+          </Pressable>
+        ) : null}
       </Pressable>
     );
   }
@@ -121,6 +155,18 @@ const makeStyles = (
     imageOnlyImage: {
       width: '100%',
       aspectRatio: 1,
+    },
+    removeFavoriteButton: {
+      position: 'absolute',
+      top: 8,
+      right: 8,
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      borderCurve: 'continuous',
+      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     imageContainer: {
       position: 'relative',

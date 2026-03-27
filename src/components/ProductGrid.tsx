@@ -21,6 +21,11 @@ interface ProductGridProps {
   listFooterComponent?: ReactElement | null;
   numColumns?: 2 | 3;
   cardVariant?: 'default' | 'imageOnly';
+  /** With `imageOnly`, long-press toggles edit mode; when true, every tile shows the remove control. */
+  favoriteRemoveEditMode?: boolean;
+  onFavoriteRemoveEditModeChange?: (editing: boolean) => void;
+  /** Extra bottom padding for scroll content (e.g. floating UI above list). */
+  contentPaddingBottom?: number;
 }
 
 const ProductGrid: React.FC<ProductGridProps> = ({
@@ -35,6 +40,9 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   listFooterComponent = null,
   numColumns = 2,
   cardVariant = 'default',
+  favoriteRemoveEditMode = false,
+  onFavoriteRemoveEditModeChange,
+  contentPaddingBottom,
 }) => {
   const { colors } = useTheme();
   const s = makeStyles(colors);
@@ -52,6 +60,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   if (loading) {
     return (
       <FlatList
+        style={s.list}
         data={SKELETON_PLACEHOLDERS}
         renderItem={() => <ProductCardSkeleton />}
         keyExtractor={item => `skeleton-${item}`}
@@ -69,6 +78,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 
   return (
     <FlatList
+      style={s.list}
       data={products}
       renderItem={({ item }) => (
         <ProductCard
@@ -77,12 +87,20 @@ const ProductGrid: React.FC<ProductGridProps> = ({
           onTagPress={onTagPress}
           numColumns={numColumns}
           variant={cardVariant}
+          favoriteRemoveEditMode={favoriteRemoveEditMode}
+          onFavoriteRemoveEditModeChange={onFavoriteRemoveEditModeChange}
         />
       )}
       keyExtractor={(item, index) => `${item.item_link}-${index}`}
       numColumns={numColumns}
       columnWrapperStyle={rowWrapStyle}
-      contentContainerStyle={[s.container, products.length === 0 ? s.containerGrow : null]}
+      contentContainerStyle={[
+        s.container,
+        products.length === 0 ? s.containerGrow : null,
+        contentPaddingBottom != null && contentPaddingBottom > 0
+          ? { paddingBottom: 16 + contentPaddingBottom }
+          : null,
+      ]}
       showsVerticalScrollIndicator={false}
       refreshing={refreshing}
       onRefresh={onRefresh}
@@ -95,6 +113,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 
 const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').useTheme>['colors']) =>
   StyleSheet.create({
+    list: { flex: 1 },
     container: {
       padding: 16,
     },
