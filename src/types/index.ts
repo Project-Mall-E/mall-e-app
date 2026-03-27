@@ -37,6 +37,8 @@ export interface Profile {
   username: string | null;
   first_name: string | null;
   last_name: string | null;
+  /** Public Storage URL when set (see `avatars` bucket, path `{user_id}/...`). */
+  avatar_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -57,6 +59,5 @@ export type BottomTabParamList = {
   Home: undefined;
   Explore: { refresh?: number } | undefined;
   Search: undefined;
-  Favorites: undefined;
   Profile: undefined;
 };

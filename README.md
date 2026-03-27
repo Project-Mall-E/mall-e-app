@@ -190,14 +190,13 @@ Builds the native app and opens it in the Android emulator (requires Android Stu
 `EXPO_PUBLIC_*` values from `.env` are baked in at bundle time. From the app root (`mall-e-app`):
 
 ```bash
-cd /home/rob/Development/mall-e/mall-e-app
 set -a
 source .env
 set +a
 NODE_ENV=production ./android/gradlew -p android assembleRelease
+adb install -r android/app/build/outputs/apk/release/app-release.apk
 ```
 
-Use your own `cd` path if the project is not checked out there. The APK is written to `android/app/build/outputs/apk/release/app-release.apk`.
 
 #### Option D: Physical device (iPhone or Android)
 
