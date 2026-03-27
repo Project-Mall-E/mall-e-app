@@ -73,6 +73,8 @@ export default function ProfileSavedSection({ contentTab }: Props) {
       <ProductGrid
         products={favorites}
         onProductPress={handleProductPress}
+        numColumns={3}
+        cardVariant="imageOnly"
         emptyMessage="No favorites yet. Tap the heart icon on products to add them here."
       />
     );

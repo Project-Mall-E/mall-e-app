@@ -19,6 +19,8 @@ interface ProductGridProps {
   /** Shown above grid / skeleton / empty (single scroll, avoids nested ScrollViews). */
   listHeaderComponent?: ReactElement | null;
   listFooterComponent?: ReactElement | null;
+  numColumns?: 2 | 3;
+  cardVariant?: 'default' | 'imageOnly';
 }
 
 const ProductGrid: React.FC<ProductGridProps> = ({
@@ -31,9 +33,14 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   emptyMessage = 'No products found',
   listHeaderComponent = null,
   listFooterComponent = null,
+  numColumns = 2,
+  cardVariant = 'default',
 }) => {
   const { colors } = useTheme();
   const s = makeStyles(colors);
+  /** Must match card width math in ProductCard: inner width (screen − 32 padding) minus 16 total inter-column space. */
+  const columnGap = numColumns === 2 ? 16 : 8;
+  const rowWrapStyle = [s.row, { gap: columnGap }];
 
   const emptyComp =
     products.length === 0 && !loading ? (
@@ -48,8 +55,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({
         data={SKELETON_PLACEHOLDERS}
         renderItem={() => <ProductCardSkeleton />}
         keyExtractor={item => `skeleton-${item}`}
-        numColumns={2}
-        columnWrapperStyle={s.row}
+        numColumns={numColumns}
+        columnWrapperStyle={rowWrapStyle}
         contentContainerStyle={s.container}
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
@@ -64,11 +71,17 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     <FlatList
       data={products}
       renderItem={({ item }) => (
-        <ProductCard product={item} onPress={onProductPress} onTagPress={onTagPress} />
+        <ProductCard
+          product={item}
+          onPress={onProductPress}
+          onTagPress={onTagPress}
+          numColumns={numColumns}
+          variant={cardVariant}
+        />
       )}
       keyExtractor={(item, index) => `${item.item_link}-${index}`}
-      numColumns={2}
-      columnWrapperStyle={s.row}
+      numColumns={numColumns}
+      columnWrapperStyle={rowWrapStyle}
       contentContainerStyle={[s.container, products.length === 0 ? s.containerGrow : null]}
       showsVerticalScrollIndicator={false}
       refreshing={refreshing}
@@ -89,7 +102,8 @@ const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').
       flexGrow: 1,
     },
     row: {
-      justifyContent: 'space-between',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
     },
     emptyWrap: {
       paddingVertical: 48,
