@@ -6,23 +6,84 @@ import { Product } from '../types';
 import { useUser } from '../context/UserContext';
 import { useTheme } from '../context/ThemeContext';
 
+/** Platform-typical long-press delay (matches RN `Pressable` default; ~400–500ms is common on iOS/Android). */
+const LONG_PRESS_REMOVE_MS = 500;
+
 interface ProductCardProps {
   product: Product;
   onPress: (product: Product) => void;
   onTagPress?: (tag: string) => void;
+  /** Grid column count; width is `(screenWidth - 48) / numColumns` to match ProductGrid padding and gaps. */
+  numColumns?: 2 | 3;
+  /** Image-only tile: no heart, store line, title, price, or tags (e.g. profile favorites grid). */
+  variant?: 'default' | 'imageOnly';
+  /** With `imageOnly` + `onFavoriteRemoveEditModeChange`, long-press enters edit mode (all tiles show remove). */
+  favoriteRemoveEditMode?: boolean;
+  onFavoriteRemoveEditModeChange?: (editing: boolean) => void;
 }
 
-const { width } = Dimensions.get('window');
-const CARD_WIDTH = (width - 48) / 2;
+const { width: screenWidth } = Dimensions.get('window');
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onPress, onTagPress }) => {
+function cardWidthForColumns(numColumns: 2 | 3) {
+  return (screenWidth - 48) / numColumns;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  onPress,
+  onTagPress,
+  numColumns = 2,
+  variant = 'default',
+  favoriteRemoveEditMode = false,
+  onFavoriteRemoveEditModeChange,
+}) => {
   const { isFavorite, toggleFavorite } = useUser();
   const { colors } = useTheme();
   const favorite = isFavorite(product);
-  const s = makeStyles(colors);
+  const cardWidth = cardWidthForColumns(numColumns);
+  const s = makeStyles(colors, cardWidth, variant);
 
   const cardStyle = ({ pressed }: { pressed: boolean }) =>
     [s.card, pressed ? { opacity: 0.7 } : null];
+
+  if (variant === 'imageOnly') {
+    const longPressEntersEdit = Boolean(onFavoriteRemoveEditModeChange);
+    const showRemoveChrome = favoriteRemoveEditMode;
+
+    return (
+      <Pressable
+        style={cardStyle}
+        delayLongPress={LONG_PRESS_REMOVE_MS}
+        onLongPress={
+          longPressEntersEdit && !favoriteRemoveEditMode
+            ? () => onFavoriteRemoveEditModeChange?.(true)
+            : undefined
+        }
+        onPress={() => {
+          if (favoriteRemoveEditMode) {
+            return;
+          }
+          onPress(product);
+        }}
+      >
+        <Image
+          source={{ uri: product.item_image_link }}
+          style={s.imageOnlyImage}
+          contentFit="cover"
+          cachePolicy="memory-disk"
+        />
+        {showRemoveChrome ? (
+          <Pressable
+            accessibilityLabel="Remove from favorites"
+            style={s.removeFavoriteButton}
+            onPress={() => toggleFavorite(product)}
+          >
+            <Ionicons name="remove-circle-outline" size={26} color={colors.textSecondary} />
+          </Pressable>
+        ) : null}
+      </Pressable>
+    );
+  }
 
   return (
     <Pressable
@@ -34,6 +95,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onPress, onTagPress 
           source={{ uri: product.item_image_link }}
           style={s.image}
           contentFit="cover"
+          cachePolicy="memory-disk"
         />
         <Pressable
           style={s.favoriteButton}
@@ -72,20 +134,44 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onPress, onTagPress 
   );
 };
 
-const makeStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
+const makeStyles = (
+  colors: ReturnType<typeof useTheme>['colors'],
+  cardWidth: number,
+  variant: 'default' | 'imageOnly',
+) =>
   StyleSheet.create({
     card: {
-      width: CARD_WIDTH,
+      width: cardWidth,
       backgroundColor: colors.surfaceRaised,
-      borderRadius: 12,
+      borderRadius: variant === 'imageOnly' ? 8 : 12,
       borderCurve: 'continuous',
-      marginBottom: 16,
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      marginBottom: variant === 'imageOnly' ? 8 : 16,
+      overflow: variant === 'imageOnly' ? 'hidden' : 'visible',
+      boxShadow:
+        variant === 'imageOnly'
+          ? '0 1px 2px rgba(0, 0, 0, 0.06)'
+          : '0 2px 4px rgba(0, 0, 0, 0.1)',
+    },
+    imageOnlyImage: {
+      width: '100%',
+      aspectRatio: 1,
+    },
+    removeFavoriteButton: {
+      position: 'absolute',
+      top: 8,
+      right: 8,
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      borderCurve: 'continuous',
+      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     imageContainer: {
       position: 'relative',
       width: '100%',
-      height: CARD_WIDTH * 1.2,
+      height: cardWidth * 1.2,
     },
     image: {
       width: '100%',
@@ -140,7 +226,7 @@ const makeStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
       paddingVertical: 4,
       borderRadius: 6,
       borderCurve: 'continuous',
-      maxWidth: CARD_WIDTH - 24,
+      maxWidth: cardWidth - 24,
     },
     tagText: {
       fontSize: 10,

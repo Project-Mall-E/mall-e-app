@@ -19,6 +19,13 @@ interface ProductGridProps {
   /** Shown above grid / skeleton / empty (single scroll, avoids nested ScrollViews). */
   listHeaderComponent?: ReactElement | null;
   listFooterComponent?: ReactElement | null;
+  numColumns?: 2 | 3;
+  cardVariant?: 'default' | 'imageOnly';
+  /** With `imageOnly`, long-press toggles edit mode; when true, every tile shows the remove control. */
+  favoriteRemoveEditMode?: boolean;
+  onFavoriteRemoveEditModeChange?: (editing: boolean) => void;
+  /** Extra bottom padding for scroll content (e.g. floating UI above list). */
+  contentPaddingBottom?: number;
 }
 
 const ProductGrid: React.FC<ProductGridProps> = ({
@@ -31,9 +38,17 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   emptyMessage = 'No products found',
   listHeaderComponent = null,
   listFooterComponent = null,
+  numColumns = 2,
+  cardVariant = 'default',
+  favoriteRemoveEditMode = false,
+  onFavoriteRemoveEditModeChange,
+  contentPaddingBottom,
 }) => {
   const { colors } = useTheme();
   const s = makeStyles(colors);
+  /** Must match card width math in ProductCard: inner width (screen − 32 padding) minus 16 total inter-column space. */
+  const columnGap = numColumns === 2 ? 16 : 8;
+  const rowWrapStyle = [s.row, { gap: columnGap }];
 
   const emptyComp =
     products.length === 0 && !loading ? (
@@ -45,11 +60,12 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   if (loading) {
     return (
       <FlatList
+        style={s.list}
         data={SKELETON_PLACEHOLDERS}
         renderItem={() => <ProductCardSkeleton />}
         keyExtractor={item => `skeleton-${item}`}
-        numColumns={2}
-        columnWrapperStyle={s.row}
+        numColumns={numColumns}
+        columnWrapperStyle={rowWrapStyle}
         contentContainerStyle={s.container}
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
@@ -62,14 +78,29 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 
   return (
     <FlatList
+      style={s.list}
       data={products}
       renderItem={({ item }) => (
-        <ProductCard product={item} onPress={onProductPress} onTagPress={onTagPress} />
+        <ProductCard
+          product={item}
+          onPress={onProductPress}
+          onTagPress={onTagPress}
+          numColumns={numColumns}
+          variant={cardVariant}
+          favoriteRemoveEditMode={favoriteRemoveEditMode}
+          onFavoriteRemoveEditModeChange={onFavoriteRemoveEditModeChange}
+        />
       )}
       keyExtractor={(item, index) => `${item.item_link}-${index}`}
-      numColumns={2}
-      columnWrapperStyle={s.row}
-      contentContainerStyle={[s.container, products.length === 0 ? s.containerGrow : null]}
+      numColumns={numColumns}
+      columnWrapperStyle={rowWrapStyle}
+      contentContainerStyle={[
+        s.container,
+        products.length === 0 ? s.containerGrow : null,
+        contentPaddingBottom != null && contentPaddingBottom > 0
+          ? { paddingBottom: 16 + contentPaddingBottom }
+          : null,
+      ]}
       showsVerticalScrollIndicator={false}
       refreshing={refreshing}
       onRefresh={onRefresh}
@@ -82,6 +113,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 
 const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').useTheme>['colors']) =>
   StyleSheet.create({
+    list: { flex: 1 },
     container: {
       padding: 16,
     },
@@ -89,7 +121,8 @@ const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').
       flexGrow: 1,
     },
     row: {
-      justifyContent: 'space-between',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
     },
     emptyWrap: {
       paddingVertical: 48,

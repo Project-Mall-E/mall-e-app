@@ -8,7 +8,6 @@ import { useTheme } from '../context/ThemeContext';
 import HomeScreen from '../screens/HomeScreen';
 import ExploreScreen from '../screens/ExploreScreen';
 import SearchScreen from '../screens/SearchScreen';
-import FavoritesScreen from '../screens/FavoritesScreen';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { RootStackParamList, BottomTabParamList } from '../types';
@@ -21,7 +20,6 @@ function getTabBarIcon(routeName: keyof BottomTabParamList, focused: boolean): s
     case 'Home':      return focused ? 'home'    : 'home-outline';
     case 'Explore':   return focused ? 'compass' : 'compass-outline';
     case 'Search':    return focused ? 'search'  : 'search-outline';
-    case 'Favorites': return focused ? 'heart'   : 'heart-outline';
     case 'Profile':   return focused ? 'person'  : 'person-outline';
     default:          return 'ellipse-outline';
   }
@@ -61,7 +59,6 @@ const TabNavigator = () => {
       <Tab.Screen name="Home"       component={HomeScreen} />
       <Tab.Screen name="Explore"    component={ExploreScreen} />
       <Tab.Screen name="Search"     component={SearchScreen} />
-      <Tab.Screen name="Favorites"  component={FavoritesScreen} />
       <Tab.Screen name="Profile"    component={ProfileScreen} />
     </Tab.Navigator>
   );

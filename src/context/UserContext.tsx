@@ -40,8 +40,25 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       if (data) {
         const userData: UserData = JSON.parse(data);
         setSubscribedStores(userData.subscribedStores || ['AmericanEagle']);
-        setFavorites(userData.favorites || []);
+
+        let favorites = userData.favorites || [];
+        const needsFavoritesOrderMigration = !userData.favoritesNewestFirst;
+        if (needsFavoritesOrderMigration) {
+          favorites = [...favorites].reverse();
+        }
+        setFavorites(favorites);
         setLists(userData.lists || []);
+
+        if (needsFavoritesOrderMigration) {
+          const migrated: UserData = {
+            ...userData,
+            subscribedStores: userData.subscribedStores || ['AmericanEagle'],
+            favorites,
+            lists: userData.lists || [],
+            favoritesNewestFirst: true,
+          };
+          await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+        }
       }
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -50,7 +67,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const saveUserData = useCallback(async () => {
     try {
-      const userData: UserData = { subscribedStores, favorites, lists };
+      const userData: UserData = {
+        subscribedStores,
+        favorites,
+        lists,
+        favoritesNewestFirst: true,
+      };
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
     } catch (error) {
       console.error('Error saving user data:', error);
@@ -75,7 +97,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       if (exists) {
         return prev.filter(p => p.item_link !== product.item_link);
       }
-      return [...prev, product];
+      return [product, ...prev];
     });
   };
 

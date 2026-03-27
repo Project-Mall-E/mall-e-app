@@ -30,6 +30,8 @@ export interface UserData {
   subscribedStores: string[];
   favorites: Product[];
   lists: List[];
+  /** When true, `favorites` is stored/displayed with most recently favorited first. */
+  favoritesNewestFirst?: boolean;
 }
 
 export interface Profile {
@@ -37,6 +39,8 @@ export interface Profile {
   username: string | null;
   first_name: string | null;
   last_name: string | null;
+  /** Public Storage URL when set (see `avatars` bucket, path `{user_id}/...`). */
+  avatar_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -57,6 +61,5 @@ export type BottomTabParamList = {
   Home: undefined;
   Explore: { refresh?: number } | undefined;
   Search: undefined;
-  Favorites: undefined;
   Profile: undefined;
 };

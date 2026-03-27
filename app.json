@@ -2,7 +2,14 @@
   "expo": {
     "scheme": "com.celestialdragonfly.malle",
     "plugins": [
-      ["expo-build-properties", { "ios": { "deploymentTarget": "15.1" } }]
+      ["expo-build-properties", { "ios": { "deploymentTarget": "15.1" } }],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Mall-E to access your photos to set your profile picture.",
+          "cameraPermission": "Allow Mall-E to use your camera for your profile picture."
+        }
+      ]
     ],
     "name": "Mall-E",
     "slug": "mall-e-app",
