@@ -14,6 +14,7 @@ import { UserProvider } from './src/context/UserContext';
 import RootNavigator from './src/navigation/RootNavigator';
 import { setSessionFromUrl } from './src/lib/authRedirect';
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
+import { ThemedToast } from './src/components/ThemedToast';
 
 const AUTH_SCHEME = 'com.celestialdragonfly.malle';
 
@@ -57,6 +58,7 @@ function ThemedNavigation() {
     <NavigationContainer theme={navigationTheme}>
       <RootNavigator />
       <StatusBar style="auto" />
+      <ThemedToast />
     </NavigationContainer>
   );
 }

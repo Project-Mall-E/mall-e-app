@@ -16,17 +16,37 @@ import {
   NativeScrollEvent,
 } from 'react-native';
 import { Image } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
+import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { supabase } from '../lib/supabase';
+import {
+  uploadProfileAvatar,
+  PROFILE_AVATAR_UPLOAD_TIMEOUT_MS,
+  formatProfileAvatarFailureMessage,
+} from '../lib/profileAvatar';
+import { withTimeout } from '../lib/withTimeout';
 import ProfileSavedSection, { ProfileSavedContentTab } from '../components/ProfileSavedSection';
 
 const MAX_USERNAME_LENGTH = 50;
 const MAX_NAME_LENGTH = 100;
 
 const PLACEHOLDER_AVATAR = require('../../assets/profile-placeholder.png');
+
+const PROFILE_PHOTO_ERROR_TOAST_MS = 5500;
+
+function showProfilePhotoErrorToast(title: string, message: string) {
+  Toast.show({
+    type: 'error',
+    text1: title,
+    text2: message,
+    position: 'bottom',
+    visibilityTime: PROFILE_PHOTO_ERROR_TOAST_MS,
+  });
+}
 
 export default function ProfileScreen() {
   const { user, profile, signOut, refreshProfile } = useAuth();
@@ -43,6 +63,7 @@ export default function ProfileScreen() {
   const [firstName, setFirstName] = useState(profile?.first_name ?? '');
   const [lastName, setLastName] = useState(profile?.last_name ?? '');
   const [saving, setSaving] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -148,6 +169,80 @@ export default function ProfileScreen() {
     setEditOpen(false);
   };
 
+  const pickProfilePhoto = async () => {
+    if (!user?.id || avatarUploading) return;
+
+    try {
+      let permission: ImagePicker.MediaLibraryPermissionResponse;
+      try {
+        permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      } catch (e) {
+        showProfilePhotoErrorToast('Photo access', formatProfileAvatarFailureMessage(e));
+        return;
+      }
+
+      if (!permission.granted) {
+        showProfilePhotoErrorToast(
+          'Photo access needed',
+          'Allow photo library access in Settings to set your profile picture.',
+        );
+        return;
+      }
+
+      let result: ImagePicker.ImagePickerResult;
+      try {
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ['images'],
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 0.85,
+        });
+      } catch (e) {
+        showProfilePhotoErrorToast('Could not open photos', formatProfileAvatarFailureMessage(e));
+        return;
+      }
+
+      if (result.canceled) return;
+
+      const asset = result.assets?.[0];
+      if (!asset?.uri?.trim()) {
+        showProfilePhotoErrorToast('Could not update photo', 'No image was selected.');
+        return;
+      }
+
+      setAvatarUploading(true);
+      let outcome: Awaited<ReturnType<typeof uploadProfileAvatar>>;
+      try {
+        outcome = await withTimeout(
+          uploadProfileAvatar(user.id, asset.uri, asset.mimeType ?? undefined),
+          PROFILE_AVATAR_UPLOAD_TIMEOUT_MS,
+          'Upload timed out. Check your connection and try again.',
+        );
+      } catch (e) {
+        outcome = { ok: false as const, message: formatProfileAvatarFailureMessage(e) };
+      } finally {
+        setAvatarUploading(false);
+      }
+
+      if (!outcome.ok) {
+        showProfilePhotoErrorToast('Could not update photo', outcome.message);
+        return;
+      }
+
+      try {
+        await refreshProfile();
+      } catch (e) {
+        showProfilePhotoErrorToast(
+          'Photo saved',
+          `Your photo was uploaded, but the app could not refresh your profile. ${formatProfileAvatarFailureMessage(e)}`,
+        );
+      }
+    } catch (e) {
+      setAvatarUploading(false);
+      showProfilePhotoErrorToast('Could not update photo', formatProfileAvatarFailureMessage(e));
+    }
+  };
+
   const confirmSignOut = () => {
     Alert.alert('Sign out', 'Are you sure you want to sign out?', [
       { text: 'Cancel', style: 'cancel' },
@@ -178,13 +273,26 @@ export default function ProfileScreen() {
       </View>
 
       <View style={s.identityBlock}>
-        <Image
-          source={avatarSource}
-          style={s.avatar}
-          contentFit="cover"
-          transition={200}
-          cachePolicy="memory-disk"
-        />
+        <Pressable
+          onPress={pickProfilePhoto}
+          disabled={avatarUploading}
+          style={({ pressed }) => [s.avatarPressable, pressed && s.avatarPressablePressed]}
+          accessibilityLabel="Change profile photo"
+          accessibilityHint="Opens your photo library to choose a profile picture"
+        >
+          <Image
+            source={avatarSource}
+            style={s.avatar}
+            contentFit="cover"
+            transition={200}
+            cachePolicy="memory-disk"
+          />
+          {avatarUploading ? (
+            <View style={s.avatarLoadingOverlay}>
+              <ActivityIndicator color={colors.inverseText} />
+            </View>
+          ) : null}
+        </Pressable>
         <Text style={s.displayName}>{displayName}</Text>
         <Text style={s.username}>{usernameLine}</Text>
       </View>
@@ -356,12 +464,29 @@ const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').
       paddingHorizontal: 24,
       gap: 8,
     },
-    avatar: {
+    avatarPressable: {
+      position: 'relative',
       width: 112,
       height: 112,
       borderRadius: 56,
       borderCurve: 'continuous',
+      overflow: 'hidden',
+    },
+    avatarPressablePressed: {
+      opacity: 0.85,
+    },
+    avatar: {
+      width: 112,
+      height: 112,
       backgroundColor: colors.surfaceRaised,
+    },
+    avatarLoadingOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      borderRadius: 56,
+      borderCurve: 'continuous',
+      backgroundColor: 'rgba(0,0,0,0.45)',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     displayName: {
       fontSize: 18,
