@@ -185,6 +185,20 @@ npx expo run:android
 
 Builds the native app and opens it in the Android emulator (requires Android Studio and an AVD). First run may take a few minutes.
 
+##### Android release APK (embedded JS, no Metro)
+
+`EXPO_PUBLIC_*` values from `.env` are baked in at bundle time. From the app root (`mall-e-app`):
+
+```bash
+cd /home/rob/Development/mall-e/mall-e-app
+set -a
+source .env
+set +a
+NODE_ENV=production ./android/gradlew -p android assembleRelease
+```
+
+Use your own `cd` path if the project is not checked out there. The APK is written to `android/app/build/outputs/apk/release/app-release.apk`.
+
 #### Option D: Physical device (iPhone or Android)
 
 1. **Build and install the dev client** on your device:
