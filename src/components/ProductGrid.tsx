@@ -1,10 +1,22 @@
 // src/components/ProductGrid.tsx
 import React, { ReactElement } from 'react';
-import { FlatList, StyleSheet, View, Text } from 'react-native';
+import {
+  Animated,
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  StyleSheet,
+  View,
+  Text,
+} from 'react-native';
+
 import ProductCard from './ProductCard';
 import { ProductCardSkeleton } from './ProductCardSkeleton';
 import { Product } from '../types';
 import { useTheme } from '../context/ThemeContext';
+
+const AnimatedProductFlatList = Animated.createAnimatedComponent(FlatList<Product>);
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<number>);
 
 const SKELETON_PLACEHOLDERS = [0, 1, 2, 3, 4, 5] as const;
 
@@ -26,6 +38,8 @@ interface ProductGridProps {
   onFavoriteRemoveEditModeChange?: (editing: boolean) => void;
   /** Extra bottom padding for scroll content (e.g. floating UI above list). */
   contentPaddingBottom?: number;
+  onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  scrollEventThrottle?: number;
 }
 
 const ProductGrid: React.FC<ProductGridProps> = ({
@@ -43,6 +57,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   favoriteRemoveEditMode = false,
   onFavoriteRemoveEditModeChange,
   contentPaddingBottom,
+  onScroll,
+  scrollEventThrottle = 1,
 }) => {
   const { colors } = useTheme();
   const s = makeStyles(colors);
@@ -57,9 +73,11 @@ const ProductGrid: React.FC<ProductGridProps> = ({
       </View>
     ) : null;
 
+  const scrollProps = onScroll != null ? { onScroll, scrollEventThrottle } : {};
+
   if (loading) {
     return (
-      <FlatList
+      <AnimatedFlatList
         style={s.list}
         data={SKELETON_PLACEHOLDERS}
         renderItem={() => <ProductCardSkeleton />}
@@ -72,12 +90,13 @@ const ProductGrid: React.FC<ProductGridProps> = ({
         onRefresh={onRefresh}
         ListHeaderComponent={listHeaderComponent ?? undefined}
         ListFooterComponent={listFooterComponent ?? undefined}
+        {...scrollProps}
       />
     );
   }
 
   return (
-    <FlatList
+    <AnimatedProductFlatList
       style={s.list}
       data={products}
       renderItem={({ item }) => (
@@ -107,6 +126,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
       ListHeaderComponent={listHeaderComponent ?? undefined}
       ListFooterComponent={listFooterComponent ?? undefined}
       ListEmptyComponent={emptyComp}
+      {...scrollProps}
     />
   );
 };
