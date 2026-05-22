@@ -56,7 +56,7 @@ export default function ProfileScreen() {
   const [measuredPagerWidth, setMeasuredPagerWidth] = useState<number | null>(null);
   const pagerWidth = measuredPagerWidth ?? windowWidth;
 
-  const [savedTab, setSavedTab] = useState<ProfileSavedContentTab>('favorites');
+  const [savedTab, setSavedTab] = useState<ProfileSavedContentTab>('lists');
   const [menuOpen, setMenuOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [username, setUsername] = useState(profile?.username ?? '');
@@ -96,7 +96,7 @@ export default function ProfileScreen() {
   useEffect(() => {
     if (pagerWidth <= 0) return;
     pagerRef.current?.scrollTo({
-      x: savedTab === 'favorites' ? 0 : pagerWidth,
+      x: savedTab === 'lists' ? 0 : pagerWidth,
       animated: false,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- savedTab omitted: taps/swipes should not re-trigger this snap
@@ -107,7 +107,7 @@ export default function ProfileScreen() {
       setSavedTab(tab);
       if (pagerWidth > 0) {
         pagerRef.current?.scrollTo({
-          x: tab === 'favorites' ? 0 : pagerWidth,
+          x: tab === 'lists' ? 0 : pagerWidth,
           animated: true,
         });
       }
@@ -120,7 +120,7 @@ export default function ProfileScreen() {
       if (pagerWidth <= 0) return;
       const x = e.nativeEvent.contentOffset.x;
       const page = Math.round(x / pagerWidth);
-      setSavedTab(page <= 0 ? 'favorites' : 'lists');
+      setSavedTab(page <= 0 ? 'lists' : 'favorites');
     },
     [pagerWidth],
   );
@@ -299,17 +299,6 @@ export default function ProfileScreen() {
 
       <View style={s.subTabRow}>
         <Pressable
-          onPress={() => goToTab('favorites')}
-          style={[s.subTab, savedTab === 'favorites' && s.subTabActive]}
-          accessibilityLabel="Favorites"
-        >
-          <Ionicons
-            name={savedTab === 'favorites' ? 'heart' : 'heart-outline'}
-            size={26}
-            color={savedTab === 'favorites' ? colors.text : colors.textSecondary}
-          />
-        </Pressable>
-        <Pressable
           onPress={() => goToTab('lists')}
           style={[s.subTab, savedTab === 'lists' && s.subTabActive]}
           accessibilityLabel="Lists"
@@ -318,6 +307,17 @@ export default function ProfileScreen() {
             name={savedTab === 'lists' ? 'bookmark' : 'bookmark-outline'}
             size={26}
             color={savedTab === 'lists' ? colors.text : colors.textSecondary}
+          />
+        </Pressable>
+        <Pressable
+          onPress={() => goToTab('favorites')}
+          style={[s.subTab, savedTab === 'favorites' && s.subTabActive]}
+          accessibilityLabel="Favorites"
+        >
+          <Ionicons
+            name={savedTab === 'favorites' ? 'heart' : 'heart-outline'}
+            size={26}
+            color={savedTab === 'favorites' ? colors.text : colors.textSecondary}
           />
         </Pressable>
       </View>
@@ -338,10 +338,10 @@ export default function ProfileScreen() {
             style={s.pagerScroll}
           >
             <View style={{ width: pagerWidth, flex: 1 }}>
-              <ProfileSavedSection contentTab="favorites" />
+              <ProfileSavedSection contentTab="lists" />
             </View>
             <View style={{ width: pagerWidth, flex: 1 }}>
-              <ProfileSavedSection contentTab="lists" />
+              <ProfileSavedSection contentTab="favorites" />
             </View>
           </ScrollView>
         ) : null}
