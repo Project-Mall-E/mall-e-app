@@ -1,10 +1,15 @@
-import React from 'react';
-import { View, Text, StyleSheet, Pressable, Dimensions } from 'react-native';
+import React, { memo, useCallback } from 'react';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { Product } from '../types';
 import { useUser } from '../context/UserContext';
 import { useTheme } from '../context/ThemeContext';
+import {
+  getProductCardWidth,
+  PRODUCT_CARD_IMAGE,
+  PRODUCT_CARD_TEXT,
+} from './productCardLayout';
 
 /** Platform-typical long-press delay (matches RN `Pressable` default; ~400–500ms is common on iOS/Android). */
 const LONG_PRESS_REMOVE_MS = 500;
@@ -22,13 +27,18 @@ interface ProductCardProps {
   onFavoriteRemoveEditModeChange?: (editing: boolean) => void;
 }
 
-const { width: screenWidth } = Dimensions.get('window');
+const brandFontFamily = Platform.select({
+  ios: 'Georgia',
+  android: 'serif',
+  default: 'serif',
+});
 
-function cardWidthForColumns(numColumns: 2 | 3) {
-  return (screenWidth - 48) / numColumns;
-}
+const titleBlockHeight =
+  PRODUCT_CARD_TEXT.titleLineHeight * PRODUCT_CARD_TEXT.titleMaxLines;
 
-const ProductCard: React.FC<ProductCardProps> = ({
+const PRESSED_CARD_STYLE = { opacity: 0.7 } as const;
+
+const ProductCard = memo(function ProductCard({
   product,
   onPress,
   onTagPress,
@@ -36,15 +46,36 @@ const ProductCard: React.FC<ProductCardProps> = ({
   variant = 'default',
   favoriteRemoveEditMode = false,
   onFavoriteRemoveEditModeChange,
-}) => {
+}: ProductCardProps) {
   const { isFavorite, toggleFavorite } = useUser();
-  const { colors } = useTheme();
+  const { colors, dark } = useTheme();
   const favorite = isFavorite(product);
-  const cardWidth = cardWidthForColumns(numColumns);
-  const s = makeStyles(colors, cardWidth, variant);
+  const cardWidth = getProductCardWidth(numColumns);
+  const s = makeStyles(colors, dark, cardWidth, variant);
 
-  const cardStyle = ({ pressed }: { pressed: boolean }) =>
-    [s.card, pressed ? { opacity: 0.7 } : null];
+  const cardStyle = useCallback(
+    ({ pressed }: { pressed: boolean }) =>
+      [s.card, pressed ? PRESSED_CARD_STYLE : null],
+    [s.card],
+  );
+
+  const handleCardPress = useCallback(() => {
+    onPress(product);
+  }, [onPress, product]);
+
+  const handleFavoritePress = useCallback(() => {
+    toggleFavorite(product);
+  }, [toggleFavorite, product]);
+
+  const handleImageOnlyPress = useCallback(() => {
+    if (!favoriteRemoveEditMode) {
+      onPress(product);
+    }
+  }, [favoriteRemoveEditMode, onPress, product]);
+
+  const handleImageOnlyLongPress = useCallback(() => {
+    onFavoriteRemoveEditModeChange?.(true);
+  }, [onFavoriteRemoveEditModeChange]);
 
   if (variant === 'imageOnly') {
     const longPressEntersEdit = Boolean(onFavoriteRemoveEditModeChange);
@@ -56,15 +87,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
         delayLongPress={LONG_PRESS_REMOVE_MS}
         onLongPress={
           longPressEntersEdit && !favoriteRemoveEditMode
-            ? () => onFavoriteRemoveEditModeChange?.(true)
+            ? handleImageOnlyLongPress
             : undefined
         }
-        onPress={() => {
-          if (favoriteRemoveEditMode) {
-            return;
-          }
-          onPress(product);
-        }}
+        onPress={handleImageOnlyPress}
       >
         <Image
           source={{ uri: product.item_image_link }}
@@ -88,7 +114,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <Pressable
       style={cardStyle}
-      onPress={() => onPress(product)}
+      onPress={handleCardPress}
     >
       <View style={s.imageContainer}>
         <Image
@@ -99,11 +125,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
         />
         <Pressable
           style={s.favoriteButton}
-          onPress={() => toggleFavorite(product)}
+          onPress={handleFavoritePress}
         >
           <Ionicons
             name={favorite ? 'heart' : 'heart-outline'}
-            size={24}
+            size={20}
             color={favorite ? colors.error : colors.inverseText}
           />
         </Pressable>
@@ -117,40 +143,39 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </Text>
         <Text style={s.price}>{product.price}</Text>
         <View style={s.tagsContainer}>
-          {product.tags.slice(0, 2).map((tag, index) => (
-            <View key={index} style={s.tag}>
-              <Text
-                style={s.tagText}
-                numberOfLines={1}
-                onPress={() => onTagPress?.(tag)}
-              >
+          {product.tags.slice(0, 2).map(tag => (
+            <Pressable
+              key={tag}
+              style={s.tag}
+              onPress={() => onTagPress?.(tag)}
+            >
+              <Text style={s.tagText} numberOfLines={1}>
                 {tag}
               </Text>
-            </View>
+            </Pressable>
           ))}
         </View>
       </View>
     </Pressable>
   );
-};
+});
 
 const makeStyles = (
   colors: ReturnType<typeof useTheme>['colors'],
+  dark: boolean,
   cardWidth: number,
   variant: 'default' | 'imageOnly',
 ) =>
   StyleSheet.create({
     card: {
-      width: cardWidth,
-      backgroundColor: colors.surfaceRaised,
-      borderRadius: variant === 'imageOnly' ? 8 : 12,
+      width: variant === 'imageOnly' ? cardWidth : '100%',
+      backgroundColor: variant === 'imageOnly' ? colors.surfaceRaised : 'transparent',
+      borderRadius: variant === 'imageOnly' ? 8 : 0,
       borderCurve: 'continuous',
-      marginBottom: variant === 'imageOnly' ? 8 : 16,
+      marginBottom:
+        variant === 'imageOnly' ? 8 : PRODUCT_CARD_TEXT.cardMarginBottom,
       overflow: variant === 'imageOnly' ? 'hidden' : 'visible',
-      boxShadow:
-        variant === 'imageOnly'
-          ? '0 1px 2px rgba(0, 0, 0, 0.06)'
-          : '0 2px 4px rgba(0, 0, 0, 0.1)',
+      boxShadow: variant === 'imageOnly' ? '0 1px 2px rgba(0, 0, 0, 0.06)' : undefined,
     },
     imageOnlyImage: {
       width: '100%',
@@ -171,66 +196,80 @@ const makeStyles = (
     imageContainer: {
       position: 'relative',
       width: '100%',
-      height: cardWidth * 1.2,
+      aspectRatio: 5 / 6,
+      borderRadius: PRODUCT_CARD_IMAGE.borderRadius,
+      borderCurve: 'continuous',
+      overflow: 'hidden',
     },
     image: {
       width: '100%',
       height: '100%',
-      borderTopLeftRadius: 12,
-      borderTopRightRadius: 12,
-      borderCurve: 'continuous',
     },
     favoriteButton: {
       position: 'absolute',
-      top: 8,
-      right: 8,
-      width: 36,
-      height: 36,
-      borderRadius: 18,
+      top: 10,
+      right: 10,
+      width: 32,
+      height: 32,
+      borderRadius: 16,
       borderCurve: 'continuous',
-      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+      backgroundColor: 'rgba(80, 80, 80, 0.55)',
       justifyContent: 'center',
       alignItems: 'center',
     },
     info: {
-      padding: 12,
+      paddingTop: PRODUCT_CARD_TEXT.infoPaddingTop,
     },
     storeName: {
-      fontSize: 11,
-      color: colors.textSecondary,
-      fontWeight: '600',
+      fontFamily: brandFontFamily,
+      fontSize: 12,
+      color: colors.text,
       textTransform: 'uppercase',
-      marginBottom: 4,
+      letterSpacing: 0.4,
+      lineHeight: PRODUCT_CARD_TEXT.storeLineHeight,
+      height: PRODUCT_CARD_TEXT.storeLineHeight,
+      marginBottom: PRODUCT_CARD_TEXT.storeMarginBottom,
+      includeFontPadding: false,
     },
     itemName: {
-      fontSize: 14,
-      fontWeight: '600',
+      fontSize: 15,
+      fontWeight: '700',
       color: colors.text,
-      marginBottom: 6,
-      lineHeight: 18,
+      marginBottom: PRODUCT_CARD_TEXT.titleMarginBottom,
+      lineHeight: PRODUCT_CARD_TEXT.titleLineHeight,
+      height: titleBlockHeight,
+      includeFontPadding: false,
     },
     price: {
-      fontSize: 16,
+      fontSize: 15,
       fontWeight: '700',
-      color: colors.tabActive,
-      marginBottom: 8,
+      color: colors.text,
+      lineHeight: PRODUCT_CARD_TEXT.priceLineHeight,
+      height: PRODUCT_CARD_TEXT.priceLineHeight,
+      marginBottom: PRODUCT_CARD_TEXT.priceMarginBottom,
+      includeFontPadding: false,
     },
     tagsContainer: {
       flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: 4,
+      flexWrap: 'nowrap',
+      alignItems: 'center',
+      gap: 6,
+      height: PRODUCT_CARD_TEXT.tagsRowHeight,
+      overflow: 'hidden',
     },
     tag: {
-      backgroundColor: colors.surface,
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 6,
+      backgroundColor: dark ? '#2A2A2A' : colors.surface,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderRadius: 999,
       borderCurve: 'continuous',
-      maxWidth: cardWidth - 24,
+      flexShrink: 1,
+      maxWidth: (cardWidth - 6) / 2,
     },
     tagText: {
-      fontSize: 10,
-      color: colors.textSecondary,
+      fontSize: 11,
+      fontWeight: '500',
+      color: colors.text,
     },
   });
 

@@ -1,8 +1,9 @@
 // src/components/ProductGrid.tsx
-import React, { ReactElement } from 'react';
+import React, { memo, ReactElement, useCallback, useMemo } from 'react';
 import {
   Animated,
   FlatList,
+  ListRenderItemInfo,
   NativeScrollEvent,
   NativeSyntheticEvent,
   StyleSheet,
@@ -14,11 +15,61 @@ import ProductCard from './ProductCard';
 import { ProductCardSkeleton } from './ProductCardSkeleton';
 import { Product } from '../types';
 import { useTheme } from '../context/ThemeContext';
+import { GRID_CONTENT_TOP_GAP } from './productCardLayout';
 
 const AnimatedProductFlatList = Animated.createAnimatedComponent(FlatList<Product>);
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<number>);
 
 const SKELETON_PLACEHOLDERS = [0, 1, 2, 3, 4, 5] as const;
+
+const gridCellStyle = StyleSheet.create({
+  cardCell: {
+    flex: 1,
+    minWidth: 0,
+  },
+});
+
+type GridProductCellProps = {
+  product: Product;
+  onProductPress: (product: Product) => void;
+  onTagPress?: (tag: string) => void;
+  numColumns: 2 | 3;
+  cardVariant: 'default' | 'imageOnly';
+  favoriteRemoveEditMode: boolean;
+  onFavoriteRemoveEditModeChange?: (editing: boolean) => void;
+};
+
+const GridProductCell = memo(function GridProductCell({
+  product,
+  onProductPress,
+  onTagPress,
+  numColumns,
+  cardVariant,
+  favoriteRemoveEditMode,
+  onFavoriteRemoveEditModeChange,
+}: GridProductCellProps) {
+  return (
+    <View style={gridCellStyle.cardCell}>
+      <ProductCard
+        product={product}
+        onPress={onProductPress}
+        onTagPress={onTagPress}
+        numColumns={numColumns}
+        variant={cardVariant}
+        favoriteRemoveEditMode={favoriteRemoveEditMode}
+        onFavoriteRemoveEditModeChange={onFavoriteRemoveEditModeChange}
+      />
+    </View>
+  );
+});
+
+const GridSkeletonCell = memo(function GridSkeletonCell() {
+  return (
+    <View style={gridCellStyle.cardCell}>
+      <ProductCardSkeleton />
+    </View>
+  );
+});
 
 interface ProductGridProps {
   products: Product[];
@@ -62,9 +113,42 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 }) => {
   const { colors } = useTheme();
   const s = makeStyles(colors);
-  /** Must match card width math in ProductCard: inner width (screen − 32 padding) minus 16 total inter-column space. */
-  const columnGap = numColumns === 2 ? 16 : 8;
-  const rowWrapStyle = [s.row, { gap: columnGap }];
+  const rowWrapStyle = numColumns === 2 ? s.rowTwoCol : s.rowThreeCol;
+
+  const listHeaderWithGap = useMemo(
+    () =>
+      listHeaderComponent != null ? (
+        <>
+          {listHeaderComponent}
+          <View style={s.gridTopGap} />
+        </>
+      ) : undefined,
+    [listHeaderComponent, s.gridTopGap],
+  );
+
+  const skeletonContentStyle = useMemo(
+    () => [s.container, listHeaderComponent == null ? s.containerTopPad : null],
+    [s.container, s.containerTopPad, listHeaderComponent],
+  );
+
+  const productsContentStyle = useMemo(
+    () => [
+      s.container,
+      listHeaderComponent == null ? s.containerTopPad : null,
+      products.length === 0 ? s.containerGrow : null,
+      contentPaddingBottom != null && contentPaddingBottom > 0
+        ? { paddingBottom: 16 + contentPaddingBottom }
+        : null,
+    ],
+    [
+      s.container,
+      s.containerTopPad,
+      s.containerGrow,
+      listHeaderComponent,
+      products.length,
+      contentPaddingBottom,
+    ],
+  );
 
   const emptyComp =
     products.length === 0 && !loading ? (
@@ -75,20 +159,57 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 
   const scrollProps = onScroll != null ? { onScroll, scrollEventThrottle } : {};
 
+  const renderSkeletonItem = useCallback(
+    () => <GridSkeletonCell />,
+    [],
+  );
+
+  const renderProductItem = useCallback(
+    ({ item }: ListRenderItemInfo<Product>) => (
+      <GridProductCell
+        product={item}
+        onProductPress={onProductPress}
+        onTagPress={onTagPress}
+        numColumns={numColumns}
+        cardVariant={cardVariant}
+        favoriteRemoveEditMode={favoriteRemoveEditMode}
+        onFavoriteRemoveEditModeChange={onFavoriteRemoveEditModeChange}
+      />
+    ),
+    [
+      onProductPress,
+      onTagPress,
+      numColumns,
+      cardVariant,
+      favoriteRemoveEditMode,
+      onFavoriteRemoveEditModeChange,
+    ],
+  );
+
+  const keyExtractor = useCallback(
+    (item: Product, index: number) => `${item.item_link}-${index}`,
+    [],
+  );
+
+  const skeletonKeyExtractor = useCallback(
+    (item: number) => `skeleton-${item}`,
+    [],
+  );
+
   if (loading) {
     return (
       <AnimatedFlatList
         style={s.list}
         data={SKELETON_PLACEHOLDERS}
-        renderItem={() => <ProductCardSkeleton />}
-        keyExtractor={item => `skeleton-${item}`}
+        renderItem={renderSkeletonItem}
+        keyExtractor={skeletonKeyExtractor}
         numColumns={numColumns}
         columnWrapperStyle={rowWrapStyle}
-        contentContainerStyle={s.container}
+        contentContainerStyle={skeletonContentStyle}
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
         onRefresh={onRefresh}
-        ListHeaderComponent={listHeaderComponent ?? undefined}
+        ListHeaderComponent={listHeaderWithGap}
         ListFooterComponent={listFooterComponent ?? undefined}
         {...scrollProps}
       />
@@ -99,31 +220,15 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     <AnimatedProductFlatList
       style={s.list}
       data={products}
-      renderItem={({ item }) => (
-        <ProductCard
-          product={item}
-          onPress={onProductPress}
-          onTagPress={onTagPress}
-          numColumns={numColumns}
-          variant={cardVariant}
-          favoriteRemoveEditMode={favoriteRemoveEditMode}
-          onFavoriteRemoveEditModeChange={onFavoriteRemoveEditModeChange}
-        />
-      )}
-      keyExtractor={(item, index) => `${item.item_link}-${index}`}
+      renderItem={renderProductItem}
+      keyExtractor={keyExtractor}
       numColumns={numColumns}
       columnWrapperStyle={rowWrapStyle}
-      contentContainerStyle={[
-        s.container,
-        products.length === 0 ? s.containerGrow : null,
-        contentPaddingBottom != null && contentPaddingBottom > 0
-          ? { paddingBottom: 16 + contentPaddingBottom }
-          : null,
-      ]}
+      contentContainerStyle={productsContentStyle}
       showsVerticalScrollIndicator={false}
       refreshing={refreshing}
       onRefresh={onRefresh}
-      ListHeaderComponent={listHeaderComponent ?? undefined}
+      ListHeaderComponent={listHeaderWithGap}
       ListFooterComponent={listFooterComponent ?? undefined}
       ListEmptyComponent={emptyComp}
       {...scrollProps}
@@ -135,14 +240,27 @@ const makeStyles = (colors: ReturnType<typeof import('../context/ThemeContext').
   StyleSheet.create({
     list: { flex: 1 },
     container: {
-      padding: 16,
+      paddingHorizontal: 16,
+      paddingBottom: 16,
+    },
+    containerTopPad: {
+      paddingTop: 16,
+    },
+    gridTopGap: {
+      height: GRID_CONTENT_TOP_GAP,
     },
     containerGrow: {
       flexGrow: 1,
     },
-    row: {
+    rowTwoCol: {
       flexDirection: 'row',
-      justifyContent: 'flex-start',
+      alignItems: 'stretch',
+      gap: 16,
+    },
+    rowThreeCol: {
+      flexDirection: 'row',
+      alignItems: 'stretch',
+      gap: 8,
     },
     emptyWrap: {
       paddingVertical: 48,
